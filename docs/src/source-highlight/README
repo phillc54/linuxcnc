@@ -22,9 +22,9 @@ directoy (/usr/share/source-highlight) needs to be replicated under 'local',
 and a new lang.map generated in there (all language definitions are
 relative to this directory, and include each other).
 
-Using ngc, hal and ini file snippets in your .txt files:
+Using ngc, hal and ini file snippets in your .adoc files:
 ========================================================
-Copy this to the top of your txt file:
+Copy this to the top of your adoc file:
 ----------------- snip ----------------
 :ini: {basebackend@docbook:'':ini}
 :hal: {basebackend@docbook:'':hal}

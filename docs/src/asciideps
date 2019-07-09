@@ -25,6 +25,6 @@ for f in $INCLUDES; do
 	IMAGES="$IMAGES `images $f`"
 done
 
-echo "${1%%.txt}.dep :" $INCLUDES
-echo "${1%%.txt}.html: " $INCLUDES $IMAGES
-echo "${1%%.txt}.pdf: " $INCLUDES $IMAGES
+echo "${1%%.adoc}.dep :" $INCLUDES
+echo "${1%%.adoc}.html: " $INCLUDES $IMAGES
+echo "${1%%.adoc}.pdf: " $INCLUDES $IMAGES

@@ -1,0 +1,26 @@
+:lversion: {sys: cat ../VERSION}
+Primeros pasos V{lversion}, {localdate}
+=======================================
+:lang: es
+:ascii-ids:
+:masterdir: {indir}
+
+The LinuxCNC Team
+
+:leveloffset: 1
+
+image::common/images/emc2-intro.*[]
+
+include::common/overleaf.adoc[]
+
+include::getting-started/about-linuxcnc-es.adoc[]
+
+include::getting-started/system-requirements-es.adoc[]
+
+include::getting-started/getting-linuxcnc-es.adoc[]
+
+include::getting-started/updating-linuxcnc-es.adoc[]
+
+include::common/gpld-copyright.adoc[]
+
+// vim: set syntax=asciidoc:
