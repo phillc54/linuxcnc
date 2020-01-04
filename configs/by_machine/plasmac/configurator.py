@@ -123,6 +123,10 @@ class configurator:
             self.mode = 0
             self.tabPanel0.connect('toggled', self.on_tabPanel0_toggled)
             self.panel = 0
+            self.pmGas0.connect('toggled', self.on_pmGas0_toggled)
+            self.pmGas1.connect('toggled', self.on_pmGas1_toggled)
+            self.pmGas2.connect('toggled', self.on_pmGas2_toggled)
+            self.pmGas = 'None'
             self.newIniFile = ''
             self.orgHalFile = ''
             self.plasmacIniFile = self.copyPath + '/metric_plasmac.ini'
@@ -186,6 +190,18 @@ class configurator:
         else:
             self.panel = 1
             self.tabPanelLabel.set_text('Run Frame is a panel at the side of the GUI')
+
+    def on_pmGas0_toggled(self,button):
+        if button.get_active():
+            self.pmGas = 'None'
+
+    def on_pmGas1_toggled(self,button):
+        if button.get_active():
+            self.pmGas = 'psi'
+
+    def on_pmGas2_toggled(self,button):
+        if button.get_active():
+            self.pmGas = 'Bar'
 
     def on_namefile_changed(self,widget):
         chars = len(self.nameFile.get_text())
@@ -382,14 +398,24 @@ class configurator:
                 return True
 
     def b4_pause_at_end(self):
-        cfgFile = '{}/{}_config.cfg'.format(self.configDir,self.machineName.lower())
-        inFile = open(cfgFile,'r')
+        materialFile = '{}/{}_material.cfg'.format(self.configDir,self.machineName.lower())
+        inFile = open(materialFile,'r')
         for line in inFile:
-            if 'torch-off-delay' in line:
+            if 'PAUSE_AT_END' in line:
                 inFile.close()
-                return True
+                return False
         inFile.close()
-        return False
+        return True
+
+    def b4_pmx485(self):
+        halFile = '{}/plasmac.tcl'.format(self.configDir)
+        inFile = open(halFile,'r')
+        for line in inFile:
+            if 'PLASMAC(PM_PORT)' in line:
+                inFile.close()
+                return False
+        inFile.close()
+        return True
 
     def set_mode(self):
         if self.mode == 0:
@@ -414,7 +440,7 @@ class configurator:
     # check existing version so we know what to upgrade
     def check_version(self):
         # set latest version number
-        self.latest_version = 0.7
+        self.latest_version = 0.8
         # see if this is a version before creating {MACHINE}_connections.hal
         if not os.path.exists('{}/{}_connections.hal'.format(self.configDir,self.machineName.lower())):
             return 0.0
@@ -436,6 +462,9 @@ class configurator:
         # if version before adding pause at end
         elif self.b4_pause_at_end():
             return 0.6
+        # if version before adding pmx485
+        elif self.b4_pmx485():
+            return 0.7
         # must be the latest version
         else:
         # *** set the latest version number in line 407 ***
@@ -868,6 +897,20 @@ class configurator:
                     outFile.write(line)
             inFile.close()
             outFile.close()
+        if version <= 0.7:
+            shutil.copy(self.orgIniFile,'{}.old07'.format(self.orgIniFile))
+            inFile = open('{}.old07'.format(self.orgIniFile), 'r')
+            outFile = open('{}'.format(self.orgIniFile), 'w')
+            for line in inFile:
+                if line.startswith('TORCH_PULSE_TIME'):
+                    outFile.write(line)
+                    outFile.write('\n# for Powermax communications\n')
+                    outFile.write('#PM_PORT                 = /dev/ttyUSB0\n')
+                    outFile.write('#PM_PRESSURE_DISPLAY     = Bar\n')
+                else:
+                    outFile.write(line)
+            inFile.close()
+            outFile.close()
 
     def upgrade_material_file(self,version):
         materialFile = '{}/{}_material.cfg'.format(self.configDir,self.machineName.lower())
@@ -920,6 +963,34 @@ class configurator:
                         pass
                     else:
                         outFile.write(line)
+            #add powermax comms for an upgrade from 0.6 or earlier
+            if version <= 0.7:
+                shutil.copy(materialFile,'{}.old07'.format(materialFile))
+                inFile = open('{}.old07'.format(materialFile), 'r')
+                outFile = open(materialFile, 'w')
+                outFile.write(self.material_header())
+                while 1:
+                    line = inFile.readline()
+                    if line.startswith('[MATERIAL_NUMBER'):
+                        outFile.write(line)
+                        break
+                    if not line:
+                        inFile.close()
+                        outFile.close()
+                        return
+                while 1:
+                    line = inFile.readline()
+                    if not line:
+                        inFile.close()
+                        return
+                    elif line.startswith('PAUSE_AT_END'):
+                        outFile.write(line)
+                        outFile.write('GAS_PRESSURE       = 0\n')
+                        outFile.write('CUT_MODE           = 1\n')
+                    else:
+                        outFile.write(line)
+                inFile.close()
+                outFile.close()
         else:
             print('No material file to upgrade')
 
@@ -1174,6 +1245,12 @@ class configurator:
             elif not '[HAL]' in line:
                 if line.startswith('MODE'):
                     outFile.write('MODE = {}\n'.format(self.mode))
+                elif line.startswith('TORCH_PULSE_TIME'):
+                    outFile.write(line)
+                elif line.startswith('#PM_PORT') and self.pmPortName.get_text():
+                    outFile.write('PM_PORT                 = {}\n'.format(self.pmPortName.get_text()))
+                elif line.startswith('#PM_PRESSURE') and self.pmPortName.get_text():
+                    outFile.write('PM_PRESSURE_DISPLAY     = {}\n'.format(self.pmGas))
                 else:
                     outFile.write(line)
             else:
@@ -1382,6 +1459,12 @@ class configurator:
                     elif line.startswith('MODE') and self.mode != self.oldMode:
                         self.oldMode = self.mode
                         outFile.write('MODE = {}\n'.format(self.mode))
+                    elif line.startswith('PM_PORT') and self.oldPmPortName != self.pmPortName.get_text():
+                        self.oldPmPortName = self.pmPortName.get_text()
+                        outFile.write('PM_PORT = {}\n'.format(self.pmPortName.get_text()))
+                    elif line.startswith('PM_PRESSURE_DISPLAY') and self.oldPmGas != self.pmGas:
+                        self.oldPmGas = self.pmGas
+                        outFile.write('PM_PRESSURE_DISPLAY = {}\n'.format(self.pmGas))
                     elif self.panel != self.oldPanel and 'EMBED_TAB_NAME' in line and 'Plasma Run' in line and self.display == 'axis':
                         if line.startswith('#'):
                             outFile.write(line.lstrip('#'))
@@ -1608,6 +1691,11 @@ class configurator:
         self.oldScribeArmPin = ''
         self.scribeStartPin.set_text('')
         self.oldScribeStartPin = ''
+        self.pmPortName.set_text('')
+        self.oldPmPortName = ''
+        self.pmGas0.set_active(True)
+        self.oldPmGas = ''
+        
         try:
             with open('{}/{}_connections.hal'.format(self.configDir,self.machineName.lower()), 'r') as inFile:
                 for line in inFile:
@@ -1665,8 +1753,28 @@ class configurator:
         with open(self.orgIniFile,'r') as inFile:
             while 1:
                 line = inFile.readline()
-                if line.startswith('[DISPLAY]'):
+                if line.startswith('[PLASMAC]'):
+                    count = 0
                     break
+            while 1:
+                line = inFile.readline()
+                if line.startswith('[DISPLAY]') or not line: break
+                elif line.startswith('PM_PORT'):
+                    self.oldPmPortName = line.split('=')[1].strip()
+                    self.pmPortName.set_text(self.oldPmPortName)
+                    count += 1
+                elif line.startswith('PM_PRESSURE_DISPLAY'):
+                    if line.split('=')[1].strip() == 'psi':
+                        self.oldPmGas = 'psi'
+                        self.pmGas1.set_active(True)
+                    elif line.split('=')[1].strip() == 'Bar':
+                        self.oldPmGas = 'Bar'
+                        self.pmGas2.set_active(True)
+                    else:
+                        self.oldPmGas = 'None'
+                        self.pmGas0.set_active(True)
+                    count += 1
+                if count >= 2: break
             while 1:
                 line = inFile.readline()
                 if not line: break
@@ -1898,6 +2006,31 @@ class configurator:
             self.scribeStartVBox.pack_start(self.scribeStartPin)
             self.scribeStartVBox.pack_start(scribeStartBlank)
             vBR.pack_start(self.scribeStartVBox,expand=False)
+            self.pmPortVBox = gtk.VBox()
+            self.pmPortLabel = gtk.Label('Powermax Com Port: (e.g. /dev/ttyUSB0)')
+            self.pmPortLabel.set_alignment(0,0)
+            self.pmPortName = gtk.Entry()
+            self.pmPortName.set_width_chars(40)
+            pmPortBlank = gtk.Label('')
+            self.pmPortVBox.pack_start(self.pmPortLabel)
+            self.pmPortVBox.pack_start(self.pmPortName)
+            self.pmPortVBox.pack_start(pmPortBlank)
+            vBR.pack_start(self.pmPortVBox,expand=False)
+            self.pmGasVBox = gtk.VBox()
+            self.pmGasLabel = gtk.Label('Powermax Gas Pressure Units')
+            self.pmGasLabel.set_alignment(0,0)
+            self.pmGasHBox = gtk.HBox(homogeneous=True)
+            self.pmGas0 = gtk.RadioButton(group=None, label='None')
+            self.pmGasHBox.pack_start(self.pmGas0)
+            self.pmGas1 = gtk.RadioButton(group=self.pmGas0, label='psi')
+            self.pmGasHBox.pack_start(self.pmGas1)
+            self.pmGas2 = gtk.RadioButton(group=self.pmGas0, label='Bar')
+            self.pmGasHBox.pack_start(self.pmGas2)
+            pmGasBlank = gtk.Label('')
+            self.pmGasVBox.pack_start(self.pmGasLabel)
+            self.pmGasVBox.pack_start(self.pmGasHBox)
+            self.pmGasVBox.pack_start(pmGasBlank)
+            vBR.pack_start(self.pmGasVBox,expand=False)
         BB = gtk.HButtonBox()
         if self.configureType == 'new':
             self.create = gtk.Button('Create')
@@ -1989,6 +2122,8 @@ class configurator:
                 '#CUT_AMPS           = \n'\
                 '#CUT_VOLTS          = \n'\
                 '#PAUSE_AT_END       = \n'\
+                '#GAS_PRESSURE       = \n'\
+                '#CUT_MODE           = \n'\
                 '\n'
 
 if __name__ == '__main__':

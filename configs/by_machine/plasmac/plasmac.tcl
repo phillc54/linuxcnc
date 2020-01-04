@@ -43,3 +43,6 @@ if [info exists ::TRAJ(SPINDLES)] {
     if {$num_spindles > 1} {net plasmac:scribe-is-on spindle.1.on => plasmac.scribe-on}
     if {$num_spindles > 2} {net plasmac:centre-spot-is-on spindle.2.on => plasmac.centre-spot-on}
 }
+
+# powermax serial communications
+if [info exists ::PLASMAC(PM_PORT)] {loadusr -Wn pmx485 ./pmx485.py [lindex $::PLASMAC(PM_PORT) 0]}

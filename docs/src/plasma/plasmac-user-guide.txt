@@ -353,6 +353,10 @@ image::images/plasmac_configurator_new.png[width=400]
                the HAL pin to arm the air-scriber
 |Scribe Start|only required if using an air-scribe +
               the HAL pin to start the air-scriber
+|Powermax Comms|only required if using Powermax communications +
+                the serial port used for communications
+|Gas Units|select the units display you require +
+           psi, Bar or None if not being used
 |===
 
 NOTE: If you are not sure of the full name of a HAL pin then start LinuxCNC for your base machine and run 'HalShow' for a full listing of all HAL pins.
@@ -614,11 +618,16 @@ Parameters related to cutting.
 |Cut Height|The cut height for the currently selected material
 |Cut Feed Rate|The cut feed rate for the currently selected material
 |Cut Amps|The cut amperage for the currently selected material +
-          Operator indicator only
+          Operator indicator only unless using Powermax communications
 |Cut Volts|The cut voltage for the currently selected material
 |P-Jump Height|The puddle jump height for the currently selected material
 |P-Jump Delay|The puddle jump delay for the currently selected material
 |Pause At End|Pause for n seconds at end of cut with torch on before turning torch off and raising torch
+|Gas Pressure|The gas pressure for the currently selected material. +
+              Only valid if PowerMax communications operational
+|Cut Mode|The cut mode for the currently selected material. +
+          Only valid if PowerMax communications operational +
+          1 = Normal, 2 = CPA, 3 = Gouge/Mark
 |===
 
 .THC
@@ -663,6 +672,21 @@ Parameters for a single cut.
 |Y Axis Length|The Y axis distance to travel for a single cut.
 |Start Cut|Press to commence a single cut.
 |===
+
+.Powermax Comms
+
+Parameters related to Powermax communications.
+
+[width="100%",cols="4,16"]
+|===
+|*Name*|*Description*
+|Enable|This is to enable or disable the communications to a Powermax.
+|Status|This will display one of 'Connecting', 'Connected', 'Comms Error' or 'Fault Code'.
+|===
+
+For more information, see the <<pm_comms, Powermax Communications>> section.
+
+NOTE: This frame is only visible if a PM_PORT is configured in the [PLASMAC] section of the .ini file.
 
 [[run-buttons]]
 
@@ -1825,6 +1849,8 @@ The following variables are optional. If any are not detected or have no value a
 * CUT_AMPS
 * CUT_VOLTS
 * PAUSE_AT_END
+* GAS_PRESSURE
+* CUT_MODE
 
 WARNING: It is the responsibility of the operator to ensure that the variables are included if they are a requirement for the GCode to be run.
 
@@ -1844,6 +1870,8 @@ CUT_SPEED           = value
 CUT_AMPS            = value (only used for operator information)
 CUT_VOLTS           = value (modes 0 & 1 only, if not using auto voltage sampling)
 PAUSE_AT_END        = value
+GAS_PRESSURE        = value (only used for Powermax communications)
+CUT_MODE            = value (only used for Powermax communications)
 ----
 
 It is possible to add new material, delete material or edit existing material from the <<run-buttons, Run Panel.>>
@@ -2116,6 +2144,53 @@ setp    hm2_7i96.0.encoder.00.scale        -1
 ----
 
 NOTE: There is a <<lowpass, lowpass filter>> available which may be useful if using a THCAD.
+
+[[pm_comms]]
+
+== Powermax Communications
+
+Communications can be established with a Hypertherm Powermax plasma cutter that has a RS485 port. This then enables the setting of 'Cut Mode', 'Cutting Amperage' and 'Gas Pressure' automatically from the 'Cut Parameters' of the material file.
+
+If Gas Pressure is set to Zero then the Powermax will calculate the required pressure from the Cut Mode, Cut Current, torch type and torch length.
+
+The maximum and minimum values of these parameters are read from the plasma cutter and the related spin-buttons are set with these values.
+
+This function is enabled by setting the correct port name for the PM_PORT variable in the [PLASMAC] section of the .ini file.
+
+----
+[PLASMAC]
+PM_PORT = /dev/ttyusb0
+PM_PRESSURE_DISPLAY = Bar
+----
+
+If you are unsure of the name of your port there is a python script in the configuration directory that will show all available ports and can also be used to test communications with the plasma unit prior to using this feature in PlasmaC. To use the test script enter the following in a terminal.
+
+----
+$ python ~/user/linuxcnc/configs/<your_config>/pmx_test.py
+----
+
+The gas pressure units display is configured by the PM_PRESSURE_DISPLAY variable. This should be set to the units configured in the Powermax unit being connected to, then the text entered for the PM_PRESSURE_DISPLAY variable is shown next to the Gas Pressure spinbutton on the Run Panel.
+
+If the PM_PORT variable is not in the .ini file then the widgets associated with this function will not be visible.
+
+The Powermax machine will go into remote mode after communications have been established and will be controlled remotely. The connection can be validated by observing the Powermax display.
+
+To switch the Powermax back to local mode you can either:
+
+.  Disable Powermax Comms from the Run panel
+.  Powerdown the Powermax for 30 seconds and then power it back on.
+.  Close LinuxCNC which will put the Powermax into local mode during shutdown.
+
+NOTE: To use the Powermax communictions feature it is necessary to have pyserial installed. +
+If pyserials is not installed an error message will be displayed.
+
+To install pyserial, type the following in a terminal:
+
+----
+sudo apt-get install python-serial
+----
+
+It should be noted that during the testing phase of this feature it was found that the usb to rs485 converter had reliability issues and that PCI cards are a very reliable alternative which is what ended up being installed on the test machine.
 
 == Support
 
