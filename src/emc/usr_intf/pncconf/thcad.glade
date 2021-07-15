@@ -2,23 +2,6 @@
 <interface>
   <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy project-wide -->
-  <object class="GtkListStore" id="voltsencnumber">
-    <columns>
-      <!-- column-name voltsencnum -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">ENCA</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">ENCB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">IDX</col>
-      </row>
-    </data>
-  </object>
   <object class="GtkListStore" id="voltsfjumpervalue">
     <columns>
       <!-- column-name voltsfjumpername -->
@@ -104,14 +87,8 @@
                       <object class="GtkTable" id="voltstable">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="n_rows">4</property>
+                        <property name="n_rows">3</property>
                         <property name="n_columns">4</property>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
                         <child>
                           <object class="GtkLabel" id="voltslbl4">
                             <property name="visible">True</property>
@@ -262,39 +239,6 @@
                             <property name="right_attach">4</property>
                             <property name="top_attach">2</property>
                             <property name="bottom_attach">3</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="voltslbl6">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="xalign">1</property>
-                            <property name="label" translatable="yes">Encoder</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">2</property>
-                            <property name="right_attach">3</property>
-                            <property name="top_attach">3</property>
-                            <property name="bottom_attach">4</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkComboBox" id="voltsenc">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="model">voltsencnumber</property>
-                            <child>
-                              <object class="GtkCellRendererText" id="voltsencrender"/>
-                              <attributes>
-                                <attribute name="text">0</attribute>
-                              </attributes>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="left_attach">3</property>
-                            <property name="right_attach">4</property>
-                            <property name="top_attach">3</property>
-                            <property name="bottom_attach">4</property>
                           </packing>
                         </child>
                       </object>
