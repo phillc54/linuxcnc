@@ -231,7 +231,6 @@ HOME_SEQUENCE = 0 - Accepted but currently does nothing
 == New HAL components
 
 === Non-Realtime
-mdro
 mqtt-publisher
 pi500_vfd
 pmx485-test

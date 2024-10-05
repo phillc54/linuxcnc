@@ -114,7 +114,6 @@ DOC_SRCS_EN := \
 	gui/panelui.adoc \
 	gui/halui.adoc \
 	gui/image-to-gcode.adoc \
-	gui/mdro.adoc \
 	gui/ngcgui.adoc \
 	gui/tklinuxcnc.adoc \
 	gui/tooledit.adoc \
