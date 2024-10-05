@@ -559,13 +559,7 @@ class Pages:
             self.d[i+"position"][1] = self.w[i+"xpos"].get_value()
             self.d[i+"position"][2] = self.w[i+"ypos"].get_value()
 
-        if self.w.autotouchz.get_active():
-            self.d.classicladder = True
-            if not self.w.ladderexist.get_active():
-                self.w.laddertouchz.set_active(True)
-
     # callbacks
-    def on_loadladder_clicked(self, *args):self.t.load_ladder(self)
 
     def on_combo_screentype_changed(self,w):
         if w.get_active()+1 == self._p._AXIS:
@@ -627,41 +621,6 @@ class Pages:
         i= self.w.halui.get_active()
         self.w.haluitable.set_sensitive(i)
 
-    def on_classicladder_toggled(self, *args):
-        i= self.w.classicladder.get_active()
-        self.w.digitsin.set_sensitive(i)
-        self.w.digitsout.set_sensitive(i)
-        self.w.s32in.set_sensitive(i)
-        self.w.s32out.set_sensitive(i)
-        self.w.floatsin.set_sensitive(i)
-        self.w.floatsout.set_sensitive(i)
-        self.w.bitmem.set_sensitive(i)
-        self.w.wordmem.set_sensitive(i)
-        self.w.modbus.set_sensitive(i)
-        self.w.ladderblank.set_sensitive(i)
-        self.w.ladder1.set_sensitive(i)
-        self.w.ladder2.set_sensitive(i)
-        self.w.laddertouchz.set_sensitive(i)
-        if  self.w.createconfig.get_active():
-            self.w.ladderexist.set_sensitive(False)
-        else:
-            self.w.ladderexist.set_sensitive(i)
-        self.w.loadladder.set_sensitive(i)
-        self.w.label_digin.set_sensitive(i)
-        self.w.label_digout.set_sensitive(i)
-        self.w.label_s32in.set_sensitive(i)
-        self.w.label_s32out.set_sensitive(i)
-        self.w.label_floatin.set_sensitive(i)
-        self.w.label_floatout.set_sensitive(i)
-        self.w.label_bitmem.set_sensitive(i)
-        self.w.label_wordmem.set_sensitive(i)
-        self.w.ladderconnect.set_sensitive(i)
-        if self.w.laddertouchz.get_active():
-            i = self.d.gladevcphaluicmds
-            self.w["halui_cmd%d"%(i)].set_text("G38.2 Z-2 F16   ( search for touch off plate )")
-            self.w["halui_cmd%d"%(i+1)].set_text("G10 L20 P0 Z.25 ( Offset current Origin by plate thickness )")
-            self.w["halui_cmd%d"%(i+2)].set_text("G0 Z.5           ( Rapid away from touch off plate )")
-
     def on_xusecomp_toggled(self, *args): self.a.comp_toggle('x')
     def on_yusecomp_toggled(self, *args): self.a.comp_toggle('y')
     def on_zusecomp_toggled(self, *args): self.a.comp_toggle('z')
@@ -695,7 +654,7 @@ class Pages:
         self.w.pyvcpblank.set_active(self.d.pyvcpblank)
         self.w.pyvcpconnect.set_active(self.d.pyvcpconnect)
         for i in ("gladevcp","gladesample","gladeexists","spindlespeedbar","spindleatspeed","gladevcpforcemax",
-                "zerox","zeroy","zeroz","zeroa","autotouchz","centerembededgvcp","sideembededgvcp","standalonegvcp",
+                "zerox","zeroy","zeroz","zeroa","centerembededgvcp","sideembededgvcp","standalonegvcp",
                 "gladevcpposition","gladevcpsize","pyvcpposition","pyvcpsize"):
             self.w[i].set_active(self.d[i])
         for i in ("maxspeeddisplay","gladevcpwidth","gladevcpheight","gladevcpxpos","gladevcpypos",
@@ -727,7 +686,7 @@ class Pages:
               self.d.pyvcpname = "pyvcp-panel.xml"
         for i in ("gladevcp","gladesample","spindlespeedbar","spindleatspeed","gladevcpforcemax",
                 "centerembededgvcp","sideembededgvcp","standalonegvcp","gladeexists",
-                "gladevcpposition","gladevcpsize","pyvcpposition","pyvcpsize","autotouchz"):
+                "gladevcpposition","gladevcpsize","pyvcpposition","pyvcpsize"):
             self.d[i] = self.w[i].get_active()
         # set HALUI commands ( on advanced page) based on the user requested glade buttons
         i =  self.d.gladevcphaluicmds = 0
@@ -1452,7 +1411,6 @@ class Pages:
 #************
     def options_prepare(self):
         self.d.help = "help-advanced.txt"
-        self.w.classicladder.set_active(self.d.classicladder)
         self.w.modbus.set_active(self.d.modbus)
         self.w.digitsin.set_value(self.d.digitsin)
         self.w.digitsout.set_value(self.d.digitsout)
@@ -1463,16 +1421,11 @@ class Pages:
         self.w.bitmem.set_value(self.d.bitmem)
         self.w.wordmem.set_value(self.d.wordmem)
         self.w.halui.set_active(self.d.halui)
-        self.w.ladderexist.set_active(self.d.ladderexist)
-        self.w.laddertouchz.set_active(self.d.laddertouchz)
         self.on_halui_toggled()
         for i in range(0,15):
             self.w["halui_cmd"+str(i)].set_text(self.d["halui_cmd"+str(i)])
-        self.w.ladderconnect.set_active(self.d.ladderconnect)
-        self.on_classicladder_toggled()
 
     def options_finish(self):
-        self.d.classicladder = self.w.classicladder.get_active()
         self.d.modbus = self.w.modbus.get_active()
         self.d.digitsin = self.w.digitsin.get_value()
         self.d.digitsout = self.w.digitsout.get_value()
@@ -1483,52 +1436,8 @@ class Pages:
         self.d.wordmem = self.w.wordmem.get_value()
         self.d.floatsout = self.w.floatsout.get_value()
         self.d.halui = self.w.halui.get_active()
-        self.d.ladderexist = self.w.ladderexist.get_active()
-        self.d.laddertouchz = self.w.laddertouchz.get_active()
         for i in range(0,15):
             self.d["halui_cmd"+str(i)] = self.w["halui_cmd"+str(i)].get_text()
-        self.d.ladderconnect = self.w.ladderconnect.get_active()
-        if self.d.classicladder:
-            if self.w.ladderblank.get_active() == True:
-                if self.d.tempexists:
-                    self.d.laddername='TEMP.clp'
-                else:
-                    self.d.laddername= 'blank.clp'
-                    self.d.ladderhaltype = 0
-            if self.w.ladder1.get_active() == True:
-                self.d.laddername = 'estop.clp'
-                has_estop = self.a.findsignal("estop-ext")
-                if not has_estop:
-                    self.a.warning_dialog(_("You need to designate an E-stop input pin for this ladder program."),True)
-                    return True
-                self.d.ladderhaltype = 1
-            if self.w.ladder2.get_active() == True:
-                self.d.laddername = 'serialmodbus.clp'
-                self.d.modbus = 1
-                self.w.modbus.set_active(self.d.modbus)
-                self.d.ladderhaltype = 0
-            if self.w.laddertouchz.get_active() == True:
-                has_probe = self.a.findsignal("probe-in")
-                if not has_probe:
-                    self.a.warning_dialog(_("You need to designate a probe input pin for this ladder program."),True)
-                    return True
-                self.d.ladderhaltype = 2
-                self.d.laddername = 'touchoff_z.clp'
-                self.d.halui = True
-                self.w.halui.set_active(True)
-            if self.w.ladderexist.get_active() == True:
-                self.d.laddername='custom.clp'
-            else:
-                if os.path.exists(os.path.expanduser("~/linuxcnc/configs/%s/custom.clp" % self.d.machinename)):
-                    if not self.a.warning_dialog(_("OK to replace existing custom ladder program?\nExisting\
- Custom.clp will be renamed custom_backup.clp.\nAny existing file named -custom_backup.clp- will be lost.\
-Selecting 'existing ladder program' will avoid this warning"),False):
-                        return True
-            if self.w.ladderexist.get_active() == False:
-                if os.path.exists(os.path.join(self._p.DISTDIR, "configurable_options/ladder/TEMP.clp")):
-                    if not self.a.warning_dialog(_("You edited a ladder program and have selected a \
-different program to copy to your configuration file.\nThe edited program will be lost.\n\nAre you sure?  "),False):
-                        return True
 
 #************
 # REALTIME PAGE

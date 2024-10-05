@@ -108,9 +108,6 @@ class HAL:
         if pwm:
             print("loadrt pwmgen output_type=1", file=file)
 
-        if self.d.classicladder:
-            print("loadrt classicladder_rt numPhysInputs=%d numPhysOutputs=%d numS32in=%d numS32out=%d numFloatIn=%d numFloatOut=%d" % (self.d.digitsin , self.d.digitsout , self.d.s32in, self.d.s32out, self.d.floatsin, self.d.floatsout), file=file)
-
         if self.d.select_qtplasmac:
             print("loadrt  plasmac", file=file)
 
@@ -144,8 +141,6 @@ class HAL:
         if encoder: print("addf encoder.capture-position servo-thread", file=file)
         print("addf motion-command-handler servo-thread", file=file)
         print("addf motion-controller servo-thread", file=file)
-        if self.d.classicladder:
-            print("addf classicladder.0.refresh servo-thread", file=file)
         if self.d.select_qtplasmac:
             print("addf plasmac servo-thread", file=file)
 
@@ -289,17 +284,7 @@ class HAL:
         else:
         # standard estop handling
             print("net estop-out <= iocontrol.0.user-enable-out", file=file)
-            if  self.d.classicladder and self.d.ladderhaltype == 1 and self.d.ladderconnect: # external estop program
-                print(file=file) 
-                print(_("# **** Setup for external estop ladder program -START ****"), file=file)
-                print(file=file)
-                print("net estop-out => classicladder.0.in-00", file=file)
-                print("net estop-ext => classicladder.0.in-01", file=file)
-                print("net estop-strobe classicladder.0.in-02 <= iocontrol.0.user-request-enable", file=file)
-                print("net estop-outcl classicladder.0.out-00 => iocontrol.0.emc-enable-in", file=file)
-                print(file=file)
-                print(_("# **** Setup for external estop ladder program -END ****"), file=file)
-            elif SIG.ESTOP_IN in inputs:
+            if SIG.ESTOP_IN in inputs:
                 print("net estop-ext => iocontrol.0.emc-enable-in", file=file)
             else:
                 print("net estop-out => iocontrol.0.emc-enable-in", file=file)
@@ -314,14 +299,6 @@ class HAL:
             print("net tool-number <= iocontrol.0.tool-prep-number", file=file)
             print("net tool-change-loopback iocontrol.0.tool-change => iocontrol.0.tool-changed", file=file)
         print("net tool-prepare-loopback iocontrol.0.tool-prepare => iocontrol.0.tool-prepared", file=file)
-        if self.d.classicladder:
-            print(file=file)
-            if self.d.modbus:
-                print(_("# Load Classicladder with Modbus master included (GUI must run for Modbus)"), file=file)
-                print("loadusr classicladder --modmaster custom.clp", file=file)
-            else:
-                print(_("# Load Classicladder without GUI (can reload LADDER GUI in AXIS GUI"), file=file)
-                print("loadusr classicladder --nogui custom.clp", file=file)
         if self.d.pyvcp:
             vcp = os.path.join(base, "custompanel.xml")
             if not os.path.exists(vcp):
@@ -410,7 +387,7 @@ class HAL:
             f1.close()
 
         # stepconf adds custom.hal and custom_postgui.hal file if one is not present
-        if self.d.customhal or self.d.classicladder or self.d.halui:
+        if self.d.customhal or self.d.halui:
             for i in ("custom","custom_postgui"):
                 custom = os.path.join(base, i+".hal")
                 if not os.path.exists(custom):

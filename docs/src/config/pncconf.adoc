@@ -254,13 +254,9 @@ Under 'sample options' select which ones you would like.
 The zero buttons use HALUI commands which you could edit later in the HALUI
 section.
 
-Auto Z touch-off also requires the classic ladder touch-off program and a probe
-input selected. It requires a conductive touch-off plate and a grounded
-conductive tool. For an idea on how it works see:
 
-https://wiki.linuxcnc.org/cgi-bin/wiki.pl?ClassicLadderExamples#Single_button_probe_touchoff
-
-Under 'Display Options', size, position, and force max can be used on a 'stand-alone' panel for such things as placing the screen on a second monitor if the system is capable.
+Under 'Display Options', size, position, and force max can be used on a 'stand-alone' panel
+for such things as placing the screen on a second monitor if the system is capable.
 
 You can select a GTK theme which sets the basic look and feel of the panel.
 You Usually want this to match the front-end screen.
@@ -697,21 +693,11 @@ There are some differences:
 
 == Advanced Options
 
-This allows setting of HALUI commands and loading of ClassicLadder and sample
-ladder programs.
+This allows setting of HALUI commands
 If you selected GladeVCP options such as for zeroing axis, there will be
 commands showing.
 See the <<cha:hal-user-interface,HALUI Chapter>> for more info on using custom
 halcmds.
-There are several ladder program options.
-The Estop program allows an external ESTOP switch or the GUI frontend to throw
-an Estop. It also has a timed lube pump signal.
-The Z auto touch-off is with a touch-off plate, the GladeVCP touch-off button
-and special HALUI commands to set the current user origin to zero and rapid
-clear.
-The serial modbus program is basically a blank template program that sets up
-ClassicLadder for serial modbus. See the <<cha:classicladder,ClassicLadder Chapter>>
-in the manual.
 
 .PnCconf, advanced options
 image::images/pncconf-advanced.png["PnCconf Advanced Options"]

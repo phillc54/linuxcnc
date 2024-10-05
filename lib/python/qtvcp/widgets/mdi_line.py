@@ -93,8 +93,6 @@ class MDI(QLineEdit):
             AUX_PRGM.load_halscope(args)
         elif text == 'STATUS':
             AUX_PRGM.load_status()
-        elif text == 'CLASSICLADDER':
-            AUX_PRGM.load_ladder()
         elif text == 'HALSCOPE':
             AUX_PRGM.load_halscope()
         elif text == 'CALIBRATION':

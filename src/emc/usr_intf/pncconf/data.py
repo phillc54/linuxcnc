@@ -365,7 +365,6 @@ class Data:
         self.zeroy = False
         self.zeroz = False
         self.zeroa = False
-        self.autotouchz = False
         self.gladevcphaluicmds = 0
         self.centerembededgvcp = True
         self.sideembededgvcp = False
@@ -378,25 +377,6 @@ class Data:
         self.gladevcpxpos = 0
         self.gladevcpypos = 0
         self.gladevcptheme = "Follow System Theme"
-
-        # classicladder data
-        self.classicladder = 0 # not included
-        self.digitsin = 15 # default number of pins
-        self.digitsout = 15
-        self.s32in = 10
-        self.s32out = 10
-        self.floatsin = 10
-        self.floatsout = 10
-        self.bitmem = 50
-        self.wordmem = 50
-        self.tempexists = 0 # not present ( a blank CL program edited through pncconf)
-        self.laddername = "custom.clp"
-        self.modbus = 0 # not included
-        self.ladderhaltype = 0 # no HAL connections specified
-        self.ladderconnect = 1 # HAL connections allowed
-        self.ladderexist = False
-        self.cl_haluicmds = 0
-        self.laddertouchz = False
 
         # stepper timing data
         self.drivertype = "other"

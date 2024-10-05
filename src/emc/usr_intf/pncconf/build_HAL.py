@@ -224,10 +224,6 @@ class HAL:
             print("loadrt charge_pump", file=file)
         if not at_speed and self.d.suseatspeed:
             print("loadrt near", file=file)
-        if self.d.classicladder:
-            print(("loadrt classicladder_rt numPhysInputs=%d numPhysOutputs=%d numS32in=%d"
-                          " numS32out=%d numFloatIn=%d numFloatOut=%d numBits=%d numWords=%d") \
-                          %(self.d.digitsin , self.d.digitsout , self.d.s32in, self.d.s32out, self.d.floatsin, self.d.floatsout,self.d.bitmem,self.d.wordmem), file=file)
 
         # load mux16
         self.d.mux16names=""
@@ -293,9 +289,6 @@ class HAL:
             temp=self.d._bldcconfigstring.split(",")
             for num,j in enumerate(temp):
                 print("addf bldc.%d servo-thread"% num, file=file)
-
-        if self.d.classicladder:
-            print("addf classicladder.0.refresh servo-thread", file=file)
 
         # mux16 addf
         temp=self.d.mux16names.split(",")
@@ -761,17 +754,7 @@ class HAL:
         print(_("#  ---estop signals---"), file=file)
         print(file=file)
         print("net estop-out     <=  iocontrol.0.user-enable-out", file=file)
-        if  self.d.classicladder and self.d.ladderhaltype == 1 and self.d.ladderconnect: # external estop program
-            print(file=file)
-            print(_("# **** Setup for external estop ladder program -START ****"), file=file)
-            print(file=file)
-            print("net estop-out     => classicladder.0.in-00", file=file)
-            print("net estop-ext     => classicladder.0.in-01", file=file)
-            print("net estop-strobe     classicladder.0.in-02   <=  iocontrol.0.user-request-enable", file=file)
-            print("net estop-outcl      classicladder.0.out-00  =>  iocontrol.0.emc-enable-in", file=file)
-            print(file=file)
-            print(_("# **** Setup for external estop ladder program -END ****"), file=file)
-        elif estop:
+        if estop:
             print("net estop-ext     =>  iocontrol.0.emc-enable-in", file=file)
         else:
             print("net estop-out     =>  iocontrol.0.emc-enable-in", file=file)
@@ -814,27 +797,6 @@ class HAL:
             print(_("\n# ---QTPLASMAC TOOLCHANGE PASSTHROUGH---"), file=file)
             print("net tool:change iocontrol.0.tool-change  => iocontrol.0.tool-changed", file=file)
             print("net tool:prep   iocontrol.0.tool-prepare => iocontrol.0.tool-prepared", file=file)
-        if self.d.classicladder:
-            print(file=file)
-            if self.d.modbus:
-                print(_("# Load Classicladder with modbus master included (GUI must run for Modbus)"), file=file)
-                print(file=file)
-                print("loadusr classicladder --modmaster custom.clp", file=file)
-                print(file=file)
-            else:
-                print(_("# Load Classicladder without GUI (can reload LADDER GUI in AXIS GUI"), file=file)
-                print(file=file)
-                print("loadusr classicladder --nogui custom.clp", file=file)
-                print(file=file)
-            if self.d.laddertouchz:
-                othercmds = self.d.gladevcphaluicmds
-                print(_("#  --- Classicladder signals for Z axis Auto touch off program---"), file=file)
-                print("net auto-touch-z    =>   classicladder.0.in-00", file=file)
-                print("net MDI-mode        =>   classicladder.0.in-01", file=file)
-                print("net in-position     =>   classicladder.0.in-02", file=file)
-                print("net z-touchoff-cmd       classicladder.0.out-00   =>    halui.mdi-command-%02d"% (othercmds), file=file)
-                print("net z-zero-cmd           classicladder.0.out-01   =>    halui.mdi-command-%02d"% (othercmds +1), file=file)
-                print("net rapid-away-cmd       classicladder.0.out-02   =>    halui.mdi-command-%02d"% (othercmds +2), file=file)
 
         gvcp_options_filename = os.path.join(base, "gvcp_options.hal")
         gvcp_call_filename  = os.path.join(base, "gvcp_call_list.hal")
@@ -886,11 +848,6 @@ class HAL:
                             print(("net machine-is-on          =>    gladevcp.%s-active"% (temp[1])), file=f1)
                         print(file=f1)
                         i += 1
-                if self.d.autotouchz:
-                    print(_("# **** Z axis touch-off button - requires the touch-off classicladder program ****"), file=f1)
-                    print(("net auto-touch-z      <=    gladevcp.auto-touch-z"), file=f1)
-                    print(("net MDI-mode          =>    gladevcp.auto-touch-z-active"), file=f1)
-                    print(file=f1)
         else:
             # gvcp was not selected remove any existing related HAl files
             if os.path.exists(gvcp_options_filename):
@@ -959,21 +916,6 @@ class HAL:
             if os.path.exists(fname):
                 os.remove(fname)
 
-        if self.d.classicladder:
-           if not self.d.laddername == "custom.clp":
-                filename = os.path.join(_PD.DISTDIR, "configurable_options/ladder/%s" % self.d.laddername)
-                original = os.path.expanduser("~/linuxcnc/configs/%s/custom.clp" % self.d.machinename)
-                if os.path.exists(filename): # check for the master file to copy from
-                  if os.path.exists(original):
-                     #print("custom file already exists")
-                     writebackup(original)
-                     #shutil.copy( original,os.path.expanduser("~/linuxcnc/configs/%s/backups/custom_backup.clp" % self.d.machinename) )
-                     print("made backup of existing custom")
-                  shutil.copy( filename,original)
-                  #print("copied ladder program to usr directory")
-                  #print("%s" % filename)
-                else:
-                     print("Master or temp ladder files missing from configurable_options dir")
         if self.d.pyvcp and not self.d.pyvcpexist and self.d.frontend != _PD._QTPLASMAC:
            panelname = os.path.join(_PD.DISTDIR, "configurable_options/pyvcp/%s" % self.d.pyvcpname)
            originalname = os.path.expanduser("~/linuxcnc/configs/%s/pyvcp-panel.xml" % self.d.machinename)

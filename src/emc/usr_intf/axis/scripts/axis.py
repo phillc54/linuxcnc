@@ -3015,7 +3015,6 @@ vars = nf.Variables(root_window,
     ("task_paused", IntVar),
     ("interp_state", IntVar),
     ("task_mode", IntVar),
-    ("has_ladder", IntVar),
     ("has_editor", IntVar),
     ("ja_rbutton", StringVar),
     ("tto_g11", BooleanVar),
@@ -3932,8 +3931,6 @@ if hal_present == 1 :
     comp.newpin("resume-inhibit",hal.HAL_BIT,hal.HAL_IN)
     comp.newpin("error", hal.HAL_BIT, hal.HAL_OUT)
     comp.newpin("abort", hal.HAL_BIT, hal.HAL_OUT)
-
-    vars.has_ladder.set(hal.component_exists('classicladder_rt'))
 
     if vcp:
         import vcpparse

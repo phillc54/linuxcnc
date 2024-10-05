@@ -314,7 +314,6 @@ if aActive == '1': axes = 1 # rotary
 elif yActive == '0': axes = 2 # lathe
 else: axes = 0 # XYZ
 sc.write(f'  <property name="axes" type="int" value="{axes}"/>\n'.encode())
-sc.write('  <property name="classicladder" type="bool" value="False"/>\n'.encode())
 sc.write('  <property name="createshortcut" type="bool" value="False"/>\n'.encode())
 sc.write('  <property name="createsymlink" type="bool" value="False"/>\n'.encode())
 sc.write('  <property name="customhal" type="int" value="1"/>\n'.encode())
@@ -329,9 +328,6 @@ sc.write('  <property name="halui" type="bool" value="False"/>\n'.encode())
 sc.write('  <property name="ioaddr" type="string" value="0"/>\n'.encode())
 sc.write('  <property name="ioaddr2" type="string" value="1"/>\n'.encode())
 sc.write('  <property name="ioaddr3" type="string" value="Enter Address"/>\n'.encode())
-sc.write('  <property name="ladderconnect" type="bool" value="True"/>\n'.encode())
-sc.write('  <property name="ladderhaltype" type="int" value="0"/>\n'.encode())
-sc.write('  <property name="laddername" type="string" value="custom.clp"/>\n'.encode())
 sc.write('  <property name="latency" type="float" value="15000.0"/>\n'.encode())
 sc.write(f'  <property name="machinename" type="string" value="{machinename}"/>\n'.encode())
 sc.write('  <property name="manualtoolchange" type="bool" value="True"/>\n'.encode())

@@ -91,10 +91,6 @@ setup_menu_accel .menu.file end [_ "Reload tool _data"]
 
 .menu.file add separator
 
-.menu.file add command \
-        -command {exec classicladder &}
-setup_menu_accel .menu.file end [_ "_Ladder Editor..."]
-
 .menu.file add separator
 
 .menu.file add command \
@@ -1816,7 +1812,6 @@ proc update_state {args} {
                 .toolbar.program_stop {.menu.machine "Stop"}
     relief {$interp_state == $INTERP_IDLE} \
                 .toolbar.program_stop
-    state  {$::has_ladder} {.menu.file "_Ladder Editor..."}
 
     state {$task_state == $STATE_ON \
             && $interp_state == $INTERP_IDLE && $highlight_line != -1} \
@@ -1943,7 +1938,6 @@ set taskfile ""
 set machine ""
 set task_state -1
 set has_editor 1
-set has_ladder 0
 set last_task_state 0
 set task_mode -1
 set task_paused 0

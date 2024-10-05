@@ -21,18 +21,3 @@ HALUI:
         G0 Z.5
             This rapids the tool away from the plate after 
             touch off
-
-Classicladder software PLC
-    Click the Classicladder checkbox.
-    Choose the number of available pins.
-    Choose whether Modbus is activated.
-    Choose a sample ladder program or a blank program.
-    sample Z autotouch off requires a probe input and 
-        GladeVCP Z autotouch option
-    Click the edit ladder program button to edit the 
-        ladder program. When saving do not change the 
-        program name. Exit CL to return to pncconf.
-    If you are editing an existing configuration with
-        an existing ladder program choose 'existing
-        custom program'.
-

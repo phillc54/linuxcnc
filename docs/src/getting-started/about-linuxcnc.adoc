@@ -25,7 +25,6 @@
 ** a realtime motion planning system with look-ahead,
 ** operation of low-level machine electronics such as sensors and motor drives,
 ** an easy to use 'breadboard' layer for quickly creating a unique configuration for your machine,
-** a software PLC programmable with ladder diagrams.
 * It does not provide drawing (CAD - Computer Aided Design) or G-code generation
   from the drawing (CAM - Computer Automated Manufacturing) functions.
 * It can simultaneously move up to 9 axes and supports a variety of interfaces.

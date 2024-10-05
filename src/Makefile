@@ -172,7 +172,7 @@ SUBDIRS := \
     \
     hal/components hal/drivers hal/drivers/mesa-hostmot2 \
     hal/user_comps/devices hal/user_comps/mb2hal \
-    hal/user_comps hal/user_comps/vismach hal/user_comps/vfs11_vfd hal/classicladder hal/utils hal \
+    hal/user_comps hal/user_comps/vismach hal/user_comps/vfs11_vfd hal/utils hal \
     hal/user_comps/vfdb_vfd hal/user_comps/wj200_vfd \
     hal/user_comps/pi500_vfd \
     hal/user_comps/huanyang-vfd \
@@ -1053,20 +1053,6 @@ setsserial-objs :=			  \
     hal/drivers/mesa-hostmot2/setsserial.o  \
     $(MATHSTUB)
 
-obj-$(CONFIG_CLASSICLADDER_RT) += classicladder_rt.o
-classicladder_rt-objs := hal/classicladder/module_hal.o $(MATHSTUB)
-classicladder_rt-objs += hal/classicladder/arithm_eval.o
-classicladder_rt-objs += hal/classicladder/arrays.o
-classicladder_rt-objs += hal/classicladder/calc.o
-classicladder_rt-objs += hal/classicladder/calc_sequential.o
-classicladder_rt-objs += hal/classicladder/manager.o
-classicladder_rt-objs += hal/classicladder/symbols.o
-classicladder_rt-objs += hal/classicladder/vars_access.o
-
-ifdef SEQUENTIAL_SUPPORT
-classicladder_rt-objs += hal/classicladder/calc_sequential_rt.o
-endif
-
 obj-m += scope_rt.o
 scope_rt-objs := hal/utils/scope_rt.o $(MATHSTUB)
 
@@ -1253,7 +1239,6 @@ ifneq "$(filter normal uspace,$(BUILD_SYS))" ""
 ifneq "$(BUILD_SYS)" "uspace"
 ../rtlib/rtapi$(MODULE_EXT): $(addprefix objects/rt,$(rtapi-objs))
 endif
-../rtlib/classicladder_rt$(MODULE_EXT): $(addprefix objects/rt,$(classicladder_rt-objs))
 ../rtlib/boss_plc$(MODULE_EXT): $(addprefix objects/rt,$(boss_plc-objs))
 ../rtlib/debounce$(MODULE_EXT): $(addprefix objects/rt,$(debounce-objs))
 ../rtlib/encoder$(MODULE_EXT): $(addprefix objects/rt,$(encoder-objs))

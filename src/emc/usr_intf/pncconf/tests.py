@@ -402,66 +402,6 @@ But there is not one in the machine-named folder.."""),True)
 </interface>"""), file=file)
         file.close()
 
-    # for classicladder test
-    def load_ladder(self,w):
-        newfilename = os.path.join(_PD.DISTDIR, "configurable_options/ladder/TEMP.clp")
-        self.d.modbus = self.w.modbus.get_active()
-        halrun = os.popen("halrun -Is > /dev/null", "w")
-        if debug:
-            halrun.write("echo\n")
-        halrun.write("""
-              loadrt threads period1=%(period)d name1=base-thread fp1=0 period2=%(period2)d name2=servo-thread
-              loadrt classicladder_rt numPhysInputs=%(din)d numPhysOutputs=%(dout)d numS32in=%(sin)d\
-               numS32out=%(sout)d numFloatIn=%(fin)d numFloatOut=%(fout)d numBits=%(bmem)d numWords=%(wmem)d
-               addf classicladder.0.refresh servo-thread
-               start\n""" % {
-                      'din': self.w.digitsin.get_value(),
-                      'dout': self.w.digitsout.get_value(),
-                      'sin': self.w.s32in.get_value(),
-                      'sout': self.w.s32out.get_value(),
-                      'fin':self.w.floatsin.get_value(),
-                      'fout':self.w.floatsout.get_value(),
-                      'bmem':self.w.bitmem.get_value(),
-                      'wmem':self.w.wordmem.get_value(),
-                      'period':100000,
-                      'period2':self.d.servoperiod
-                 })
-        if self.w.ladderexist.get_active() == True:
-            if self.d.tempexists:
-               self.d.laddername='TEMP.clp'
-            else:
-               self.d.laddername= 'blank.clp'
-        if self.w.ladder1.get_active() == True:
-            self.d.laddername= 'estop.clp'
-        if self.w.ladder2.get_active() == True:
-            self.d.laddername = 'serialmodbus.clp'
-            self.d.modbus = True
-            self.w.modbus.set_active(True)
-        if self.w.laddertouchz.get_active() == True:
-            self.d.laddertouchz = True
-            self.d.laddername = 'touchoff_z.clp'
-            self.d.halui = True
-            self.w.halui.set_active(True)
-        if self.w.ladderexist.get_active() == True:
-            self.d.laddername='custom.clp'
-            originalfile = filename = os.path.expanduser("~/linuxcnc/configs/%s/custom.clp" % self.d.machinename)
-        else:
-            filename = os.path.join(_PD.DISTDIR, "configurable_options/ladder/"+ self.d.laddername)
-        if self.d.modbus == True:
-            halrun.write("loadusr -w classicladder --modmaster --newpath=%(newname)s %(filename)s\n" %                                  {
-                            'newname':newfilename,'filename':filename})
-        else:
-            halrun.write("loadusr -w classicladder --newpath=%(newname)s %(filename)s\n" % { 'newname':newfilename ,'filename':filename })
-        halrun.write("start\n")
-        halrun.flush()
-        halrun.close()
-        if os.path.exists(newfilename):
-            self.d.tempexists = True
-            self.w.newladder.set_text('Edited ladder program')
-            self.w.ladderexist.set_active(True)
-        else:
-            self.d.tempexists = 0
-
     # servo and stepper test
     def tune_axis(self, axis):
         def get_value(d):

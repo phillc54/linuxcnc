@@ -168,18 +168,6 @@ include::examples/mpg.adoc[]
 include::examples/gs2-example.adoc[]
 
 
-
-:leveloffset: 1
-= ClassicLadder
-
-:leveloffset: 2
-include::ladder/ladder-intro.adoc[]
-
-include::ladder/classic-ladder.adoc[]
-
-include::ladder/ladder-examples.adoc[]
-
-
 :leveloffset: 1
 = Advanced Topics
 

@@ -142,8 +142,6 @@ file configured. For more information on configuration see the
 * 'Edit tool table...' - Same as Edit if you have defined an editor
   you can open the tool table and edit it.
 * 'Reload tool table' - After editing the tool table you must reload it.
-* 'Ladder editor' - If you have loaded ClassicLadder you can edit it from
-  here. See the <<cha:classicladder,ClassicLadder chapter>> for more information.
 * 'Quit' - Terminates the current LinuxCNC session.
 
 [[sub:axis-machine-menu]]
@@ -1313,7 +1311,6 @@ print(vars.emcini.get())
     flood                   = BooleanVar
     grid_size               = DoubleVar
     has_editor              = IntVar
-    has_ladder              = IntVar
     highlight_line          = IntVar
     interp_pause            = IntVar
     interp_state            = IntVar

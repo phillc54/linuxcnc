@@ -675,14 +675,6 @@ WIDGETS = VCPWindow()
 AUX_PRGM.load_halmeter()
 ----
 
-*`load_ladder()`*::
-  Load _ClassicLadder_ PLC program:
-+
-[source,python]
-----
-AUX_PRGM.load_ladder()
-----
-
 *`load_status()`*::
   Load LinuxCNC `status` program:
 +

@@ -341,14 +341,6 @@ Files: src/emc/linuxcnc.h
 Copyright: 2021 Petter Reinholdtsen
 License: LGPL-2
 
-Files: src/hal/classicladder/*
-Copyright: 2001-2010 Marc Le Douarain <marc.le-douarain@laposte.net>
-License: LGPL-2.1+
-Comment: The origin of this subtree is the Classic Ladder Project
- https://sites.google.com/site/classicladder/
- https://www.sourceforge.net/projects/classicladder
-
-
 Files: src/libnml/*
        src/libnml/linklist/*
        src/libnml/posemath/*

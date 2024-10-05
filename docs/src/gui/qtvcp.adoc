@@ -468,23 +468,20 @@ halrun -I -f my_panel.hal
 ----
 # load realtime components
 loadrt threads
-loadrt classicladder_rt
 
 # load non-realtime programs
-loadusr classicladder
 loadusr -Wn my_panel qtvcp my_panel.ui  # <1>
 
 # add components to thread
-addf classicladder.0.refresh thread1
 
 
 # connect pins
-net bit-input1     test_panel.checkbox_1        classicladder.0.in-00
-net bit-hide       test_panel.checkbox_4        classicladder.0.hide_gui
+net bit-input1     test_panel.checkbox_1
+net bit-hide       test_panel.checkbox_4
 
-net bit-output1    test_panel.led_1             classicladder.0.out-00
+net bit-output1    test_panel.led_1
 
-net s32-in1        test_panel.doublescale_1-s   classicladder.0.s32in-00
+net s32-in1        test_panel.doublescale_1-s
 
 # start thread
 start

@@ -265,8 +265,6 @@ class Private_Data:
         self.MESS_START = _('Start')
         self.MESS_FWD = _('Forward')
         self.MESS_DONE = _('Done')
-        self.MESS_CL_REWRITE =_("OK to replace existing custom ladder program?\nExisting Custom.clp will be renamed custom_backup.clp.\nAny existing file named -custom_backup.clp- will be lost. ")
-        self.MESS_CL_EDITED = _("You edited a ladder program and have selected a different program to copy to your configuration file.\nThe edited program will be lost.\n\nAre you sure?  ")
         self.MESS_NO_ESTOP = _("You need to designate an E-stop input pin in the Parallel Port Setup page for this program.")
         self.MESS_PYVCP_REWRITE =_("OK to replace existing custom pyvcp panel file ?\nExisting custompanel.xml will be renamed custompanel_backup.xml.\nAny existing file named custompanel_backup.xml will be lost. ")
         self.MESS_ABORT = _("Quit Stepconf and discard changes?")
@@ -317,12 +315,8 @@ class Data:
         self.pyvcphaltype = 0 # no HAL connections specified
         self.pyvcpconnect = 1 # HAL connections allowed
 
-        self.classicladder = 0 # not included
         self.tempexists = 0 # not present
-        self.laddername = "custom.clp"
         self.modbus = 0
-        self.ladderhaltype = 0 # no HAL connections specified
-        self.ladderconnect = 1 # HAL connections allowed
 
         self.select_axis = True
         self.select_qtplasmac = False
@@ -673,21 +667,6 @@ class Data:
     def save(self,basedir):
         base = basedir
         self.md5sums = []
-
-        if self.classicladder: 
-           if not self.laddername == "custom.clp":
-                filename = os.path.join(distdir, "configurable_options/ladder/%s" % self.laddername)
-                original = os.path.expanduser("~/linuxcnc/configs/%s/custom.clp" % self.machinename)
-                if os.path.exists(filename):     
-                  if os.path.exists(original):
-                     print("custom file already exists")
-                     shutil.copy( original,os.path.expanduser("~/linuxcnc/configs/%s/custom_backup.clp" % self.machinename) ) 
-                     print("made backup of existing custom")
-                  shutil.copy( filename,original)
-                  print("copied ladder program to usr directory")
-                  print("%s" % filename)
-                else:
-                     print("Master or temp ladder files missing from configurable_options dir")
 
         if self.pyvcp and not self.pyvcpname == "custompanel.xml":                
            panelname = os.path.join(distdir, "configurable_options/pyvcp/%s" % self.pyvcpname)
@@ -1351,58 +1330,6 @@ class StepconfApp:
         halrun.write("waitusr displaytest\n")
         halrun.flush()
         halrun.close()   
-
-#**************
-# LADDER TEST
-#**************
-    def load_ladder(self,w):         
-        newfilename = os.path.join(distdir, "configurable_options/ladder/TEMP.clp")    
-        self.d.modbus = self.w.modbus.get_active()
-        self.halrun = halrun = os.popen("halrun -Is", "w")
-        halrun.write(""" 
-              loadrt threads period1=%(period)d name1=fast fp1=0 period2=1000000 name2=slow\n
-              loadrt classicladder_rt numPhysInputs=%(din)d numPhysOutputs=%(dout)d numS32in=%(sin)d numS32out=%(sout)d\
-                     numFloatIn=%(fin)d numFloatOut=%(fout)d\n
-              addf classicladder.0.refresh slow\n
-              start\n
-                      """ % {
-                      'period': 50000,
-                      'din': self.w.digitsin.get_value(),
-                      'dout': self.w.digitsout.get_value(),
-                      'sin': self.w.s32in.get_value(),
-                      'sout': self.w.s32out.get_value(), 
-                      'fin':self.w.floatsin.get_value(),
-                      'fout':self.w.floatsout.get_value(),
-                 })
-        if self.w.radiobutton1.get_active() == True:
-            if self.d.tempexists:
-               self.d.laddername='TEMP.clp'
-            else:
-               self.d.laddername= 'blank.clp'
-        if self.w.radiobutton2.get_active() == True:
-            self.d.laddername= 'estop.clp'
-        if self.w.radiobutton3.get_active() == True:
-            self.d.laddername = 'serialmodbus.clp'
-            self.d.modbus = True
-            self.w.modbus.set_active(self.d.modbus)
-        if self.w.radiobutton4.get_active() == True:
-            self.d.laddername='custom.clp'
-            originalfile = filename = os.path.expanduser("~/linuxcnc/configs/%s/custom.clp" % self.d.machinename)
-        else:
-            filename = os.path.join(distdir, "configurable_options/ladder/"+ self.d.laddername)        
-        if self.d.modbus == True: 
-            halrun.write("loadusr -w classicladder --modmaster --newpath=%(newfilename)s %(filename)s\
-                \n" %          { 'newfilename':newfilename ,'filename':filename })
-        else:
-            halrun.write("loadusr -w classicladder --newpath=%(newfilename)s %(filename)s\n" % { 'newfilename':newfilename ,'filename':filename })
-        halrun.flush()
-        halrun.close()
-        if os.path.exists(newfilename):
-            self.d.tempexists = True
-            self.w.newladder.set_text('Edited ladder program')
-            self.w.radiobutton1.set_active(True)
-        else:
-            self.d.tempexists = 0
 
 #**********
 # Axis Test

@@ -279,9 +279,6 @@ class App:
         screen = Gdk.Screen.get_default()
         context.add_provider_for_screen(screen, self.css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-        tempfile = os.path.join(self._p.DISTDIR, "configurable_options/ladder/TEMP.clp")
-        if os.path.exists(tempfile):
-           os.remove(tempfile)
         geometry = Gdk.Geometry()
         geometry.max_width = geometry.base_width = geometry.min_width = 800
         geometry.max_height = geometry.base_height = geometry.min_height = 600

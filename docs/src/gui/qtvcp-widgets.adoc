@@ -1445,8 +1445,6 @@ Enter any of these _case sensitive_ commands to load the respective program or a
 *`CALIBRATION`*::
   Starts LinuxCNC
   link:../man/man1/emccalib.1.html[Calibration]
-*`CLASSICLADDER`*::
-  Starts the link:../ladder/classic-ladder.html[ClassicLadder GUI] if the _ClassicLadder realtime HAL component_ was loaded by the machine's config files.
 *`PREFERENCE`*::
   _Loads the preference file_ into the `GcodeEditor`.
 *`CLEAR HISTORY`*::

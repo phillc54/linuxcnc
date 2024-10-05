@@ -20,13 +20,6 @@ class Aux_program_loader:
     def _init_(self):
         pass
 
-    # check for classicladder realtime if so load the user GUI
-    def load_ladder(self, *args):
-        if hal.component_exists('classicladder_rt'):
-            p = os.popen("classicladder  &", "w")
-        else:
-            ACTION.SET_ERROR_MESSAGE("Classiclader's realtime component is not present\n So the user component will not  be loaded.")
-
     def load_gcode_ripper(self,*args):
         if args:
             pass

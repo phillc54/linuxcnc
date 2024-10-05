@@ -45,9 +45,6 @@ Virtual Control Panels:
             each are selectable by checkbox.
         -zero buttons use HALUI MDI commands - you will see the commands 
             on the advanced page
-        -auto touch off z uses halui MDI commands, a classicladder program
-            and requires a probe input. You will need to adjust the MDI
-            values (on the advanced page) for your machine.
         -GladeVCP panels can use GTK themes to change their look and feel.
             these are the same themes can you could choose for the
             whole system. The available themes will be listed in the combobox.

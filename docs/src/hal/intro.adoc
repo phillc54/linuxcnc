@@ -387,7 +387,6 @@ On the next pass, the PLC sees that the contact is open, and de-energizes the co
 So the relay still switches rapidly between on and off, but at a rate determined by how often the PLC evaluates the rung.
 
 In HAL, the function is the code that evaluates the rung(s).
-In fact, the HAL-aware realtime version of ClassicLadder exports a function to do exactly that.
 Meanwhile, a thread is the thing that runs the function at specific time intervals.
 Just like you can choose to have a PLC evaluate all its rungs every 10&#8239;ms, or every second, you can define HAL threads with different periods.
 

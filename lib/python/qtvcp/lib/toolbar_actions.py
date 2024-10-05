@@ -496,9 +496,6 @@ class ToolBarActions():
     def actOnLoadExtTooledit(self, widget, state=None):
         AUX_PRGM.load_tooledit()
 
-    def actOnLoadClassicladder(self, widget, state=None):
-        AUX_PRGM.load_ladder()
-
     def actOnZoomIn(self, widget, state=None):
         ACTION.SET_GRAPHICS_VIEW('zoom-in')
 

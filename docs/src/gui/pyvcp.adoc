@@ -21,7 +21,7 @@ be expensive. That is where Virtual Control Panels have the advantage
 as well as it cost nothing to build a PyVCP.
 
 Virtual Control Panels can be used for testing or monitoring things to
-temporarily replace real I/O devices while debugging ladder logic, or
+temporarily replace real I/O devices while debugging , or
 to simulate a physical panel before you build it and wire it to an I/O
 board.
 
@@ -216,8 +216,6 @@ You would use this if you want a panel without LinuxCNC's machine
 controller such as for testing or a standalone DRO.
 
 The loadusr command is used when you also load a component that will stop HAL from closing until it's done.
-If you loaded a panel and then loaded Classic Ladder using 'loadusr -w classicladder',
-CL would hold HAL open (and the panel)  until you closed CL.
 The '-Wn' above means wait for the component '-Wn "name"' to become ready.
 ('name' can be any name. Note the capital W and lowercase n.)
 The -c tells PyVCP to build a panel with the name 'panelname' using the info in 'panel_file_name.xml'.
