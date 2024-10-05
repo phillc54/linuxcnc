@@ -325,7 +325,6 @@ class Data:
         self.ladderconnect = 1 # HAL connections allowed
 
         self.select_axis = True
-        self.select_qtdragon = False
         self.select_qtplasmac = False
 
         self.pin1inv = 0

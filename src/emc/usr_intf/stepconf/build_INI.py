@@ -68,9 +68,6 @@ class INI:
         print("[DISPLAY]", file=file)
         if self.d.select_axis:
             print("DISPLAY = axis", file=file)
-        elif self.d.select_qtdragon:
-            print("DISPLAY = qtvcp qtdragon", file=file)
-            print("PREFERENCE_FILE_PATH = WORKINGFOLDER/qtdragon.pref", file=file)
         # qtplasmac has multiple screen sizes
         elif self.d.select_qtplasmac:
             if self.d.qtplasmacscreen == 2:

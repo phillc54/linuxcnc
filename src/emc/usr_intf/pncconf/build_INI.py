@@ -36,9 +36,6 @@ class INI:
             print("DISPLAY = tklinuxcnc", file=file)
         elif self.d.frontend == _PD._TOUCHY:
             print("DISPLAY = touchy", file=file)
-        elif self.d.frontend == _PD._QTDRAGON:
-            print("DISPLAY = qtvcp qtdragon", file=file)
-            print("PREFERENCE_FILE_PATH = WORKINGFOLDER/qtdragon.pref", file=file)
         # qtplasmac has multiple screens
         elif self.d.frontend == _PD._QTPLASMAC:
             if self.d.qtplasmacscreen == 2:

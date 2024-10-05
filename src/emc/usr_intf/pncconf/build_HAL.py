@@ -795,17 +795,6 @@ class HAL:
                     print("net tool-number            =>  hal_manualtoolchange.number", file=file)
                     print(file=file)
 
-                if self.d.frontend == _PD._QTDRAGON:
-                    qt = os.path.join(base, "qtvcp_postgui.hal")
-                    if not os.path.exists(qt):
-                        f1 = open(qt, "w")
-                        print(_("#  ---manual tool change signals to qtdragon's dialog---"), file=f1)
-                        print(file=f1)
-                        print("net tool-change-request    => hal_manualtoolchange.change", file=f1)
-                        print("net tool-change-confirmed  <= hal_manualtoolchange.changed", file=f1)
-                        print("net tool-number            => hal_manualtoolchange.number", file=f1)
-                        f1.close()
-
                 print(_("#  ---ignore tool prepare requests---"), file=file)
                 print("net tool-prepare-loopback   iocontrol.0.tool-prepare      =>  iocontrol.0.tool-prepared", file=file)
                 print(file=file)

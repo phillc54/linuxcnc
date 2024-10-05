@@ -203,9 +203,8 @@ class SubFile():
         if os.path.splitext(self.sub_file)[-1] in ['.ngc','.NGC','.nc','.NC']:
             img_file = find_image(fname)
             if img_file is None:
-                img_file = os.path.join(HERE, 'images/silver_dragon.png')
                 self.flag_error("No image found - using default")
-            self.image = img_file
+            self.image = None
             self.read_ngc()
         elif os.path.splitext(self.sub_file)[-1] in ['.gcmc','.GCMC']:
             self.read_gcmc()

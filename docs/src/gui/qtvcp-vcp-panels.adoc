@@ -48,18 +48,17 @@ In addition, it is also a useful template to use for your custom panel because i
 * Display of additional HAL data
 * Buttons and button groups
 * Dynamic changes to button enabled/disabled state based on the state of other buttons
-* Saving data to the qtdragon.prefs file
 * Custom button to reset the VFD
 
 Modify this panel to suit your own requirements. Most common features are used.
-The advantage of using panels is that it separates your custom display code from the qtdragon core code so upgrading the system will not break your customization.
+The advantage of using panels is that it separates your custom display code from the core code so upgrading the system will not break your customization.
 
 ==== Additional Requirements
 
 * A spindle drive (for instance VFDMOD)
 * A custom component that scales the VFD frequency to obtain the desired spindle speed.
 * A belt driven spindle that uses two belts and an intermediate idler pulley much like a drill press.
-* Connect the input pins qtdragon.belts.<pin-name> in your postgui HAL file.
+* Connect the input pins in your postgui HAL file.
 
 ==== Function
 The belts are broken into two button groups, the front belts and the rear belts.
@@ -90,7 +89,7 @@ loadusr qtvcp spindle_belts
 
 Customizing the panel: +
 
-* Copy the files located in /user/share/qtvcp/qtdragon/panels/belts to:
+* Copy the files located in the panel to:
   ~/linuxcnc/configs/<my_configuration_folder>/qtvcp/panels/belts (you can use the copy dialog panel to do this)
 
 * Edit belts.ui with designer.

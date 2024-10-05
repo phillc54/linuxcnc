@@ -51,9 +51,6 @@
         <col id="0" translatable="yes">Gmoccapy</col>
       </row>
       <row>
-        <col id="0" translatable="yes">Qtdragon</col>
-      </row>
-      <row>
         <col id="0" translatable="yes">QtPlasmaC</col>
       </row>
     </data>

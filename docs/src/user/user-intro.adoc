@@ -123,14 +123,6 @@ TkLinuxCNC:: <<sec:tklinuxcnc-intro,TkLinuxCNC>>, another interface based on Tcl
 .TkLinuxCNC graphical interface
 image::images/tkemc.png["TkLinuxCNC graphical interface",align="center"]
 
-QtDragon:: <<cha:qtdragon-gui,QtDragon>>, a touch screen GUI based on QtVCP using the PyQt5 library.
-It comes in two versions 'QtDragon' and 'QtDragon_hd'.
-They are very similar in features but QtDragon_hd is made for larger monitors.
-
-[[fig:QtDragon-graphical-interface]]
-.QtDragon, a touch screen GUI based on QtVCP
-image::images/qtdragon.png["QtDragon, a touch screen GUI based on QtVCP",align="center"]
-
 QtPlasmaC:: <<cha:qtplasmac,QtPlasmaC>>, a touch screen plasma cutting GUI based on QtVCP using the PyQt5 library.
 It comes in three aspect ratios, 16:9, 4:3, and 9:16.
 

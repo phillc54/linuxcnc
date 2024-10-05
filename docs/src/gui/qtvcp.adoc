@@ -23,14 +23,8 @@ or add Python code for even finer grain customization.
 
 Few examples of QtVCP built screens and virtual control panels:
 
-.QtDragon - 3/4-Axis Sample
-image::images/silverdragon.png["QtDragon Router",align="center"]
-
 .QtDefault - 3-Axis Sample
 image::images/qt_cnc.png["Qtscreen Mill",align="center"]
-
-.QtAxis - Self Adjusting Axis Sample
-image::images/qtaxis.png["Qtscreen QtAxis",align="center"]
 
 .Blender - 4-Axis Sample
 image::images/blender.png["Qtscreen Blender",align="center"]
@@ -237,7 +231,6 @@ See 'custom handler file'
 
 There should be a folder in the config folder; for screens: named '<CONFIG FOLDER>/qtvcp/screens/<SCREEN NAME>/' +
 add the handle patch file there, named like so <ORIGINAL SCREEN NAME>_handler.py, +
-e.g., for QtDragon the file would be called 'qtdragon_handler.py'.
 
 Here is a sample to add X axis jog pins to a screen like QtDragon:
 
@@ -329,7 +322,7 @@ import types
 
 # import the handlerfile to get reference to its libraries.
 # use <screenname>_handler
-import qtdragon_handler as hdlr
+import mygui_handler as hdlr
 
 # This is actually an unbounded function with 'obj' as a parameter.
 # You call this function without the usual preceding 'self.'.
