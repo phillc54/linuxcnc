@@ -160,6 +160,5 @@ Simulation configurations that demonstrate the moveoff_gui and the
 moveoff component are located in:
 
 configs/sim/axis/moveoff (axis-ui) +
-configs/sim/touchy/ngcgui (touchy-ui)
 
 See also moveoff(9) for details on the component.

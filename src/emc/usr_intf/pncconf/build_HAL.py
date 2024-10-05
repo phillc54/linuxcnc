@@ -943,27 +943,6 @@ class HAL:
                 print(_("# Include your %s HAL commands here")%i, file=f1)
                 print(_("# This file will not be overwritten when you run PNCconf again"), file=f1)
 
-        if self.d.frontend == _PD._TOUCHY:# TOUCHY GUI
-                touchyfile = os.path.join(base, "touchy.hal")
-            #if not os.path.exists(touchyfile):
-                f1 = open(touchyfile, "w")
-                print(_("# These commands are required for Touchy GUI"), file=f1)
-                print(("net cycle-start          =>   touchy.cycle-start"), file=f1)
-                print(("net abort                =>   touchy.abort"), file=f1)
-                print(("net single-step          =>   touchy.single-block"), file=f1)
-                print(("net selected-jog-incr    <=   touchy.jog.wheel.increment"), file=f1)
-                print(("net axis-selected-count =>   touchy.wheel-counts"), file=f1)
-                print(("net jog-x-pos  => touchy.jog.continuous.x.positive"), file=f1)
-                print(("net jog-x-neg  => touchy.jog.continuous.x.negative"), file=f1)
-                print(("net jog-y-pos  => touchy.jog.continuous.y.positive"), file=f1)
-                print(("net jog-y-neg  => touchy.jog.continuous.y.negative"), file=f1)
-                print(("net jog-z-pos  => touchy.jog.continuous.z.positive"), file=f1)
-                print(("net jog-z-neg  => touchy.jog.continuous.z.negative"), file=f1)
-                print(("net quillup  => touchy.quill-up"), file=f1)
-                for axletter in enumerate(axis_convert):
-                    if axletter in self.d.available_axes:
-                        print("net axis-select-%s   <=   touchy.jog.wheel.%s"% (axletter, axletter), file=f1)
-
         # include Automation Direct GS2 VFD HAL file
         fname = os.path.join(base, "gs2_vfd.hal")
         if self.d.serial_vfd and self.d.gs2_vfd:

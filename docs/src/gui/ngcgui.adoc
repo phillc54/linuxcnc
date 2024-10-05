@@ -60,8 +60,6 @@ These examples demonstrate both 3-axis (XYZ) cartesian configurations
 (like mills) and lathe (XZ) setups.  Some examples show the use of a
 pop up keyboard for touch screen systems and other examples demonstrate
 the use of files created for the gcmc (G-code Meta Compiler) application.
-The touchy examples also demonstrate incorporation of a GladeVCP back plot
-viewer (gremlin_view).
 
 The simplest application is found as:
 

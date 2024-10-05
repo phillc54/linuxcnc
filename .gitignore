@@ -28,7 +28,6 @@ src/modules.order
 /docs/src/source-highlight/local
 lib/python/gremlin.py
 lib/python/qt5_graphics.py
-lib/python/touchy
 # Miscellaneous generated files (Rob)
 cscope
 cscope.*

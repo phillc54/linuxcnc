@@ -147,7 +147,6 @@ ini = linuxcnc.ini(old_ini)
 #And the hal files too.
 halfiles = ini.findall('HAL', 'HALFILE')
 halfiles += ini.findall('HAL', 'POSTGUI_HALFILE')
-halfiles += ['touchy.hal']
 print("halfiles = ", halfiles)
 
 halpaths = []
@@ -158,8 +157,6 @@ for halfile in halfiles:
         os.system('cp ' + os.path.join(basedir, "hallib", halfile) + ' ' +
                    os.path.join(basedir, halfile))
         halpaths.append(os.path.join(basedir, halfile))
-    elif halfile == "touchy.hal":
-        pass
     else:
         print("halfile %s not found\n" % halfile)
 

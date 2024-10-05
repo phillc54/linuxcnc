@@ -23,9 +23,6 @@
 GladeVCP is a LinuxCNC component which adds the ability to add a new user interface panel to LinuxCNC user interfaces like:
 
 * AXIS
-* Touchy
-* Gscreen
-* GMOCCAPY
 
 Unlike PyVCP, GladeVCP is not limited to displaying and setting HAL pins, as arbitrary actions can be executed in Python code - in fact,
 a complete LinuxCNC user interface could be built with GladeVCP and Python.
@@ -60,7 +57,7 @@ Both support the creation of panels with 'HAL widgets' - user interface elements
 GladeVCP panel windows may be run in three different setups:
 
 - always visible integrated into AXIS at the right side, exactly like PyVCP panels,
-- as a tab in AXIS,Touchy, Gscreen, or GMOCCAPY; in AXIS this would create a third tab besides the Preview and DRO tabs which must be raised explicitly,
+- as a tab in AXIS, this would create a third tab besides the Preview and DRO tabs which must be raised explicitly,
 - as a standalone toplevel window, which can be iconifyed/deiconified independent of the main window.
 
 .Installed LinuxCNC
@@ -114,15 +111,6 @@ $ gladevcp -c gladevcp -u ./hitcounter.py -H ./manual-example.hal ./manual-examp
 
 image::images/example-float-small.png[]
 ////
-
-To run this panel inside 'Touchy':
-
-----
-$ cd configs/sim/touchy/gladevcp
-$ linuxcnc gladevcp_touchy.ini
-----
-
-image::images/touchy-tab-33.png[]
 
 Functionally these setups are identical - they only differ in screen real estate requirements and visibility.
 Since it is possible to run several GladeVCP components in parallel (with different HAL component names),
@@ -332,32 +320,6 @@ Select that tab, you should see the example panel nicely fit within AXIS.
 [NOTE]
 Make sure the UI file is the last option passed to GladeVCP in both the `GLADEVCP=` and `EMBED_TAB_COMMAND=` statements.
 
-=== Integrating into Touchy
-
-To do add a GladeVCP tab to 'Touchy', edit your INI file as follows:
-
-[source,{ini}]
-----
-[DISPLAY]
-# add GladeVCP panel as a tab
-EMBED_TAB_NAME=GladeVCP demo
-EMBED_TAB_COMMAND=gladevcp -c gladevcp -x {XID} -u ./hitcounter.py -H ./gladevcp-touchy.hal  ./manual-example.ui
-
-[RS274NGC]
-# gladevcp Demo specific Oword subs live here
-SUBROUTINE_PATH = ../../nc_files/gladevcp_lib
-----
-
-[NOTE]
-The file specifiers like ./hitcounter.py, ./manual-example.ui, etc. indicate that the files are located in the same directory as the INI file.
-You might have to copy them to you directory (alternatively, specify a correct absolute or relative path to the file(s)).
-
-Note the following differences to the AXIS tab setup:
-
-- The HAL command file is slightly modified since 'Touchy' does not use the 'halui' components so its signals are not available and some shortcuts have been taken.
-- There is no 'POSTGUI_HALFILE=' INI option, but passing the HAL command file on the 'EMBED_TAB_COMMAND=' line is ok.
-- The 'halcmd loaduser -Wn ...' incantation is not needed.
-
 == GladeVCP command line options
 
 See also `man gladevcp`. These are the GladeVCP command line options:
@@ -416,7 +378,7 @@ The normal LinuxCNC startup process does the following:
 The introduction of GladeVCP brought the following issue:
 
 - GladeVCP panels need to be embedded in a master GUI window setup.
-- GladeVCP panels need to be embedded in a master GUI window setup, e.g., AXIS, or Touchy, Gscreen, or GMOCCAPY (embedded window or as an embedded tab).
+- GladeVCP panels need to be embedded in a master GUI window setup, e.g., AXIS (embedded window or as an embedded tab).
 - This requires the master GUI to run before the GladeVCP window can be hooked into the master GUI.
 - However, GladeVCP is also a HAL component, and creates HAL pins of its own.
 - As a consequence, all HAL plumbing involving GladeVCP HAL pins as source or destination must be run *after* the GUI has been set up.
@@ -1184,9 +1146,9 @@ This widget is for plotting values over time.
 === Gremlin tool path preview for NGC files
 
 Gremlin is a plot preview widget similar to the AXIS preview window.
-It assumes a running LinuxCNC environment like AXIS or Touchy.
+It assumes a running LinuxCNC environment like AXIS.
 To connect to it, inspects the INI_FILE_NAME environment variable.
-Gremlin displays the current NGC file - it does monitor for changes and reloads the ngc file if the file name in AXIS/Touchy changes.
+Gremlin displays the current NGC file - it does monitor for changes and reloads the ngc file if the file name in AXIS changes.
 If you run it in a GladeVCP application when LinuxCNC is not running, you might get a traceback because the Gremlin widget can't find LinuxCNC status, like the current file name.
 
 ==== Pins
@@ -2365,8 +2327,7 @@ Now, 'on_this_signal' will be available as signal handler to your widget tree.
 ==== GladeVCP-specific signals
 
 For GladeVCP panel which respond to HAL inputs it may be important that the handler code can tell that the GladeVCP panel is currently active and displayed.
-For example a panel inside the Touchy interface might well need to perform an action when the switch connected to touchy.cycle-start is operated (in the same way that the native tabs respond differently to the same button). +
-To make this possible, a signal is sent from the GUI (at the time of writing, only Touchy) to the embedded tab.
+To make this possible, a signal is sent from the GUI to the embedded tab.
 The signal is of type "Gladevcp" and the two messages sent are "Visible" and "Hidden".
 (Note that the signals have a fixed length of 20 characters so only the first characters should be used in any comparison, hence the [:7] below.)
 A sample handler for these signals is:
@@ -2726,7 +2687,7 @@ Visit `linuxcnc_root_directory/configs/apps/gladevcp` for running examples and s
 [qanda]
 
 I get an unexpected unmap event in my handler function right after startup. What's this?::
-  This is a consequence of your Glade UI file having the window1 Visible property set to True, together with re-parenting the GladeVCP window into AXIS or touchy.
+  This is a consequence of your Glade UI file having the window1 Visible property set to True, together with re-parenting the GladeVCP window into AXIS.
   The GladeVCP widget tree is created, including a top level window, and then 'reparented into AXIS', leaving that toplevel window laying around orphaned.
   To avoid having this useless empty window hanging around, it is unmapped (made invisible), which is the cause of the unmap signal you get.
   Suggested fix: set window1.visible to False, and ignore an initial unmap event.

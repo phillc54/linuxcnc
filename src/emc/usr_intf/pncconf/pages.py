@@ -455,7 +455,6 @@ class Pages:
         self.w.position_offset.set_active(self.d.position_offset)
         self.w.position_feedback.set_active(self.d.position_feedback)
         self.w.geometry.set_text(self.d.geometry)
-        self.a.read_touchy_preferences()
         self.w.axisforcemax.set_active(self.d.axisforcemax)
         # set the qtplasmac radiobuttons
         if self.d.qtplasmacmode == 2:
@@ -499,7 +498,7 @@ class Pages:
         # set the qtplasmac spinboxes
         self.w.qtplasmac_pmx_port.set_text(self.d.qtplasmacpmx)
 
-        for i in ("touchy","axis"):
+        for i in ("axis"):
             self.w[i+"size"].set_active(self.d[i+"size"][0])
             self.w[i+"width"].set_value(self.d[i+"size"][1])
             self.w[i+"height"].set_value(self.d[i+"size"][2])
@@ -531,15 +530,10 @@ class Pages:
 
         self.d.frontend = self.w.combo_screentype.get_active() +1
 
-        model = self.w.touchytheme.get_model()
-        active = self.w.touchytheme.get_active()
-        self.d.touchytheme = model[active][0]
-
         model = self.w.gmcpytheme.get_model()
         active = self.w.gmcpytheme.get_active()
         self.d.gmcpytheme = model[active][0]
 
-        self.d.touchyforcemax = self.w.touchyforcemax.get_active()
         self.d.axisforcemax = self.w.axisforcemax.get_active()
 
         # set the qtplasmac variables
@@ -557,7 +551,7 @@ class Pages:
         else:
             self.d.increments_metric_qtplasmac = self.w.increments_qtplasmac.get_text()
 
-        for i in ("touchy","axis"):
+        for i in ("axis"):
             self.d[i+"size"][0] = self.w[i+"size"].get_active()
             self.d[i+"size"][1] = self.w[i+"width"].get_value()
             self.d[i+"size"][2] = self.w[i+"height"].get_value()
@@ -579,15 +573,12 @@ class Pages:
             self.w.axis_info.set_expanded(True)
             self.w.axis_info.show()
             self.w.gmcpy_info.hide()
-            self.w.touchy_info.hide()
             self.w.qtplasmac_info.hide()
             self.page_set_state('vcp', True)
             self.page_set_state('ubuttons', False)
             self.page_set_state('thcad', False)
         elif w.get_active()+1 == self._p._TOUCHY:
             self.w.Options1.show()
-            self.w.touchy_info.set_expanded(True)
-            self.w.touchy_info.show()
             self.w.gmcpy_info.hide()
             self.w.axis_info.hide()
             self.w.qtplasmac_info.hide()
@@ -598,7 +589,6 @@ class Pages:
             self.w.Options1.show()
             self.w.axis_info.hide()
             self.w.gmcpy_info.hide()
-            self.w.touchy_info.hide()
             self.w.qtplasmac_info.hide()
             self.page_set_state('vcp', True)
             self.page_set_state('ubuttons', False)
@@ -608,7 +598,6 @@ class Pages:
             self.w.gmcpy_info.set_expanded(True)
             self.w.gmcpy_info.show()
             self.w.axis_info.hide()
-            self.w.touchy_info.hide()
             self.w.qtplasmac_info.hide()
             self.page_set_state('vcp', True)
             self.page_set_state('ubuttons', False)
@@ -617,7 +606,6 @@ class Pages:
             self.w.Options1.show()
             self.w.gmcpy_info.hide()
             self.w.axis_info.hide()
-            self.w.touchy_info.hide()
             self.w.qtplasmac_info.hide()
             self.page_set_state('vcp', True)
             self.page_set_state('ubuttons', False)
@@ -628,7 +616,6 @@ class Pages:
             self.w.qtplasmac_info.show()
             self.w.axis_info.hide()
             self.w.gmcpy_info.hide()
-            self.w.touchy_info.hide()
             self.page_set_state('vcp', False)
             self.page_set_state('ubuttons', True)
             if self.d._arcvpin:

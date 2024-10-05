@@ -39,7 +39,6 @@ This makes it easier to pick between different variables.
 [source,{ini}]
 ----
 DISPLAY = axis
-# DISPLAY = touchy
 ----
 
 In this list, the DISPLAY variable will be set to axis because the other one is commented out.
@@ -228,8 +227,8 @@ Do _not_ use a file extension of '.ini' for included files.
 === [DISPLAY] Section(((INI File,Sections,[DISPLAY] Section)))
 
 Different user interface programs use different options, and not every option is supported by every user interface.
-There are several interfaces, like AXIS, GMOCCAPY, Touchy, QtVCP's QtDragon and Gscreen.
-AXIS is an interface for use with normal computer and monitor, Touchy is for use with touch screens.
+There are several interfaces, like AXIS.
+AXIS is an interface for use with normal computer and monitor.
 GMOCCAPY can be used both ways and offers also many connections for hardware controls.
 Descriptions of the interfaces are in the Interfaces section of the User Manual.
 
@@ -684,7 +683,7 @@ For more information see the <<cha:hal-twopass,HAL TWOPASS>> chapter.
   it is not a replacement for a proper physical e-stop chain or other protections against software failure.
 * `POSTGUI_HALFILE = example2.hal` - Execute 'example2.hal' after the GUI has created its HAL pins.
   Some GUIs create HAL pins and support the use of a postgui halfile to use them.
-  GUIs that support postgui HAL files include Touchy, AXIS, Gscreen, and GMOCCAPY. +
+  GUIs that support postgui HAL files include AXIS. +
   See section <<sec:pyvcp-with-axis,PyVCP with AXIS>> for more information.
 * `HALUI = halui` - adds the HAL user interface pins. +
   For more information see the <<cha:hal-user-interface,HAL User Interface>> chapter.
@@ -1340,7 +1339,7 @@ Control screens can limit these settings further.
 * `INCREMENT = 200`
   Sets the step size for spindle speed increment / decrement commands.
   This can have a different value for each spindle.
-  This setting is effective with AXIS and Touchy but note that some
+  This setting is effective with AXIS but note that some
   control screens may handle things differently.
 * `HOME_SEARCH_VELOCITY = 100` - FIXME: Spindle homing not yet working.
   Sets the homing speed (rpm) for the spindle.

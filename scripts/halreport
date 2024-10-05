@@ -65,7 +65,7 @@ set ::HR(comps,legacy_comp) [list debounce mux-gen sampler streamer]
 
 # userspace components including vismach guis
 set ::HR(comps,userspace)    [list ini iocontrol halui hal_manualtoolchange \
-                                   axisui touchy panelui \
+                                   axisui panelui \
                                    pyvcp gladevcp \
                                    xhc-hb04 \
                                    pumagui puma560gui scaragui hexagui \

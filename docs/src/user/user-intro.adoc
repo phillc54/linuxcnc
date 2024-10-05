@@ -102,12 +102,6 @@ AXIS:: <<cha:axis-gui,AXIS>>, the standard keyboard GUI interface.
 .AXIS, the standard keyboard GUI interface
 image::../gui/images/axis.png["AXIS, the standard keyboard GUI interface",align="center"]
 
-Touchy:: <<cha:touchy-gui,Touchy>>, a touch screens GUI:
-
-[[fig:touchy-graphical-interface]]
-.Touchy, a touch screen GUI
-image::../gui/images/touchy.png["Touchy, a touch screen GUI",align="center"]
-
 NGCGUI:: <<cha:ngcgui,NGCGUI>>, a subroutine GUI that provides wizard-style programming of G code.
   NGCGUI may be run as a standalone program or embedded into another GUI as a series of tabs.
   The following screenshot shows NGCGUI embedded into AXIS:
@@ -152,7 +146,7 @@ PyVCP:: <<cha:pyvcp,'PyVCP'>>, a Python-based virtual control panel that can be 
 .PyVCP Example Embedded Into AXIS GUI
 image::../gui/images/axis-pyvcp.png["PyVCP embedded into AXIS",align="center"]
 
-GladeVCP:: <<cha:glade-vcp,'GladeVCP'>>, a Glade-based virtual control panel that can be added to the AXIS or Touchy GUIs.
+GladeVCP:: <<cha:glade-vcp,'GladeVCP'>>, a Glade-based virtual control panel that can be added to the AXIS GUI.
   GladeVCP has the advantage over PyVCP in that it is not limited to the display or control of HAL virtual signals,
   but can include other external interfaces outside LinuxCNC such as window or network events.
   GladeVCP is also more flexible in how it may be configured to appear on the GUI:

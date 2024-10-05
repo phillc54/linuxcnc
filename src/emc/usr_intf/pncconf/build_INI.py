@@ -34,8 +34,6 @@ class INI:
             print("DISPLAY = axis", file=file)
         elif self.d.frontend == _PD._TKLINUXCNC:
             print("DISPLAY = tklinuxcnc", file=file)
-        elif self.d.frontend == _PD._TOUCHY:
-            print("DISPLAY = touchy", file=file)
         # qtplasmac has multiple screens
         elif self.d.frontend == _PD._QTPLASMAC:
             if self.d.qtplasmacscreen == 2:
@@ -49,13 +47,7 @@ class INI:
             theme = self.d.gladevcptheme
             if theme == "Follow System Theme":theme = ""
             else: theme = " -t "+theme
-            if self.d.frontend in(_PD._AXIS, _PD._TOUCHY):
-                if self.d.centerembededgvcp:
-                    print("EMBED_TAB_NAME = GladeVCP", file=file)
-                    print("EMBED_TAB_COMMAND = halcmd loadusr -Wn gladevcp gladevcp -c gladevcp%s -H gvcp_call_list.hal -x {XID} gvcp-panel.ui"%(theme), file=file)
-                elif self.d.sideembededgvcp:
-                    print("GLADEVCP =%s -H gvcp_call_list.hal gvcp-panel.ui"%(theme), file=file)
-            elif self.d.frontend == _PD._GMOCCAPY:
+            if self.d.frontend == _PD._GMOCCAPY:
                 if self.d.centerembededgvcp:
                     print("EMBED_TAB_NAME = Center_panel", file=file)
                     print("EMBED_TAB_LOCATION = ntb_preview", file=file)

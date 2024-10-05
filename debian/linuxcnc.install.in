@@ -92,7 +92,6 @@ usr/bin/thermistor
 usr/bin/tool_mmap_read
 usr/bin/tool_watch
 usr/bin/tooledit
-usr/bin/touchy
 usr/bin/update_ini
 usr/bin/vfdb_vfd
 usr/bin/vfs11_vfd
@@ -130,7 +129,6 @@ usr/share/linuxcnc/ncfiles/
 usr/share/linuxcnc/pncconf/
 usr/share/linuxcnc/popupkeyboard.ui
 usr/share/linuxcnc/stepconf/
-usr/share/linuxcnc/touchy.glade
 
 usr/share/locale
 

@@ -37,7 +37,6 @@ To search in the man pages, use the UNIX tool `apropos`.
 | link:../man/man1/ngcgui.1.html[ngcgui]           |Framework for conversational G-code generation on the controller ||
 | link:../man/man1/panelui.1.html[panelui]         |Short description                                                ||
 | link:../man/man1/pyngcgui.1.html[pyngcgui]       |Python implementation of NGCGUI                                  ||
-| link:../man/man1/touchy.1.html[touchy]           |AXIS - TOUCHY LinuxCNC Graphical User Interface                  ||
 |===
 
 ==== Virtual Control Panels (VCP)

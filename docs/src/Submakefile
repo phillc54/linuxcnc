@@ -116,7 +116,6 @@ DOC_SRCS_EN := \
 	gui/ngcgui.adoc \
 	gui/tklinuxcnc.adoc \
 	gui/tooledit.adoc \
-	gui/touchy.adoc \
 	gui/gstat.adoc \
 	gui/vismach.adoc \
 	hal/basic-hal.adoc \

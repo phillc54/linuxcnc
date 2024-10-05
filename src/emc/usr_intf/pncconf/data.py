@@ -294,16 +294,6 @@ class Data:
         # Gmoccapy
         self.gmcpytheme = "Follow System Theme"
 
-        # Touchy only
-        self.touchysize = [False,0,0]
-        self.touchyposition = [False,0,0]
-        self.touchytheme = "Follow System Theme"
-        self.touchyforcemax = False
-        self.touchyabscolor = "default"
-        self.touchyrelcolor = "default"
-        self.touchydtgcolor = "default"
-        self.touchyerrcolor = "default"
-
         # QtPlasmaC
         self.qtplasmacmode = 0
         self.qtplasmacscreen = 0
@@ -1005,25 +995,6 @@ If you have a REALLY large config that you wish to convert to this newer version
         n2.setAttribute('value', str("%s"% self._customfirmwarefilename))
 
         d2.writexml(open(filename, "wt"), addindent="  ", newl="\n")
-
-        # write to Touchy preference file directly
-        if self.frontend == _PD._TOUCHY:
-            #print("Setting TOUCHY preferences")
-            templist = {"touchyabscolor":"abs_textcolor","touchyrelcolor":"rel_textcolor",
-                        "touchydtgcolor":"dtg_textcolor","touchyerrcolor":"err_textcolor"}
-            for key,value in templist.items():
-                _APP.set_touchy_preference(value, self[key], str)
-            if self.touchyposition[0] or self.touchysize[0]:
-                    pos = size = ""
-                    if self.touchyposition[0]:
-                        pos = "+%d+%d"% (self.touchyposition[1],self.touchyposition[2])
-                    if self.touchysize[0]:
-                        size = "%dx%d"% (self.touchysize[1],self.touchysize[2])
-                    geo = "%s%s"%(size,pos)
-            else: geo = "default"
-            _APP.set_touchy_preference('window_geometry',geo, str)
-            _APP.set_touchy_preference('gtk_theme',self.touchytheme, str)
-            _APP.set_touchy_preference('window_force_max', self.touchyforcemax, bool)
 
         # write AXIS rc file for geometry
         if self.frontend == _PD._AXIS and (self.axisposition[0] or self.axissize[0] or self.axisforcemax):

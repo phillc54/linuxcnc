@@ -21,7 +21,6 @@
 <doc name="common_user-intro" title="Introduction"/>
 <doc name="common_user-concepts" title="Important User Concepts"/>
 <doc name="gui_axis" title="GUI: Axis"/>
-<doc name="gui_touchy" title="GUI: Touchy"/>
 <doc name="gui_ngcgui" title="GUI: NGCGUI"/>
 <doc name="gui_tklinuxcnc" title="GUI: TkLinuxCNC"/>
 <doc name="gui_mini" title="GUI: Mini"/>

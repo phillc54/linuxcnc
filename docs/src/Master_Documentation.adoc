@@ -214,8 +214,6 @@ include::tooldatabase/tooldatabase.adoc[]
 :leveloffset: 2
 include::gui/axis.adoc[]
 
-include::gui/touchy.adoc[]
-
 include::gui/ngcgui.adoc[]
 
 include::gui/tklinuxcnc.adoc[]

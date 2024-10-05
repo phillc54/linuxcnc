@@ -646,7 +646,7 @@ def show_position():
     print('POSITION=====================================================')
 
 def coord_value(char):
-    # offset calc from emc_interface.py (touchy et al)
+    # offset calc from emc_interface.py
     # char = 'x' | 'y' | ...
     # 'd' is for diameter
     c = char.lower()
@@ -712,7 +712,7 @@ def mod_font_by_category(obj,mode='control'):
     #dbg; crippled at gtk3
     return
     # currently mode = control (only)
-    # touchy has 4 font categories: control,dro,error,listing
+    # 4 font categories: control,dro,error,listing
     if mode == 'control':
         font = g_control_font
     else:
@@ -2348,7 +2348,6 @@ class ControlPanel():
         if os.path.exists(tmpname):
             os.remove(tmpname)
         # hack: alternate names (0,1) to force gremlin file loading
-        #       and touchy filechooser updates
         g_auto_file_ct = (g_auto_file_ct + 1)%2
         basename = str(g_auto_file_ct) + "." + os.path.basename(autoname)
         tmpname  = os.path.join(dirname,basename)
@@ -2752,7 +2751,6 @@ class OnePg():
         o_file  = getattr(self, which + '_file')
         self.edit_any_file(o_file,which)
 
-    #NB some key bindings are claimed on touchy
     def show_special_keys(self):
         msg = []
         msg.append('Control-a  ' + _('Toggle autosend') + '\n')
@@ -2945,8 +2943,6 @@ class NgcGui():
                 ,pre_file=''
                 ,sub_files=''
                 ,pst_file=''
-                ,tab_controls_loc='top'  # option for touchy
-                ,control_font=None       # option for touchy
                 ,max_parm=None           # for small display, reject some subs
                 ,image_width=None        # for small display
                 ):

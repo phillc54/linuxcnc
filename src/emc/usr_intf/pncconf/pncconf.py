@@ -50,7 +50,6 @@ import xml.etree.ElementTree
 import xml.etree.ElementPath
 import traceback
 from multifilebuilder import MultiFileBuilder
-from touchy import preferences
 from pncconf import pages
 from pncconf import build_INI
 from pncconf import build_HAL
@@ -1878,22 +1877,6 @@ Discovery option requires the advanced options checked on this page."""%self._p.
             textbuffer.insert_at_cursor(text)
             self.warning_dialog(text,True)
 
-    def read_touchy_preferences(self):
-        # This reads the Touchy preference file directly
-        tempdict = {"touchyabscolor":"abs_textcolor","touchyrelcolor":"rel_textcolor",
-                    "touchydtgcolor":"dtg_textcolor","touchyerrcolor":"err_textcolor"}
-        for key,value in tempdict.items():
-            data = prefs.getpref(value, 'default', str)
-            if data == "default":
-                self.widgets[key].set_active(False)
-            else:
-                self.widgets[key].set_active(True)
-                self.widgets[key+"button"].set_color(Gdk.color_parse(data))
-        self.widgets.touchyforcemax.set_active(bool(prefs.getpref('window_force_max')))
-
-    def set_touchy_preference(self, value, default, type):
-        prefs.getpref(value, default, type)
-
     def get_installed_themes(self):
             data1 = self.d.gladevcptheme
             data2 = prefs.getpref('gtk_theme', 'Follow System Theme', str)
@@ -1917,7 +1900,6 @@ Discovery option requires the advanced options checked on this page."""%self._p.
                 if dirs  == data3:
                     temp3 = search+1
             self.widgets.gladevcptheme.set_active(temp1)
-            self.widgets.touchytheme.set_active(temp2)
             self.widgets.gmcpytheme.set_active(temp3)
 
     def gladevcp_sanity_check(self):

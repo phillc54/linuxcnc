@@ -1,7 +1,4 @@
 ;dng-- designed with the axis gui in mind
-;      but not very intuitive with touchy
-;      so changed message and remove mandatory stop
-;      for touchy testing
 
 ;helper routine to prompt setting of spindle speed
 ;use after giving operator message for example
