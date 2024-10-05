@@ -10,7 +10,6 @@ EMBED_TAB_LOCATION = vcp_box
 #       -t THEME  set theme name (should be same as desktop appearance theme usually)
 #       -x {XID}  reparent in window
 
-# to test with gscreen, change 'DISPLAY = axis' to 'DISPLAY = gscreen'
                 DISPLAY = axis
              CYCLE_TIME = 0.100
               HELP_FILE = doc/help.txt

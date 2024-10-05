@@ -216,8 +216,6 @@ include::gui/axis.adoc[]
 
 include::gui/touchy.adoc[]
 
-include::gui/gscreen.adoc[]
-
 include::gui/qtdragon.adoc[]
 
 include::gui/ngcgui.adoc[]

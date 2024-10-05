@@ -108,12 +108,6 @@ Touchy:: <<cha:touchy-gui,Touchy>>, a touch screens GUI:
 .Touchy, a touch screen GUI
 image::../gui/images/touchy.png["Touchy, a touch screen GUI",align="center"]
 
-Gscreen:: <<cha:gscreen,Gscreen>>, a user-configurable touch screen GUI:
-
-[[fig:gscreen-graphical-interface]]
-.Gscreen, a configurable base touch screen GUI
-image::../gui/images/gscreen-mill.png["Gscreen, a configurable base touch screen GUI",align="center"]
-
 NGCGUI:: <<cha:ngcgui,NGCGUI>>, a subroutine GUI that provides wizard-style programming of G code.
   NGCGUI may be run as a standalone program or embedded into another GUI as a series of tabs.
   The following screenshot shows NGCGUI embedded into AXIS:

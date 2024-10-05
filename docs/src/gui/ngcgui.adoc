@@ -55,7 +55,7 @@ A number of demonstration configurations are located in the sim directory
 of the Sample Configurations offered by the LinuxCNC configuration picker. The
 configuration picker is on the system's main menu: Applications > CNC > LinuxCNC
 
-Examples are included for the AXIS, Touchy, gscreen, and GMOCCAPY.
+Examples are included for AXIS.
 These examples demonstrate both 3-axis (XYZ) cartesian configurations
 (like mills) and lathe (XZ) setups.  Some examples show the use of a
 pop up keyboard for touch screen systems and other examples demonstrate
@@ -70,10 +70,6 @@ The simplest application is found as:
 A comprehensive example showing gcmc compatibility is at:
 
   Sample Configurations/sim/axis/ngcgui/ngcgui_gcmc
-
-A comprehensive example embedded as a GladeVCP app and using gcmc is at:
-
-  Sample Configurations/sim/gscreen/ngcgui/pyngcgui_gcmc
 
 The example sim configurations make use of library files that provide
 example G-code subroutine (.ngc) files and G-code-meta-compiler (.gcmc) files:

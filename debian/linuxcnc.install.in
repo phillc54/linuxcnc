@@ -11,7 +11,6 @@ usr/bin/gladevcp
 usr/bin/gladevcp_demo
 usr/bin/gremlin_view
 usr/bin/gs2_vfd
-usr/bin/gscreen
 usr/bin/hal-histogram
 usr/bin/hal_input
 usr/bin/hal_manualtoolchange
@@ -112,7 +111,6 @@ usr/lib/tcltk
 
 usr/share/axis
 usr/share/glade
-usr/share/gscreen
 usr/share/gtksourceview-4
 
 usr/share/applications/linuxcnc.desktop
@@ -122,8 +120,6 @@ usr/share/applications/linuxcnc-pncconf.desktop
 usr/share/applications/linuxcnc-stepconf.desktop
 
 usr/share/linuxcnc/gremlin_view.ui
-usr/share/linuxcnc/gscreen2.glade
-usr/share/linuxcnc/gscreen.glade
 usr/share/linuxcnc/hallib/
 usr/share/linuxcnc/linuxcnc_big.nml
 usr/share/linuxcnc/linuxcnc.gif

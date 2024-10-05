@@ -41,7 +41,6 @@ new users and are organized around supported GUIs:
 
 * 'axis' - Keyboard and Mouse GUI
 * 'craftsman' - Touch Screen GUI (no longer maintained ???)
-* 'gscreen' - Touch Screen GUI
 * 'pyvcp_demo' - Python Virtual Control Panel
 * 'qtaxis' - Touch Screen GUI, axis lookalike
 * 'qtdragon' - Touch Screen GUI

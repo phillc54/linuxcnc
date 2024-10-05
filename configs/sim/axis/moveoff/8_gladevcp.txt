@@ -34,5 +34,3 @@ Demo usage:
     backtracking with the Enable Backtrack checkbutton.
 
 ----------------------------------------------------
-Instructions are provided in the file moveoff_display_8.inc
-for testing with the gscreen gui.

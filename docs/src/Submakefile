@@ -102,7 +102,6 @@ DOC_SRCS_EN := \
 	gui/filter-programs.adoc \
 	gui/gladevcp.adoc \
 	gui/gladevcp-libraries.adoc \
-	gui/gscreen.adoc \
 	gui/qtdragon.adoc \
 	gui/qtvcp.adoc \
 	gui/qtvcp-vcp-panels.adoc \
