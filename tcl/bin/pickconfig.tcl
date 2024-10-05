@@ -73,7 +73,6 @@ set ::never_copy_list [list maintainer.txt nodemocopy]
 # reorder: priority low to high:
 set ::preferred_names [list \
                        low_graphics \
-                       gmoccapy \
                        gscreen \
                        touchy \
                        ngcgui \

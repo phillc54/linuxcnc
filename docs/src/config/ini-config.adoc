@@ -234,7 +234,7 @@ GMOCCAPY can be used both ways and offers also many connections for hardware con
 Descriptions of the interfaces are in the Interfaces section of the User Manual.
 
 * `DISPLAY = axis` - The file name of the executable providing the user interface to use.
-  Prominent valid options are (all in lower case): `axis`, `touchy`, `gmoccapy`, `gscreen`, `tklinuxcnc`, `qtvcp`, `qtvcp-qtdragon` or `qtvcp-qtplasmac`.
+  Prominent valid options are (all in lower case): `axis`, `touchy`, `gscreen`, `tklinuxcnc`, `qtvcp`, `qtvcp-qtdragon` or `qtvcp-qtplasmac`.
 * `POSITION_OFFSET = RELATIVE` - The coordinate system (`RELATIVE` or `MACHINE`) to show on the DRO when the user interface starts.
   The RELATIVE coordinate system reflects the G92 and G5__x__ coordinate offsets currently in effect.
 * `POSITION_FEEDBACK = COMMANDED` - The coordinate value (`COMMANDED` or `ACTUAL`) to show on the DRO when the user interface starts.
@@ -304,7 +304,6 @@ see the <<gladevcp:embedding-tab,embedding a tab>> section of the GladeVCP Chapt
 ====
 Different user interface programs use different options, and not every option is supported by every user interface.
 See <<cha:axis-gui,AXIS GUI>> document for AXIS details.
-See <<cha:gmoccapy,GMOCCAPY>> document for GMOCCAPY details.
 ====
 
 * `DEFAULT_LINEAR_VELOCITY = .25` - The default velocity for linear jogs, in <<sub:ini:sec:traj,machine units>> per second.

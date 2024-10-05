@@ -29,9 +29,6 @@ src/modules.order
 lib/python/gremlin.py
 lib/python/qt5_graphics.py
 lib/python/touchy
-configs/sim/gmoccapy/*.pref
-configs/sim/gmoccapy/gmoccapy_plasma/*.pref
-configs/sim/gmoccapy/gmoccapy-JA/*.pref
 # Miscellaneous generated files (Rob)
 cscope
 cscope.*
@@ -59,6 +56,5 @@ docs/help/hu/*
 docs/help/nb/*
 docs/help/vi/*
 docs/help/zh_CN/*
-docs/src/*/gui/gmoccapy_release_notes.txt
 configs/**/*.tbl.bak
 configs/**/halshow.preferences

@@ -29,5 +29,5 @@ from LinuxCNC 2.7.3 to 2.7.4")
    * [ ] A binary I built myself
    * [ ] A binary version from some other source besides linuxcnc.org
  * I am using this LinuxCNC version (shown in package manager or, for git versions, `scripts/get-version-from-git`):
- * I am using this user interface (GUI) (e.g., AXIS, Touchy, gmoccapy, etc):
+ * I am using this user interface (GUI) (e.g., AXIS, etc):
  * I am using this interface hardware vendor and chipset (e.g., parallel port, ethernet port, FPGA card): 

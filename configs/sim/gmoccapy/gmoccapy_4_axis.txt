@@ -1,4 +1,0 @@
-GMOCCAPY configuration for a 4-axis mill XYZC with C as rotating axis.
-
-
-

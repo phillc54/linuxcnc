@@ -353,7 +353,6 @@ class Pages:
            if os.path.exists(os.path.expanduser("~/linuxcnc/configs/%s/custompanel.xml" % self.d.machinename)):
                 self.w.radiobutton8.set_active(True)
         if self.d.select_axis: temp = 0
-        elif self.d.select_gmoccapy: temp = 1
         elif self.d.select_qtdragon: temp = 2
         else: temp = 3
         self.w.combobox_screens.set_active(temp)
@@ -423,12 +422,10 @@ class Pages:
 
     def options_finish(self):
         SIG = self._p
-        self.d.select_axis = self.d.select_gmoccapy = self.d.select_qtdragon = self.d.select_qtplasmac = False
+        self.d.select_axis = self.d.select_qtdragon = self.d.select_qtplasmac = False
         choice = self.w.combobox_screens.get_active()
         if choice == 0:
             self.d.select_axis = True
-        elif choice == 1:
-            self.d.select_gmoccapy = True
         elif choice == 2:
             self.d.select_qtdragon = True
         else:

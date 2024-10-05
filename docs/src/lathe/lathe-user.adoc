@@ -41,8 +41,6 @@ You must program that in the preamble of each G-code file or (better) add it to 
 RS274NGC_STARTUP_CODE = G18 G20 G90
 ----
 
-If your using GMOCCAPY then see the <<gmoccapy:lathe-section,the GMOCCAPY Lathe>> section.
-
 [[sec:lathe-tool-table]]
 == Lathe Tool Table(((Lathe Tool Table)))
 

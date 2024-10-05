@@ -1,3 +1,0 @@
-# This is the blockdelete.hal file
-
-net  blockdelete     gmoccapy.blockdelete    <=    blockdelete.tbtn_blockdelete

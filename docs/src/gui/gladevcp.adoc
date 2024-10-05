@@ -1900,7 +1900,6 @@ There are Python methods to control the widget:
 * `[widget name].set_foreground_color("yellow")`
 * `[widget name].mark_active("G55")` +
   Allows you to directly set a row to highlight, e.g., in case you wish to use your own navigation controls.
-  See the chapter on <<cha:gmoccapy,GMOCCAPY>>.
 * `[widget name].selection_mask = ("Tool","Rot","G5x")` +
   These rows are NOT selectable in edit mode.
 * `[widget name].set_names([['G54','Default'],["G55","Vice1"],['Rot','Rotational']])` +

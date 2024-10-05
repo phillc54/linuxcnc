@@ -3,11 +3,6 @@
 	@mkdir -p $(dir $@)
 	$(Q)msgfmt -o $@ $<
 
-../share/locale/%/LC_MESSAGES/gmoccapy.mo: po/gmoccapy/%.po
-	$(ECHO) Compiling localized gmoccapy message catalog $@
-	@mkdir -p $(dir $@)
-	$(Q)msgfmt -o $@ $<
-
 # the touch is because for po/zh_CN.po, msgfmt --tcl creates
 # objects/zh_cn.po and on the next invocation make would try again to
 # create zh_CN.po
@@ -16,23 +11,14 @@ objects/%.msg: po/%.po
 	$(Q)msgfmt --tcl -d objects -l $* $< && touch $@
 
 MO_FILES := $(patsubst po/%.po, %/LC_MESSAGES/linuxcnc.mo, $(wildcard po/*.po))
-MO_FILES += $(patsubst po/gmoccapy/%.po, %/LC_MESSAGES/gmoccapy.mo, $(wildcard po/gmoccapy/*.po))
 
 $(DESTDIR)$(localedir)/%/LC_MESSAGES/linuxcnc.mo: ../share/locale/%/LC_MESSAGES/linuxcnc.mo
-	$(DIR) $(DESTDIR)$(localedir)/$*/LC_MESSAGES
-	$(FILE) $< $@
-
-$(DESTDIR)$(localedir)/%/LC_MESSAGES/gmoccapy.mo: ../share/locale/%/LC_MESSAGES/gmoccapy.mo
 	$(DIR) $(DESTDIR)$(localedir)/$*/LC_MESSAGES
 	$(FILE) $< $@
 
 TARGETS += $(patsubst po/%.po, \
 	../share/locale/%/LC_MESSAGES/linuxcnc.mo, \
 	$(wildcard po/*.po))
-
-TARGETS += $(patsubst po/gmoccapy/%.po, \
-	../share/locale/%/LC_MESSAGES/gmoccapy.mo, \
-	$(wildcard po/gmoccapy/*.po))
 
 TCLSRCS := \
 	../tcl/bin/emccalib.tcl \
@@ -71,9 +57,8 @@ po/linuxcnc.pot:
 	$(Q)touch $@
 
 .PHONY: pofiles
-pofiles: po/linuxcnc.pot po/gmoccapy/gmoccapy.pot
+pofiles: po/linuxcnc.pot
 	set -x; for i in po/*.po; do msgmerge -U $$i po/linuxcnc.pot; done
-	set -x; for i in po/gmoccapy/*.po; do msgmerge -U $$i po/gmoccapy/gmoccapy.pot; done
 
 po/linuxcnc.pot: emc/task/emctaskmain.cc $(LIBRS274SRCS) emc/rs274ngc/rs274ngc_return.hh
 po/linuxcnc.pot: hal/utils/meter.c \
@@ -125,32 +110,9 @@ po/linuxcnc.pot: $(TOOLI18NSRCS)
 install-locale: $(addprefix $(DESTDIR)$(localedir)/, $(MO_FILES))
 install-kernel-indep: install-locale
 
-GMOCCAPY_GLADE := \
-	emc/usr_intf/gmoccapy/gmoccapy.glade.h
-
-$(GMOCCAPY_GLADE): %.glade.h: %.glade
-	intltool-extract --type=gettext/glade $<
-GMOCCAPY_I18N_SRCS := \
-	$(patsubst %,emc/usr_intf/gmoccapy/%, \
-		gmoccapy.py dialogs.py getiniinfo.py notification.py player.py \
-		preferences.py widgets.py gmoccapy.glade.h) \
-
-po/gmoccapy/gmoccapy.pot: $(GMOCCAPY_I18N_SRCS)
-	$(ECHO) Localizing gmoccapy.pot
-	$(Q)(cd ..; $(XGETTEXT) --from-code=UTF-8 --language=Python \
-		--keyword=_ --keyword=N_ \
-		--output=src/$@ `$(PYTHON) src/po/fixpaths.py -j src $^`)
-	$(Q)touch $@
-
-clean: gmoccapy_i18n_clean
-gmoccapy_i18n_clean:
-	@rm -f $(GMOCCAPY_GLADE)
 
 postatus::
 	@echo "info: Program POT and PO file status"
 	@for p in po/*.pot po/*.po; do \
-	    echo -n "$$p ";  msgfmt --statistics -o /dev/null $$p; \
-	done
-	@for p in po/gmoccapy/*.pot po/gmoccapy/*.po; do \
 	    echo -n "$$p ";  msgfmt --statistics -o /dev/null $$p; \
 	done

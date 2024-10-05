@@ -33,7 +33,6 @@ To search in the man pages, use the UNIX tool `apropos`.
 |===
 | link:../man/man1/axis.1.html[axis]               |AXIS LinuxCNC (The Enhanced Machine Controller) GUI              ||
 | link:../man/man1/axis-remote.1.html[axis-remote] |AXIS Remote Interface                                            ||
-| link:../man/man1/gmoccapy.1.html[gmoccapy]       |Touchy LinuxCNC Graphical User Interface                         ||
 | link:../man/man1/gscreen.1.html[gscreen]         |Touchy LinuxCNC Graphical User Interface                         ||
 | link:../man/man1/halui.1.html[halui]             |Observe HAL pins and command LinuxCNC through NML                ||
 | link:../man/man1/mdro.1.html[mdro]               |manual only Digital Read Out (DRO)                               ||
