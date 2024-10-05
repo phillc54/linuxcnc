@@ -1,8 +1,0 @@
-#!/bin/bash
-
-latency-histogram  \
-   --nobase        \
-   --show          \
-   --sbinsize 1000 \
-   --sbins 200     \
-

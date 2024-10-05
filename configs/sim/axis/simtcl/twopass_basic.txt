@@ -1,1 +1,0 @@
-twopass_basic -- demonstrates twopass processing using LIB:basic_sim.tcl

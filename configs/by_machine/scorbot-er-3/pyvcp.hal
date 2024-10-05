@@ -1,3 +1,0 @@
-net gripper <= pyvcp.gripper-f
-net gripper => scorbot-er-3.joint7.motor-pos-cmd
-

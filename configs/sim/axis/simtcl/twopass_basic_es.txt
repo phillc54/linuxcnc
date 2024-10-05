@@ -1,1 +1,0 @@
-twopass_basic -- demuestra procesamiento twopass usando LIB:basic_sim.tcl

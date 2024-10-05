@@ -1,9 +1,0 @@
-Ejemplo para usar el widget sourceview
----------------------------------------
-
-Cargando un archivo, y resaltando una línea
-
-------------------------------------------
-Para ejecutar de forma independiente:
-
-$ gladevcp -u sourceview.py sourceview.ui
