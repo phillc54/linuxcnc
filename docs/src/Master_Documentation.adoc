@@ -216,8 +216,6 @@ include::gui/axis.adoc[]
 
 include::gui/ngcgui.adoc[]
 
-include::gui/tklinuxcnc.adoc[]
-
 include::plasma/qtplasmac.adoc[]
 
 

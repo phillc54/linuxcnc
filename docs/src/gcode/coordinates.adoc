@@ -315,11 +315,7 @@ will be applied when an axis is homed.  See
 
 === Setting G92 Values
 
-There are at least two ways to set G92 values:
-
-* With a right click on the position displays in tklinuxcnc, a window opens
-  where it is possible to enter a value.
-* With the G92 command
+Set G92 values with the G92 command
 
 Both work from the current position of the axis that should be moved.
 

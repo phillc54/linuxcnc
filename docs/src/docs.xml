@@ -22,7 +22,6 @@
 <doc name="common_user-concepts" title="Important User Concepts"/>
 <doc name="gui_axis" title="GUI: Axis"/>
 <doc name="gui_ngcgui" title="GUI: NGCGUI"/>
-<doc name="gui_tklinuxcnc" title="GUI: TkLinuxCNC"/>
 <doc name="gui_mini" title="GUI: Mini"/>
 <doc name="common_machining_center" title="Machining Center Info"/>
 <doc name="gcode_overview" title="G-code Overview"/>

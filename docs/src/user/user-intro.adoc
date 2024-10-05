@@ -110,13 +110,6 @@ NGCGUI:: <<cha:ngcgui,NGCGUI>>, a subroutine GUI that provides wizard-style prog
 .NGCGUI, a graphical interface integrated into AXIS
 image::../gui/images/ngcgui.png["NGCGUI, a graphical interface integrated into AXIS",align="center"]
 
-TkLinuxCNC:: <<sec:tklinuxcnc-intro,TkLinuxCNC>>, another interface based on Tcl/Tk.
-  Once the most popular interface after AXIS.
-
-[[fig:tklinuxcnc-gui]]
-.TkLinuxCNC graphical interface
-image::images/tkemc.png["TkLinuxCNC graphical interface",align="center"]
-
 QtPlasmaC:: <<cha:qtplasmac,QtPlasmaC>>, a touch screen plasma cutting GUI based on QtVCP using the PyQt5 library.
 It comes in three aspect ratios, 16:9, 4:3, and 9:16.
 

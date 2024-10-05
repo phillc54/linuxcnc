@@ -32,8 +32,6 @@ class INI:
         print("[DISPLAY]", file=file)
         if self.d.frontend == _PD._AXIS:
             print("DISPLAY = axis", file=file)
-        elif self.d.frontend == _PD._TKLINUXCNC:
-            print("DISPLAY = tklinuxcnc", file=file)
         # qtplasmac has multiple screens
         elif self.d.frontend == _PD._QTPLASMAC:
             if self.d.qtplasmacscreen == 2:

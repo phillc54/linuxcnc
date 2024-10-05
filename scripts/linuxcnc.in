@@ -548,10 +548,6 @@ GetFromIni DISPLAY DISPLAY
 EMCDISPLAY=`(set -- $retval ; echo $1 )`
 EMCDISPLAYARGS=`(set -- $retval ; shift ; echo $* )`
 
-case $EMCDISPLAY in
-    tkemc) EMCDISPLAY=tklinuxcnc ;;
-esac
-
 # 2.9. get NML config information
 GetFromIniEx NML_FILE LINUXCNC NML_FILE EMC @DEFAULT_NMLFILE@
 NMLFILE=$retval
@@ -953,16 +949,6 @@ done
 echo "Starting DISPLAY program: $EMCDISPLAY" >>$PRINT_FILE
 result=0
 case $EMCDISPLAY in
-  tklinuxcnc)
-    # tklinuxcnc is in the tcl directory, not the bin directory
-    if [ ! -x $LINUXCNC_TCL_DIR/$EMCDISPLAY.tcl ] ; then
-	echo "Can't execute DISPLAY program $LINUXCNC_TCL_DIR/$EMCDISPLAY.tcl $EMCDISPLAYARGS"
-	Cleanup
-	exit 1
-    fi
-    $LINUXCNC_TCL_DIR/$EMCDISPLAY.tcl -ini "$INIFILE" $EMCDISPLAYARGS
-    result=$?
-  ;;
   dummy)
     # dummy display just waits for <ENTER>
     echo "DUMMY DISPLAY MODULE, press <ENTER> to continue."
