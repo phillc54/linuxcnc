@@ -26,7 +26,6 @@ src/modules.order
 /configs/*/emc.nml
 !/configs/common/emc.nml
 /docs/src/source-highlight/local
-lib/python/gremlin.py
 lib/python/qt5_graphics.py
 # Miscellaneous generated files (Rob)
 cscope

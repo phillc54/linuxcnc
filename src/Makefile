@@ -179,7 +179,7 @@ SUBDIRS := \
 	hal/user_comps/xhc-whb04b-6 \
     \
     emc/usr_intf/axis emc/usr_intf/stepconf emc/usr_intf/pncconf \
-    emc/usr_intf/gremlin emc/usr_intf/pyui emc/usr_intf/qtvcp \
+    emc/usr_intf/pyui emc/usr_intf/qtvcp \
     emc/usr_intf/qtplasmac\
     emc/usr_intf emc/nml_intf emc/task emc/kinematics emc/tp emc/canterp \
     emc/motion emc/ini emc/rs274ngc emc/sai emc/pythonplugin \
@@ -486,33 +486,6 @@ TARGETS += ../bin/tooledit
 	$(Q)(echo "standalone_tooledit")>>$@
 	$(Q)chmod +x $@
 
-# ngcgui as standalone app:
-TARGETS += ../bin/ngcgui
-../bin/ngcgui: Makefile
-	$(Q)rm -f $@
-	$(Q)(echo "#!$(TCLSH)")>|$@
-	$(Q)(echo "source $(EMC2_TCL_LIB_DIR)/ngcgui.tcl")>>$@
-	$(Q)(echo "::ngcgui::standalone_ngcgui")>>$@
-	$(Q)chmod +x $@
-
-# pyngcgui as standalone app:
-TARGETS += ../bin/pyngcgui
-../bin/pyngcgui: Makefile
-	$(Q)rm -f $@
-	$(Q)(echo "#!$(PYTHON)")>|$@
-	$(Q)(echo "import pyngcgui")>>$@
-	$(Q)(echo "pyngcgui.standalone_pyngcgui()")>>$@
-	$(Q)chmod +x $@
-
-# gremlin_view as standalone app:
-TARGETS += ../bin/gremlin_view
-../bin/gremlin_view: Makefile
-	$(Q)rm -f $@
-	$(Q)(echo "#!$(PYTHON)")>|$@
-	$(Q)(echo "import gremlin_view")>>$@
-	$(Q)(echo "gremlin_view.standalone_gremlin_view()")>>$@
-	$(Q)chmod +x $@
-
 # halshow as standalone app:
 TARGETS += ../bin/halshow
 ../bin/halshow: Makefile
@@ -744,7 +717,6 @@ install-kernel-indep: install-dirs
 	$(FILE) ../share/linuxcnc/*.glade $(DESTDIR)$(prefix)/share/linuxcnc
 	$(FILE) ../share/linuxcnc/stepconf/*.glade $(DESTDIR)$(prefix)/share/linuxcnc/stepconf
 	$(FILE) ../share/linuxcnc/pncconf/*.glade $(DESTDIR)$(prefix)/share/linuxcnc/pncconf
-	$(FILE) ../share/linuxcnc/gremlin_view.ui $(DESTDIR)$(prefix)/share/linuxcnc
 	$(FILE) ../share/linuxcnc/popupkeyboard.ui $(DESTDIR)$(prefix)/share/linuxcnc
 	$(FILE) ../configs/common/linuxcnc.nml     $(DESTDIR)$(prefix)/share/linuxcnc
 	$(FILE) ../configs/common/linuxcnc_big.nml $(DESTDIR)$(prefix)/share/linuxcnc
@@ -767,7 +739,6 @@ install-python: install-dirs
 	$(DIR) $(DESTDIR)$(SITEPY)/qtvcp/lib/writer/ext
 	$(DIR) $(DESTDIR)$(SITEPY)/qtvcp/lib/qtplasmac
 	$(DIR) $(DESTDIR)$(SITEPY)/qtvcp/lib/qt_vismach
-	$(DIR) $(DESTDIR)$(SITEPY)/qtvcp/lib/qt_ngcgui
 	$(DIR) $(DESTDIR)$(SITEPY)/qtvcp/lib/qt_pdf
 	$(DIR) $(DESTDIR)$(SITEPY)/qtvcp/lib/gcode_utility
 	$(DIR) $(DESTDIR)$(SITEPY)/qtvcp/plugins

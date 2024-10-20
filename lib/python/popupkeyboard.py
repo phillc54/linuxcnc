@@ -21,7 +21,6 @@
 
 """
 # popup keyboard for use with touchscreen applications
-# used by pyngcgui.py
 # based on work of John Thornton's Buglump
 
 Optional __init__() args:

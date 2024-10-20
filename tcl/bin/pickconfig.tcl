@@ -73,7 +73,6 @@ set ::never_copy_list [list maintainer.txt nodemocopy]
 # reorder: priority low to high:
 set ::preferred_names [list \
                        low_graphics \
-                       ngcgui \
                        axis \
                        by_machine \
                        by_interface \
@@ -679,7 +678,6 @@ proc prompt_copy configname {
         file link -symbolic $linkname $refname
 
         # liblist: libs used in inifiles for [RS274NGC]SUBROUTINE_PATH
-        # example: ngcgui uses lib named ngcgui_lib
 
         set _libs [glob [file join $linuxcnc::NCFILES_DIR *_lib]]
         foreach lib $_libs {
@@ -714,8 +712,7 @@ proc prompt_copy configname {
            set msg  "${msg}(debug, $lib subroutines: $dir/${lib}_lib)\n"
         }
         puts $fd $msg
-        # make readme.ngc compatible with ngcgui:
-        # (repeat the debug prints within the subroutine)
+        # repeat the debug prints within the subroutine
         puts $fd "o<readme> sub"
         puts $fd $msg
         puts $fd "   #<parm1> = #1 (=123 pvalue)"

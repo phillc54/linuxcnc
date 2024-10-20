@@ -54,7 +54,6 @@ usr/bin/z_level_compensation
 usr/bin/monitor-xhc-hb04
 usr/bin/motion-logger
 usr/bin/moveoff_gui
-usr/bin/ngcgui
 usr/bin/panelui
 usr/bin/pi500_vfd
 usr/bin/pmx485
@@ -62,7 +61,6 @@ usr/bin/pmx485-test
 usr/bin/pncconf
 usr/bin/puma560gui
 usr/bin/pumagui
-usr/bin/pyngcgui
 usr/bin/pyui
 usr/bin/pyvcp
 usr/bin/pyvcp_demo
@@ -105,7 +103,6 @@ usr/lib/python3
 usr/lib/tcltk
 
 usr/share/axis
-usr/share/glade
 usr/share/gtksourceview-4
 
 usr/share/applications/linuxcnc.desktop
@@ -114,7 +111,6 @@ usr/share/applications/linuxcnc-latency-histogram.desktop
 usr/share/applications/linuxcnc-pncconf.desktop
 usr/share/applications/linuxcnc-stepconf.desktop
 
-usr/share/linuxcnc/gremlin_view.ui
 usr/share/linuxcnc/hallib/
 usr/share/linuxcnc/linuxcnc_big.nml
 usr/share/linuxcnc/linuxcnc.gif

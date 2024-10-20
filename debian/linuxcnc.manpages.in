@@ -56,7 +56,6 @@ usr/share/man/man1/monitor-xhc-hb04.1
 usr/share/man/man1/motion-logger.1
 usr/share/man/man1/moveoff_gui.1
 usr/share/man/man1/mqtt-publisher.1
-usr/share/man/man1/ngcgui.1
 usr/share/man/man1/panelui.1
 usr/share/man/man1/pi500_vfd.1
 usr/share/man/man1/pmx485.1
@@ -64,7 +63,6 @@ usr/share/man/man1/pmx485-test.1
 usr/share/man/man1/pncconf.1
 usr/share/man/man1/puma560gui.1
 usr/share/man/man1/pumagui.1
-usr/share/man/man1/pyngcgui.1
 usr/share/man/man1/pyui.1
 usr/share/man/man1/pyvcp.1
 usr/share/man/man1/pyvcp_demo.1
