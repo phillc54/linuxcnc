@@ -722,7 +722,6 @@ install-kernel-indep: install-dirs
 	$(EXE) ../scripts/hal-histogram $(DESTDIR)$(bindir)
 	$(EXE) ../scripts/xhc-hb04-accels $(DESTDIR)$(bindir)
 	$(EXE) ../scripts/pyvcp_demo $(DESTDIR)$(bindir)
-	$(EXE) ../scripts/gladevcp_demo $(DESTDIR)$(bindir)
 	$(EXE) ../scripts/linuxcncmkdesktop $(DESTDIR)$(bindir)
 	$(EXE) ../bin/update_ini $(DESTDIR)$(bindir)
 	$(EXE) ../scripts/halreport $(DESTDIR)$(bindir)
@@ -752,7 +751,6 @@ install-kernel-indep: install-dirs
 	$(FILE) ../src/emc/usr_intf/pncconf/pncconf-help/*.txt $(DESTDIR)$(prefix)/share/linuxcnc/pncconf/pncconf-help
 	$(FILE) ../src/emc/usr_intf/pncconf/pncconf-help/*.png $(DESTDIR)$(prefix)/share/linuxcnc/pncconf/pncconf-help
 
-	$(FILE) ../lib/python/gladevcp/hal_python.xml $(DESTDIR)$(datadir)/glade/catalogs/
 	$(FILE) ../share/glade/pixmaps/hicolor/22x22/actions/widget*.png  $(DESTDIR)$(datadir)/glade/pixmaps/hicolor/22x22/actions/
 
 	$(FILE) ../share/gtksourceview-4/language-specs/*.lang  $(DESTDIR)$(datadir)/gtksourceview-4/language-specs/
@@ -775,7 +773,6 @@ install-python: install-dirs
 	$(DIR) $(DESTDIR)$(SITEPY)/qtvcp/plugins
 	$(DIR) $(DESTDIR)$(SITEPY)/qtvcp/widgets
 	$(DIR) $(DESTDIR)$(SITEPY)/qtvcp/widgets/widget_icons
-	$(DIR) $(DESTDIR)$(SITEPY)/gladevcp
 	$(DIR) $(DESTDIR)$(SITEPY)/stepconf
 	$(DIR) $(DESTDIR)$(SITEPY)/pncconf
 	$(DIR) $(DESTDIR)$(SITEPY)/pyui
@@ -788,7 +785,6 @@ install-python: install-dirs
 	$(FILE) ../lib/python/qtvcp/widgets/widget_icons/*.{png,gif} $(DESTDIR)$(SITEPY)/qtvcp/widgets/widget_icons
 	$(FILE) ../lib/python/qtvcp/plugins/*.py $(DESTDIR)$(SITEPY)/qtvcp/plugins
 	$(TREE) ../lib/python/qtvcp/lib/* $(DESTDIR)$(SITEPY)/qtvcp/lib
-	$(FILE) ../lib/python/gladevcp/*.{py,png,glade} $(DESTDIR)$(SITEPY)/gladevcp
 	$(FILE) ../lib/python/stepconf/*.py $(DESTDIR)$(SITEPY)/stepconf
 	$(FILE) ../lib/python/pncconf/*.py $(DESTDIR)$(SITEPY)/pncconf
 	$(FILE) ../lib/python/pyui/*.py $(DESTDIR)$(SITEPY)/pyui
@@ -803,7 +799,6 @@ install-python: install-dirs
 	$(EXE) ../bin/pmx485 $(DESTDIR)$(bindir)
 	$(EXE) ../bin/sim-torch $(DESTDIR)$(bindir)
 	$(EXE) ../bin/pyvcp $(DESTDIR)$(bindir)
-	$(EXE) ../bin/gladevcp $(DESTDIR)$(bindir)
 	$(EXE) ../bin/axis $(DESTDIR)$(bindir)
 	$(EXE) ../bin/axis-remote $(DESTDIR)$(bindir)
 	$(EXE) ../bin/debuglevel $(DESTDIR)$(bindir)

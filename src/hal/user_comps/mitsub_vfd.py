@@ -460,10 +460,10 @@ setp spindle.scale-cmd .135
 setp spindle.scale-fb 7.411
 setp spindle.monitor 1
 
-net spindle-speed-indicator spindle.motor-fb        gladevcp.spindle-speed
+net spindle-speed-indicator spindle.motor-fb        pyvcp.spindle-speed
 # *************** Coolant vfd setup slave 3 ***********************
 net coolant-flood                         coolant.run
-net coolant-is-on              coolant.up-to-speed   gladevcp.coolant-on-led
+net coolant-is-on              coolant.up-to-speed   pyvcp.coolant-on-led
 #       cmd and feedback scaled to hertz
 setp coolant.scale-cmd 1
 setp coolant.scale-fb 1

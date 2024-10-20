@@ -766,9 +766,7 @@ AC_SUBST([EMC2_ICON])
 AC_SUBST([HALLIB_DIR])
 
 # coordinate installed auxiliary applications (not RIP or deb dependent):
-LINUXCNC_AUX_GLADEVCP=/usr/share/linuxcnc/aux_gladevcp
 LINUXCNC_AUX_EXAMPLES=/usr/share/linuxcnc/aux_examples
-AC_SUBST([LINUXCNC_AUX_GLADEVCP])
 AC_SUBST([LINUXCNC_AUX_EXAMPLES])
 
 # define temporary directory

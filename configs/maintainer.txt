@@ -51,7 +51,7 @@ picker:
   2) creates a directory ~/linuxcnc/nc_files (if it
      does not exist).  It creates links in this directory
      to the system locations for examples and libraries
-     (examples, ngcgui_lib, gladevcp_lib)
+     (examples, ngcgui_lib)
 
   3) edits all ini files being copied so that
      [DISPLAY]PROGRAM_PREFIX = ~/linuxcnc/nc_files.

@@ -363,14 +363,6 @@ Copyright: The LinuxCNC developers derived this work from
            2004 Fred Proctor & Will Shackleford
 License: GPL-2
 
-Files: 
- lib/python/gladevcp/iconview.py
-Copyright: 2012 Norbert Schechner <nieson@web.de>
-Comment: based on a tutorial from ZetCode PyGTK tutorial
- the original code is under the BSD license
- by jan bodnar on zetcode.com 
-License: GPL-2
-
 Files:
  lib/python/rs274/OpenGLTk.py
 Copyright:      Mike Hartshorn

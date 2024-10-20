@@ -3949,33 +3949,7 @@ if hal_present == 1 :
     else:
         widgets.menu_view.delete(_("Show PyVCP pan_el").replace("_", ""))
 
-    gladevcp = inifile.find("DISPLAY", "GLADEVCP")
-    if gladevcp:
-        f = Tkinter.Frame(root_window, container=1, borderwidth=0, highlightthickness=0)
-        f.grid(row=0, column=5, rowspan=6, sticky="nsew", padx=4, pady=4)
-    else:
-        f = None
-    gladevcp_frame = f
-
 _dynamic_childs = {}
-# Call this later
-def load_gladevcp_panel():
-    gladevcp = inifile.find("DISPLAY", "GLADEVCP")
-    if gladevcp:
-        gladecmd = gladevcp.split()
-        if '-c' in gladecmd:
-            gladename = gladecmd[gladecmd.index('-c') + 1]
-            del gladecmd[gladecmd.index('-c') + 1]
-            del gladecmd[gladecmd.index('-c')]
-        else:
-            gladename = 'gladevcp'
-        from subprocess import Popen
-        xid = gladevcp_frame.winfo_id()
-        cmd = "halcmd loadusr -Wn {0} gladevcp -c {0}".format(gladename).split()
-        cmd += ['-d', '-x', str(xid)] + gladecmd
-        print(cmd)
-        child = Popen(cmd)
-        _dynamic_childs['{}'.format(gladename)] = (child, cmd, True)
 
 notifications = Notification(root_window)
 
@@ -4049,7 +4023,7 @@ def _dynamic_tabs(inifile):
         # Complain somehow
         return
 
-    # XXX: Set our root window ID in environment so child GladeVcp processes
+    # XXX: Set our root window ID in environment so child processes
     # may forward keyboard events to it
     rxid = root_window.winfo_id()
     os.environ['AXIS_FORWARD_EVENTS_TO'] = str(rxid)
@@ -4070,15 +4044,6 @@ def _dynamic_tabs(inifile):
             except Exception as e:
                 print("Invalid PyVCP tab configuration: EMBED_TAB COMMAND =", c)
                 print(e)
-        else: # this is a gladevcp panel
-            f = Tkinter.Frame(w, container=1, borderwidth=0, highlightthickness=0)
-            f.pack(fill="both", expand=1)
-            xid = f.winfo_id()
-            cmd = c.replace('{XID}', str(xid)).split()
-            child = Popen(cmd)
-            wait = cmd[:2] == ['halcmd', 'loadusr']
-
-            _dynamic_childs[str(w)] = (child, cmd, wait)
 
 @atexit.register
 def kill_dynamic_childs():
@@ -4253,7 +4218,6 @@ if hal_present == 1 :
 
 _dynamic_tabs(inifile)
 if hal_present == 1:
-    load_gladevcp_panel()
     check_dynamic_tabs()
 else:
     root_window.deiconify()

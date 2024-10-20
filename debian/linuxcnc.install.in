@@ -6,9 +6,6 @@ usr/bin/axis-remote
 usr/bin/debuglevel
 usr/bin/elbpcom
 usr/bin/genserkins
-usr/bin/gladevcp
-usr/bin/gladevcp_demo
-usr/bin/gremlin_view
 usr/bin/gs2_vfd
 usr/bin/hal-histogram
 usr/bin/hal_input
