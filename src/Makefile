@@ -22,7 +22,7 @@ SHELL:=/bin/bash
 
 default: build-software
 
-install: install-software install-docs
+install: install-software
 
 install-software: install-kernel-dep install-kernel-indep install-menu
 
@@ -47,7 +47,7 @@ endif
 
 # Delete the default suffix rules
 .SUFFIXES:
-.PHONY: default build-software userspace modules clean modclean depclean install install-software install-docs python pythonclean cscope cscopeclean
+.PHONY: default build-software userspace modules clean modclean depclean install install-software python pythonclean cscope cscopeclean
 
 # A "trivial build" is one which should not include dependency information
 # either because it should be usable before dependency information can be
@@ -57,7 +57,7 @@ endif
 ifeq ($(MAKECMDGOALS),)
 TRIVIAL_BUILD=no
 else
-ifeq ($(filter-out docclean clean setuid install tags swish,$(MAKECMDGOALS)),)
+ifeq ($(filter-out clean setuid install tags swish,$(MAKECMDGOALS)),)
 TRIVIAL_BUILD=yes
 else
 TRIVIAL_BUILD=no
@@ -191,8 +191,6 @@ SUBDIRS := \
     \
     po \
     \
-    ../docs/src ../docs/src/source-highlight \
-    \
     ../tests \
 
 
@@ -322,7 +320,6 @@ INFILES = \
 	../tcl/linuxcnc.tcl ../scripts/halrun ../scripts/rip-environment \
 	../scripts/linuxcncmkdesktop \
 	../lib/python/nf.py \
-	../share/desktop-directories/linuxcnc-doc.directory \
 	../share/desktop-directories/linuxcnc-ref.directory \
 	../share/desktop-directories/linuxcnc-cnc.directory \
 	../share/menus/CNC.menu \
@@ -507,7 +504,7 @@ inclean:
 	$(RM) $(INFILES)
 headersclean:
 	$(RM) $(HEADERS)
-clean: docclean pythonclean cscopeclean headersclean
+clean: pythonclean cscopeclean headersclean
 distclean: clean inclean
 
 # This is the gateway into the crazy world of "kbuild", the linux 2.6 system
@@ -610,7 +607,7 @@ You configured run-in-place, but are trying to install.
 For an installable version, run configure without --enable-run-in-place
 and rebuild
 endef
-install install-software install-docs:
+install install-software:
 	$(error $(ERROR_MESSAGE))
 
 MENUS = ../share/menus/CNC.menu \
@@ -620,27 +617,15 @@ rip-install-menus rip-install-menu: $(MENUS) $(XDGDESKTOP)
 	cp $< $(HOME)/.config/menus/applications-merged
 else
 
-DOCS=README.adoc INSTALL.adoc AUTHORS
-
-# FIXME figure out how to install translated docs in subdirs
-DOCS_HELP=$(call GLOB,../docs/help/*.adoc)
 
 NC_FILES=$(filter-out %/butterfly.ngc,$(call GLOB,../nc_files/*))
 TCL=$(call GLOB,../tcl/*.tcl)
 TCL_BIN=$(call GLOB,../tcl/bin/*.tcl) ../tcl/bin/popimage
 
-install-docs:
-	$(DIR) $(DESTDIR)$(docsdir)
-	$(FILE) $(addprefix ../docs/,$(DOCS)) $(DESTDIR)$(docsdir)
-	$(FILE) $(DOCS_HELP) $(DESTDIR)$(docsdir)
-	$(FILE) emc/usr_intf/axis/etc/axis_light_background $(DESTDIR)$(docsdir)
-	$(FILE) emc/usr_intf/axis/README $(DESTDIR)$(docsdir)/README.axis
-
 install-dirs:
 	$(DIR) $(DESTDIR)$(EMC2_RTLIB_DIR) \
 		$(DESTDIR)$(sysconfdir)/linuxcnc $(DESTDIR)$(bindir) $(DESTDIR)$(libdir) \
 		$(DESTDIR)/$(libdir)/linuxcnc $(DESTDIR)$(includedir)/linuxcnc \
-		$(DESTDIR)$(docsdir) $(DESTDIR)$(ncfilesdir) \
 		$(DESTDIR)/etc/X11/app-defaults $(DESTDIR)$(tcldir)/bin \
 		$(DESTDIR)$(tcldir)/scripts \
 		$(DESTDIR)$(mandir)/man1 \
@@ -663,10 +648,6 @@ install-dirs:
 		$(DESTDIR)$(datadir)/linuxcnc/hallib
 
 install-kernel-indep: install-dirs
-	$(FILE) ../docs/man/man1/*.1 $(DESTDIR)$(mandir)/man1
-	$(FILE) $(filter-out %/skeleton.3hal, $(wildcard ../docs/man/man3/*.3hal)) $(DESTDIR)$(mandir)/man3
-	$(FILE) $(filter-out %/skeleton.3rtapi, $(wildcard ../docs/man/man3/*.3rtapi)) $(DESTDIR)$(mandir)/man3
-	$(FILE) $(filter-out %/skeleton.9, $(wildcard ../docs/man/man9/*.9)) $(DESTDIR)$(mandir)/man9
 	$(FILE) objects/*.msg $(DESTDIR)$(tcldir)/msgs
 	$(EXE) ../scripts/realtime $(DESTDIR)$(prefix)/lib/linuxcnc
 	$(EXE) ../scripts/halrun $(DESTDIR)$(bindir)
@@ -1333,8 +1314,6 @@ swish:
 		$(dir $(BASEPWD))lib/python \
 		$(dir $(BASEPWD))scripts \
 		$(dir $(BASEPWD))configs \
-		$(dir $(BASEPWD))docs/src \
-		$(dir $(BASEPWD))docs/man/man1
 
 # When you depend on objects/var-ZZZ you are depending on the contents of the
 # variable ZZZ, which is assumed to depend on a Makefile, a Submakefile, or
