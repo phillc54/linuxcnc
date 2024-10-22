@@ -10,7 +10,7 @@ USERSRCS += $(WJ200_SRCS)
 
 ../bin/wj200_vfd: $(call TOOBJS, $(WJ200_SRCS)) ../lib/liblinuxcnchal.so.0
 	$(ECHO) Linking $(notdir $@)
-	$(Q)$(CC) $(LDFLAGS) -o $@ $^ $(WJ200_LIBS) 
+	$(Q)$(CC) $(LDFLAGS) -o $@ $^ $(WJ200_LIBS)
 
 hal/user_comps/wj200_vfd/wj200_vfd.c: hal/user_comps/wj200_vfd/wj200_vfd.comp ../bin/halcompile
 	$(ECHO) "Preprocessing wj200_vfd.comp"
@@ -22,8 +22,9 @@ hal/user_comps/wj200_vfd/wj200_vfd.c: hal/user_comps/wj200_vfd/wj200_vfd.comp ..
 
 clean: wj200_clean
 wj200_clean:
-	-rm -f hal/user_comps/wj200_vfd/wj200_vfd.c
-	-rm -f hal/user_comps/wj200_vfd/wj200_vfd.1
+	# Clean wj200
+	@rm -f hal/user_comps/wj200_vfd/wj200_vfd.c
+	@rm -f hal/user_comps/wj200_vfd/wj200_vfd.1
 
 TARGETS += ../bin/wj200_vfd
 GENERATED_MANPAGES += ../docs/man/man1/wj200_vfd.1

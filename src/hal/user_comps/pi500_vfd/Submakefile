@@ -22,8 +22,9 @@ hal/user_comps/pi500_vfd/pi500_vfd.c: hal/user_comps/pi500_vfd/pi500_vfd.comp ..
 
 clean: pi500_clean
 pi500_clean:
-	-rm -f hal/user_comps/pi500_vfd/pi500_vfd.c
-	-rm -f hal/user_comps/pi500_vfd/pi500_vfd.1
+	# Clean pi500
+	@rm -f hal/user_comps/pi500_vfd/pi500_vfd.c
+	@rm -f hal/user_comps/pi500_vfd/pi500_vfd.1
 
 TARGETS += ../bin/pi500_vfd
 GENERATED_MANPAGES += ../docs/man/man1/pi500_vfd.1

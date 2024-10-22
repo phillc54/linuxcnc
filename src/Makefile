@@ -22,7 +22,7 @@ SHELL:=/bin/bash
 
 default: build-software
 
-install: install-software
+install: install-software install-docs
 
 install-software: install-kernel-dep install-kernel-indep install-menu
 
@@ -47,7 +47,7 @@ endif
 
 # Delete the default suffix rules
 .SUFFIXES:
-.PHONY: default build-software userspace modules clean modclean depclean install install-software python pythonclean cscope cscopeclean
+.PHONY: default build-software userspace modules clean modclean depclean install install-software install-docs python pythonclean cscope cscopeclean
 
 # A "trivial build" is one which should not include dependency information
 # either because it should be usable before dependency information can be
@@ -57,7 +57,7 @@ endif
 ifeq ($(MAKECMDGOALS),)
 TRIVIAL_BUILD=no
 else
-ifeq ($(filter-out clean setuid install tags swish,$(MAKECMDGOALS)),)
+ifeq ($(filter-out docclean clean setuid install tags swish,$(MAKECMDGOALS)),)
 TRIVIAL_BUILD=yes
 else
 TRIVIAL_BUILD=no
@@ -189,7 +189,7 @@ SUBDIRS := \
     \
     module_helper \
     \
-    po \
+    ../docs/src ../docs/src/source-highlight \
     \
     ../tests \
 
@@ -239,7 +239,7 @@ READ_DEPS = $(wildcard $(DEPS))
 $(shell $(VECHO) 1>&2 Reading $(words $(READ_DEPS))/$(words $(DEPS)) dependency files)
 -include $(READ_DEPS)
 UNREAD_DEPS = $(filter-out $(READ_DEPS), $(DEPS))
-$(shell $(VECHO) 1>&2 Done reading dependencies)
+#$(shell $(VECHO) 1>&2 Done reading dependencies)
 endif
 
 # Each directory in $(INCLUDES) is passed as a -I directory when compiling.
@@ -320,6 +320,7 @@ INFILES = \
 	../tcl/linuxcnc.tcl ../scripts/halrun ../scripts/rip-environment \
 	../scripts/linuxcncmkdesktop \
 	../lib/python/nf.py \
+	../share/desktop-directories/linuxcnc-doc.directory \
 	../share/desktop-directories/linuxcnc-ref.directory \
 	../share/desktop-directories/linuxcnc-cnc.directory \
 	../share/menus/CNC.menu \
@@ -471,8 +472,8 @@ headers: $(HEADERS)
 TARGETS += headers
 
 # Add converting of %.po files
-TARGETS += $(patsubst po/%.po, ../share/locale/%/LC_MESSAGES/linuxcnc.mo, $(wildcard po/*.po))
-TARGETS += $(patsubst po/%.po, objects/%.msg, $(wildcard po/*.po))
+#TARGETS += $(patsubst po/%.po, ../share/locale/%/LC_MESSAGES/linuxcnc.mo, $(wildcard po/*.po))
+#TARGETS += $(patsubst po/%.po, objects/%.msg, $(wildcard po/*.po))
 
 # tooledit as standalone app:
 TARGETS += ../bin/tooledit
@@ -495,16 +496,19 @@ TARGETS += ../bin/halshow
 userspace: $(TARGETS)
 
 pythonclean:
-	rm -f $(PYTARGETS)
-	find ../lib/python -name '*.so' -exec rm {} +
-	find . -name __pycache__ | xargs -r rm -r
+	# Clean Python
+	@rm -f $(PYTARGETS)
+	@find ../lib/python -name '*.so' -exec rm {} +
+	@find . -name __pycache__ | xargs -r rm -r
 python: $(PYTARGETS)
 userspace: python
 inclean:
-	$(RM) $(INFILES)
+	# Clean INFILES
+	@rm -f $(INFILES)
 headersclean:
-	$(RM) $(HEADERS)
-clean: pythonclean cscopeclean headersclean
+	# Clean HEADERS
+	@rm -f $(HEADERS)
+clean: docclean pythonclean cscopeclean headersclean
 distclean: clean inclean
 
 # This is the gateway into the crazy world of "kbuild", the linux 2.6 system
@@ -523,23 +527,26 @@ endif
 # 'clean' cleans everything but dependency files, and 'depclean' cleans them
 # too.
 modclean:
-	find -name '.*.cmd' -or -name '*.ko' -or -name '*.mod.c' -or -name '*.mod.o' | xargs rm -f
-	-rm -rf .tmp_versions
-	find . -name .tmp_versions |xargs rm -rf
-	-rm -f ../rtlib/*.ko
-	-rm -f ../rtlib/*.so
+	# Clean modules
+	@find -name '.*.cmd' -or -name '*.ko' -or -name '*.mod.c' -or -name '*.mod.o' | xargs rm -f
+	@rm -rf .tmp_versions
+	@find . -name .tmp_versions |xargs rm -rf
+	@rm -f ../rtlib/*.ko
+	@rm -f ../rtlib/*.so
 
 depclean:
-	-rm -rf depends
+	# Clean depends
+	@-rm -rf depends
 
 clean: genclean depclean modclean
 genclean:
-	find . -name '*.o' |xargs rm -f
-	-rm -rf objects
-	-rm -f $(TARGETS)
-	-rm -f $(GENERATED_MANPAGES)
-	-rm -f ../rtlib/*.$(MODULE_EXT)
-	-rm -f hal/components/conv_*.comp
+	# Clean gen
+	@find . -name '*.o' |xargs rm -f
+	@rm -rf objects
+	@rm -f $(TARGETS)
+	@rm -f $(GENERATED_MANPAGES)
+	@rm -f ../rtlib/*.$(MODULE_EXT)
+	@rm -f hal/components/conv_*.comp
 
 pycheck-python-files:
 	@echo 'Checking *.py files for python3 compatibility...'
@@ -607,7 +614,7 @@ You configured run-in-place, but are trying to install.
 For an installable version, run configure without --enable-run-in-place
 and rebuild
 endef
-install install-software:
+install install-software install-docs:
 	$(error $(ERROR_MESSAGE))
 
 MENUS = ../share/menus/CNC.menu \
@@ -617,15 +624,27 @@ rip-install-menus rip-install-menu: $(MENUS) $(XDGDESKTOP)
 	cp $< $(HOME)/.config/menus/applications-merged
 else
 
+DOCS=README.adoc INSTALL.adoc AUTHORS
+
+# FIXME figure out how to install translated docs in subdirs
+DOCS_HELP=$(call GLOB,../docs/help/*.adoc)
 
 NC_FILES=$(filter-out %/butterfly.ngc,$(call GLOB,../nc_files/*))
 TCL=$(call GLOB,../tcl/*.tcl)
 TCL_BIN=$(call GLOB,../tcl/bin/*.tcl) ../tcl/bin/popimage
 
+install-docs:
+	$(DIR) $(DESTDIR)$(docsdir)
+	$(FILE) $(addprefix ../docs/,$(DOCS)) $(DESTDIR)$(docsdir)
+	$(FILE) $(DOCS_HELP) $(DESTDIR)$(docsdir)
+	$(FILE) emc/usr_intf/axis/etc/axis_light_background $(DESTDIR)$(docsdir)
+	$(FILE) emc/usr_intf/axis/README $(DESTDIR)$(docsdir)/README.axis
+
 install-dirs:
 	$(DIR) $(DESTDIR)$(EMC2_RTLIB_DIR) \
 		$(DESTDIR)$(sysconfdir)/linuxcnc $(DESTDIR)$(bindir) $(DESTDIR)$(libdir) \
 		$(DESTDIR)/$(libdir)/linuxcnc $(DESTDIR)$(includedir)/linuxcnc \
+		$(DESTDIR)$(docsdir) $(DESTDIR)$(ncfilesdir) \
 		$(DESTDIR)/etc/X11/app-defaults $(DESTDIR)$(tcldir)/bin \
 		$(DESTDIR)$(tcldir)/scripts \
 		$(DESTDIR)$(mandir)/man1 \
@@ -648,6 +667,10 @@ install-dirs:
 		$(DESTDIR)$(datadir)/linuxcnc/hallib
 
 install-kernel-indep: install-dirs
+	$(FILE) ../docs/man/man1/*.1 $(DESTDIR)$(mandir)/man1
+	$(FILE) $(filter-out %/skeleton.3hal, $(wildcard ../docs/man/man3/*.3hal)) $(DESTDIR)$(mandir)/man3
+	$(FILE) $(filter-out %/skeleton.3rtapi, $(wildcard ../docs/man/man3/*.3rtapi)) $(DESTDIR)$(mandir)/man3
+	$(FILE) $(filter-out %/skeleton.9, $(wildcard ../docs/man/man9/*.9)) $(DESTDIR)$(mandir)/man9
 	$(FILE) objects/*.msg $(DESTDIR)$(tcldir)/msgs
 	$(EXE) ../scripts/realtime $(DESTDIR)$(prefix)/lib/linuxcnc
 	$(EXE) ../scripts/halrun $(DESTDIR)$(bindir)
@@ -1273,7 +1296,7 @@ ifeq ($(TRIVIAL_BUILD),no)
 READ_RTDEPS = $(wildcard $(RTDEPS))
 $(shell $(VECHO) 1>&2 Reading $(words $(READ_RTDEPS))/$(words $(RTDEPS)) realtime dependency files)
 -include $(READ_RTDEPS)
-$(shell $(VECHO) 1>&2 Done reading realtime dependencies)
+#$(shell $(VECHO) 1>&2 Done reading realtime dependencies)
 endif
 endif
 
@@ -1314,6 +1337,8 @@ swish:
 		$(dir $(BASEPWD))lib/python \
 		$(dir $(BASEPWD))scripts \
 		$(dir $(BASEPWD))configs \
+		$(dir $(BASEPWD))docs/src \
+		$(dir $(BASEPWD))docs/man/man1
 
 # When you depend on objects/var-ZZZ you are depending on the contents of the
 # variable ZZZ, which is assumed to depend on a Makefile, a Submakefile, or
@@ -1330,5 +1355,6 @@ cscope:
 	cscope -Rb
 
 cscopeclean:
-	bash -c 'for f in `find ./ -name "cscope.*out"`;do rm $$f;done'
+	# Clean cssope
+	@bash -c 'for f in `find ./ -name "cscope.*out"`;do rm $$f;done'
 # vim:ts=8:sts=8:sw=8:noet:
