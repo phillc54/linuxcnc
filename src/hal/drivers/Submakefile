@@ -13,7 +13,7 @@ hal/drivers/pluto_step_rbf.h: hal/drivers/pluto_step_firmware/pluto_step.rbf hal
 
 clean: pluto_clean
 pluto_clean:
-	# Clean pluto
+	$(info Clean pluto)
 	@rm  -rf \
 	    pluto_servo_firmware/db \
 	    pluto_servo_firmware/pluto_servo.asm.rpt \

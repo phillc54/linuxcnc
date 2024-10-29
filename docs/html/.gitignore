@@ -1,46 +1,49 @@
-*.js
-*.css
-!linuxcnc.css
-*.html
-!gcode*.html
-*.xml
-*.png
-*.gif
-code
-common
-config
-drivers
-examples
-gcode
-getting-started
-gui
-hal
-install
-integrator
-lathe
-man
-motion
-remap
-user
-# Ignore po4a-generated files for other languages
-ar/*
-bg/*
-cs/*
-da/*
-de/*
-es/*
-fr/*
-hu/*
-it/*
-ka/*
-nb/*
-pl/*
-pt/*
-pt_BR/*
-ru/*
-sk/*
-sv/*
-tr/*
-uk/*
-vi/*
-zh_CN/*
+index.html
+plasma
+utils
+# *.js
+# *.css
+# !linuxcnc.css
+# *.html
+# !gcode*.html
+# *.xml
+# *.png
+# *.gif
+# code
+# common
+# config
+# drivers
+# examples
+# gcode
+# getting-started
+# gui
+# hal
+# install
+# integrator
+# lathe
+# man
+# motion
+# remap
+# user
+# # Ignore po4a-generated files for other languages
+# ar/*
+# bg/*
+# cs/*
+# da/*
+# de/*
+# es/*
+# fr/*
+# hu/*
+# it/*
+# ka/*
+# nb/*
+# pl/*
+# pt/*
+# pt_BR/*
+# ru/*
+# sk/*
+# sv/*
+# tr/*
+# uk/*
+# vi/*
+# zh_CN/*

@@ -496,17 +496,17 @@ TARGETS += ../bin/halshow
 userspace: $(TARGETS)
 
 pythonclean:
-	# Clean Python
+	$(info Clean python)
 	@rm -f $(PYTARGETS)
 	@find ../lib/python -name '*.so' -exec rm {} +
 	@find . -name __pycache__ | xargs -r rm -r
 python: $(PYTARGETS)
 userspace: python
 inclean:
-	# Clean INFILES
+	$(info Clean infiles)
 	@rm -f $(INFILES)
 headersclean:
-	# Clean HEADERS
+	$(info Clean headers)
 	@rm -f $(HEADERS)
 clean: docclean pythonclean cscopeclean headersclean
 distclean: clean inclean
@@ -527,7 +527,7 @@ endif
 # 'clean' cleans everything but dependency files, and 'depclean' cleans them
 # too.
 modclean:
-	# Clean modules
+	$(info Clean modules)
 	@find -name '.*.cmd' -or -name '*.ko' -or -name '*.mod.c' -or -name '*.mod.o' | xargs rm -f
 	@rm -rf .tmp_versions
 	@find . -name .tmp_versions |xargs rm -rf
@@ -535,12 +535,12 @@ modclean:
 	@rm -f ../rtlib/*.so
 
 depclean:
-	# Clean depends
+	$(info Clean depends)
 	@-rm -rf depends
 
 clean: genclean depclean modclean
 genclean:
-	# Clean gen
+	$(info Clean generated manpages)
 	@find . -name '*.o' |xargs rm -f
 	@rm -rf objects
 	@rm -f $(TARGETS)
@@ -1355,6 +1355,6 @@ cscope:
 	cscope -Rb
 
 cscopeclean:
-	# Clean cssope
+	$(info Clean scope)
 	@bash -c 'for f in `find ./ -name "cscope.*out"`;do rm $$f;done'
 # vim:ts=8:sts=8:sw=8:noet:

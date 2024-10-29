@@ -22,7 +22,7 @@ hal/user_comps/wj200_vfd/wj200_vfd.c: hal/user_comps/wj200_vfd/wj200_vfd.comp ..
 
 clean: wj200_clean
 wj200_clean:
-	# Clean wj200
+	$(info Clean wj200)
 	@rm -f hal/user_comps/wj200_vfd/wj200_vfd.c
 	@rm -f hal/user_comps/wj200_vfd/wj200_vfd.1
 

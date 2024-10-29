@@ -1,212 +1,56 @@
-.PHONY: docs docsclean checkref checkref_en
-.PHONY: htmldocs
-
+# global variables
 DOC_DIR=../docs
-DOC_SRCDIR=../docs/src
+DOC_SRC=../docs/src
+HTML_DIR=../docs/html
+UTILS_DIR=../docs/utils
+DOCS:=$(shell find $(DOC_SRC) -name "*.adoc")
+HTMLS:=$(shell find $(HTML_DIR) -maxdepth 1 -type d)
 
-LOC_HL_DIR=../docs/src/source-highlight
-LOC_LANG_MAP=$(LOC_HL_DIR)/local/lang.map
-
-ifeq ($(BUILD_DOCS),yes)
-GENERATED_MANPAGES += $(patsubst ../docs/src/man/%.adoc, ../docs/man/%, $(wildcard ../docs/src/man/*/*.adoc))
-endif
-
-MAN_SRCS = $(sort \
-	$(wildcard $(DOC_DIR)/man/man1/*.1) \
-	$(wildcard $(DOC_DIR)/man/man3/*.3*) \
-	$(wildcard $(DOC_DIR)/man/man9/*.9) \
-	$(GENERATED_MANPAGES))
-
-ifneq ($(MANDB),)
-default: $(DOC_DIR)/man/index.db
-$(DOC_DIR)/man/index.db: $(MAN_SRCS)
-	@echo "Updating 'whatis' database"
-	$(Q)$(MANDB) $(DOC_DIR)/man
-endif
-
-ifeq ($(BUILD_DOCS),yes)
-DOC_SRCS_EN := \
-	qtplasmac/qtplasmac.adoc \
-	plasmac2/plasmac2.adoc \
-
-DOC_SRCS = $(DOC_SRCS_EN)
-DOC_SRCS_TXT := $(patsubst %.adoc, %.adoc, $(DOC_SRCS))
-DOC_SRCS_EN_SMALL := $(filter-out Master_%,$(DOC_SRCS_EN))
-DOC_SRCS_HTML := $(patsubst %.adoc, %.html, $(filter-out Master_%, $(DOC_SRCS)))
-
-DOC_TARGETS_HTML := $(addprefix $(DOC_DIR)/html/,$(DOC_SRCS_HTML)) #$(subst /,_,$(DOC_SRCS_HTML)))
-DOC_TARGETS_XML := $(patsubst $(DOC_DIR)/html/%.html, objects/%.xml, $(DOC_TARGETS_HTML))
-
-#MAN_HTML_TARGETS = $(patsubst $(DOC_DIR)/man/%, $(DOC_DIR)/html/man/%.html, $(MAN_SRCS))
-
-HTML_TARGETS := \
-	$(DOC_TARGETS_HTML) \
-	$(MAN_HTML_TARGETS) \
-
-ifeq ($(TRIVIAL_BUILD),no)
--include $(patsubst %.adoc, depends/%.d, $(DOC_SRCS_TXT))
-Makefile: $(patsubst %.adoc, depends/%.d, $(DOC_SRCS_TXT))
-endif
-
-docs: manpages
-manpages: $(GENERATED_MANPAGES)
-
-clean: clean-manpages
-clean-manpages:
-	# Clean manpages
-	@rm -f $(GENERATED_MANPAGES)
-	@echo $(DOC_SRCS_HTML)
-	@echo $(DOC_TARGETS_HTML)
-
-ifeq ($(BUILD_DOCS_HTML),yes)
-docs: htmldocs
-install-doc: install-doc-html
-endif
-
-htmldocs: .htmldoc-stamp
-
-.htmldoc-stamp: copy_asciidoc_files $(HTML_TARGETS) .html-images-stamp
-	@touch $@
-
-.PHONY: copy_asciidoc_files
-copy_asciidoc_files:
-	cp -f /etc/asciidoc/stylesheets/*.css $(DOC_DIR)/html
-	cp -f /etc/asciidoc/javascripts/*.js $(DOC_DIR)/html
-
-checkref: checkref_en
-
-checkref_en: $(DOC_TARGETS_HTML_EN) .htmldoc-stamp
-	@$(DOC_SRCDIR)/checkref English $^
-
-depends/%.d: $(DOC_SRCDIR)/%.adoc $(DOC_SRCDIR)/asciideps
-	$(ECHO) Depending $<
-	@mkdir -p $(dir $@)
-	$(Q)$(DOC_SRCDIR)/asciideps $< > $@.tmp
-	@mv $@.tmp $@
-
-objects/%.links-stamp: $(DOC_SRCDIR)/%.adoc $(DOC_SRCDIR)/links.xslt
-	@mkdir -p `dirname $@`
-	asciidoc -f $(DOC_SRCDIR)/attribute-colon.conf -a "scriptdir=$(DOC_SRCDIR)/" -d book -o- -b docbook $< | xsltproc $(DOC_SRCDIR)/links.xslt - > $@.tmp || (X=$$?; rm -f $@; exit $$X)
-	sh move-if-change $@.tmp $(patsubst %-stamp,%,$@)
-	touch $@
-
-objects/%.links: objects/%.links-stamp
-	@:
-
-# Secondary is not working here.
-# See http://www.gnu.org/software/make/manual/make.html#Chained-Rules
-.PRECIOUS: objects/%.links-stamp
-
-objects/xref_en.links: $(patsubst %.adoc,objects/%.links,$(DOC_SRCS_EN_SMALL))
-	$(PYTHON) $(DOC_SRCDIR)/links_db_gen.py objects/ $^ > $@
-
-$(DOC_TARGETS_HTML): $(DOC_DIR)/html/%.html: $(DOC_SRCDIR)/%.html
-	@d=`dirname $*`; \
-	mkdir -p $(shell dirname $@)
-	@cp $< $@
-	@echo $(DOC_SRCS_HTML)
-	@echo $(DOC_TARGETS_HTML)
-
-.html-images-stamp: $(DOC_TARGETS_HTML)
-	set -e; for HTML_FILE in $^; do \
-		HTML_DIR=$$(basename $$(dirname $$HTML_FILE)); \
-		for IMAGE_FILE in $$(xsltproc --novalid --nonet $(DOC_SRCDIR)/html-images.xslt $$HTML_FILE); do \
-			IMAGE_DIR=$$(dirname $$IMAGE_FILE); \
-			mkdir -p $(DOC_DIR)/html/$$HTML_DIR/$$IMAGE_DIR; \
-			cp -f $(DOC_SRCDIR)/$$HTML_DIR/$$IMAGE_FILE $(DOC_DIR)/html/$$HTML_DIR/$$IMAGE_FILE; \
-		done; \
-		mkdir -p objects/image-cache; \
-		HTML_LATEX_CACHE=objects/image-cache $(DOC_SRCDIR)/html-latex-images $$HTML_FILE || (X=$$?; rm $$HTML_FILE; exit $$X); \
-	done
-	@touch $@
-
-# Define a target-specific variable called STYLES_SCRIPTS_DIR, which has
-# the relative path from this html target to the root of the generated
-# document tree (docs/html in the git repo).  This is where the CSS files
-# and javascript files will be installed.
-$(DOC_SRCDIR)/%.html: STYLES_SCRIPTS=$(shell \
-    D=$$(python -c "print '../' * '$*'.count('/')"); \
-    if [ ! -z $$D ]; then \
-        echo "-a 'scriptsdir=$$D' -a 'stylesdir=$$D'"; \
-    fi \
-)
-
-$(patsubst %.adoc,$(DOC_SRCDIR)/%.html,$(DOC_SRCS_EN_SMALL)): $(DOC_SRCDIR)/%.html: $(DOC_SRCDIR)/%.adoc objects/xref_en.links $(LOC_LANG_MAP)
-	asciidoc -f $(DOC_SRCDIR)/xhtml11.conf \
-		 -f $(DOC_SRCDIR)/asciidoc-dont-replace-arrows.conf \
-		 -f $(LOC_HL_DIR)/emc-langs-source-highlight.conf \
-		 -a "source_highlight_dir=$(LOC_HL_DIR)/local" \
-		 -a linkcss \
-		 $(STYLES_SCRIPTS) \
-	         -a "scriptdir=$(DOC_SRCDIR)/" \
-	         -a "relindir=$(shell dirname $*)" \
-	         -a "linksfile=objects/xref_en.links" \
-		 -a stylesheet=linuxcnc.css \
-		 -d book -a toc -a numbered -b xhtml11 $< || (X=$$?; rm -f $@; exit $$X)
-
-default: docs
-
-install-doc-html:
-	$(DIR) $(DESTDIR)$(docsdir)
-	cp -a $(DOC_DIR)/html $(DESTDIR)$(docsdir)
-
-install-kernel-indep: install-doc
+# asciidoc variables
+HL_DIR=../docs/source-highlight
+SCRIPTS_DIR=../utils/scripts
+STYLES_DIR=../utils/styles
+OPTIONS:= \
+	-f $(HL_DIR)/linuxcnc.conf \
+	-a 'source_highlight_dir=$(HL_DIR)' \
+	-a linkcss \
+	-a 'scriptsdir=$(SCRIPTS_DIR)' \
+	-a 'stylesdir=$(STYLES_DIR)' \
+	-a stylesheet=linuxcnc.css \
 
 docclean:
-	# Clean docs
-	rm -rf $(DOC_DIR)/html/plasmac2
-	rm -rf $(DOC_DIR)/html/qtplasmac
-	rm -f $(DOC_TARGETS_HTML) $(DOC_DIR)/html/xref*.html $(DOC_DIR)/html/index*.html $(DOC_DIR)/*.png $(DOC_DIR)/man/*.png
-	rm -f .htmldoc-stamp
-	rm -f .html-images-stamp
+	@rm -f $(HTML_DIR)/index.html
+	@rm -rf $(HTML_DIR)/utils
+	@for DIR in $(HTMLS) ; do \
+		case $$(basename $$DIR) in \
+		html|utils) ;; \
+		*) echo "Cleaning HTML directory $$(basename $$DIR)"; \
+		rm -rf $$DIR;; \
+		esac \
+	done
 
-MAN_DEPS := $(patsubst $(DOC_DIR)/man/%, depends/%.d, $(MAN_SRCS))
-$(MAN_DEPS): depends/%.d: $(DOC_DIR)/man/%
-	@mkdir -p $(dir $@)
-	$(Q)echo -n "$(DOC_DIR)/html/man/$*.html: $<" > $@.tmp
-	$(Q)grep '^\.so ' $< | awk '{printf " \\\n\t$(DOC_DIR)/man/%s", $$2}' >> $@.tmp
-	$(Q)echo >> $@.tmp
-	$(Q)mv -f $@.tmp $@
-
-ifeq ($(TRIVIAL_BUILD),no)
--include $(MAN_DEPS)
-Makefile: $(MAN_DEPS)
-endif
-
-%.png: %.dot
-	dot -Tpng -o$@ $<
-
-%.svg: %.dot
-	dot -Tsvg -o$@ $<
-
-%.png:; $(error Required image file $@ does not exist)
-%.jpg:; $(error Required image file $@ does not exist)
-%.svg:; $(error Required image file $@ does not exist)
-%.dxf:; $(error Required image file $@ does not exist)
-%.ps:; $(error Required image file $@ does not exist)
-%.eps:; $(error Required image file $@ does not exist)
-
-# make manpages from all the asciidoc manpage-sources
-# Note that in some versions of asciidoc, including the one in Debian Jessie,
-# a2x spuriously warns that this --destination-dir is ignored.  It is *NOT*
-# ignored, don't remove it trying to fix the diagnostic.
-# For more information, see https://github.com/asciidoc/asciidoc/issues/44
-GENERATED_MANPAGES += $(patsubst $(DOC_DIR)/src/man/%.adoc, $(DOC_DIR)/man/%, $(wildcard $(DOC_DIR)/src/man/man?/*.adoc))
-$(DOC_DIR)/man/%: $(DOC_DIR)/src/man/%.adoc
-	@mkdir -p `dirname $@`
-	a2x -v --doctype manpage \
-		--format manpage \
-		--destination-dir `dirname $@` \
-		--xsltproc-opts --nonet \
-		-a mansource=LinuxCNC \
-		-a manmanual='LinuxCNC Documentation' \
-		$<
-
-else
-:
-	@:
-
-docs:
-	$(error Cannot build documents, missing AsciiDoc or some other required program, or explicitly disabled in configure)
-
+default:
+ifeq ($(BUILD_DOCS_HTML),yes)
+	@if [ ! -d $(HTML_DIR)/utils ]; then \
+		echo "copying utilities"; \
+		mkdir -p $(HTML_DIR)/utils; \
+		cp -r $(DOC_SRC)/utils/* $(HTML_DIR)/utils/; \
+	fi
+	@echo "copying index.html"
+	@cp $(DOC_SRC)/index.tmpl $(HTML_DIR)/index.html
+	@for DOC in $(DOCS); do \
+		IN_DIR=$$(dirname $$DOC); \
+		NAME=$$(basename $$DOC .adoc); \
+		GROUP=$$(basename $$IN_DIR); \
+		OUT_DIR=$${IN_DIR/src/html}; \
+		OUT_HTML=$$OUT_DIR/$$NAME.html; \
+		if [ ! -d $$OUT_DIR/images ]; then \
+			echo "copying $$GROUP/images"; \
+			mkdir -p $$OUT_DIR/images; \
+			cp -r $$IN_DIR/images/* $$OUT_DIR/images/; \
+		fi; \
+		echo "building $$NAME.html"; \
+		mkdir -p $$OUT_DIR; \
+		asciidoc $(OPTIONS) -o $$OUT_HTML $$DOC; \
+	done
 endif

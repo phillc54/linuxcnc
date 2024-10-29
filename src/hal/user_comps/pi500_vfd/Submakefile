@@ -22,7 +22,7 @@ hal/user_comps/pi500_vfd/pi500_vfd.c: hal/user_comps/pi500_vfd/pi500_vfd.comp ..
 
 clean: pi500_clean
 pi500_clean:
-	# Clean pi500
+	$(info Clean pi500)
 	@rm -f hal/user_comps/pi500_vfd/pi500_vfd.c
 	@rm -f hal/user_comps/pi500_vfd/pi500_vfd.1
 

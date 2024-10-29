@@ -741,6 +741,14 @@ def clear_program():
     t.delete(0.0, 'end')
     t.configure(state='disabled')
 
+# TEMP FOR TCL PLOT TESTING
+def show_backplot():
+    rE(f"set unitsetting ({unitSuffix})")#{s.linear_units}")
+    rE(f"source $linuxcnc::TCL_BIN_DIR/tkbackplot.tcl")
+    rE(f"popupPlot")
+    rE(f"updatePlot")
+#
+
 def set_conv_preview():
     ''' configure the preview for conversational '''
     global convViewOptions, joint_dro_format_old , dro_format_old
@@ -4395,7 +4403,10 @@ if os.path.isdir(os.path.join(p2Path, 'lib')):
     TEMP = plasmacTempMaterial()
     # for calling tcl code
     rE = root_window.tk.eval
-    # set the app icon
+# TEMP FOR TCL PLOT TESTING
+    TCL = os.environ['TCLLIBPATH']
+#
+#    # set the app icon
     icon = PhotoImage(file=f"{imagePath}/chips_plasma.png")
     rE(f"wm iconphoto . {icon}")
     # set the version
@@ -4603,6 +4614,9 @@ if os.path.isdir(os.path.join(p2Path, 'lib')):
     TclCommands.save_setup_clicked = save_setup_clicked
     TclCommands.load_setup_clicked = load_setup_clicked
     TclCommands.clear_program = clear_program
+# TEMP FOR TCL PLOT TESTING
+    TclCommands.show_backplot = show_backplot
+#
     TclCommands.preview_toggle = preview_toggle
     TclCommands.setup_toggle = setup_toggle
     TclCommands.param_toggle = param_toggle
@@ -5059,6 +5073,10 @@ if os.path.isdir(os.path.join(p2Path, 'lib')):
     # add new menu items
     rE('.menu.file insert 2 command -command clear_program')
     rE(f"setup_menu_accel .menu.file 2 {{{_('_Clear')}}}")
+# TEMP FOR TCL PLOT TESTING
+    rE('.menu.file add command -command show_backplot')
+    rE(f"setup_menu_accel .menu.file end {{{_('_Tk Backplot')}}}")
+#
     rE('.menu.file add command -command close_window')
     rE(f"setup_menu_accel .menu.file end {{{_('_Quit')}}}")
     rE('.menu.view insert 0 checkbutton -variable previewLarge -command preview_toggle')
@@ -6257,3 +6275,7 @@ def user_live_update():
     if os.path.isfile(upFile):
         exec(open(upFile).read())
     o.tkRedraw()
+# TEMP FOR TCL PLOT TESTING
+#    if rE("winfo exists .plot") == '1':
+#        rE(f"updatePlot")
+#

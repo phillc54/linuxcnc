@@ -31,7 +31,7 @@ test-inputs:  $(PERSONALITIES_MOD_COMPS) \
 clean:  test-inputs-clean
 
 test-inputs-clean:
-	# Clean tests
+	$(info Clean tests)
 	@rm -f $(PERSONALITIES_MOD_COMPS) \
 	    ../tests/halcompile/serial-out-of-tree/mesa_uart_test.comp \
 	    ../tests/halcompile/userspace/rand_test.comp \
