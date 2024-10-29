@@ -50,6 +50,7 @@ import xml.etree.ElementTree
 import xml.etree.ElementPath
 import traceback
 from multifilebuilder import MultiFileBuilder
+import preferences
 from pncconf import pages
 from pncconf import build_INI
 from pncconf import build_HAL

@@ -1029,7 +1029,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <signal name="clicked" handler="on_loadladder_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkAlignment" id="alignment5">
                                     <property name="visible">True</property>
@@ -1102,7 +1101,6 @@ program</property>
                 <property name="receives_default">False</property>
                 <property name="use_underline">True</property>
                 <property name="draw_indicator">True</property>
-                <signal name="toggled" handler="on_classicladder_toggled" swapped="no"/>
               </object>
             </child>
           </object>
