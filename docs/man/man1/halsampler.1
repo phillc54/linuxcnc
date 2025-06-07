@@ -1,0 +1,107 @@
+'\" t
+.\"     Title: halsampler
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HALSAMPLER" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+halsampler \- sample data from HAL in realtime
+.SH "SYNOPSIS"
+.sp
+\fBhalsampler\fR [\fIoptions\fR]
+.SH "DESCRIPTION"
+.sp
+\fBsampler\fR(9) and \fBhalsampler\fR are used together to sample HAL data in real time and store it in a file\&. \fBsampler\fR is a realtime HAL component that exports HAL pins and creates a FIFO in shared memory\&. It then begins sampling data from the HAL and storing it to the FIFO\&. \fBhalsampler\fR is a non\-realtime program that copies data from the FIFO to stdout, where it can be redirected to a file or piped to some other program\&.
+.SH "OPTIONS"
+.PP
+\fB\-c\fR \fICHAN\fR
+.RS 4
+instructs
+\fBhalsampler\fR
+to read from FIFO
+\fICHAN\fR\&. FIFOs are numbered from zero, and the default value is zero, so this option is not needed unless multiple FIFOs have been created\&.
+.RE
+.PP
+\fB\-n\fR \fICOUNT\fR
+.RS 4
+instructs
+\fBhalsampler\fR
+to read
+\fICOUNT\fR
+samples from the FIFO, then exit\&. If
+\fB\-n\fR
+is not specified,
+\fBhalsampler\fR
+will read continuously until it is killed\&.
+.RE
+.PP
+\fB\-t\fR
+.RS 4
+instructs
+\fBhalsampler\fR
+to tag each line by printing the sample number in the first column\&.
+.RE
+.PP
+\fIFILENAME\fR
+.RS 4
+instructs
+\fBhalsampler\fR
+to write to
+\fIFILENAME\fR
+instead of to stdout\&.
+.RE
+.SH "USAGE"
+.sp
+A FIFO must first be created by loading \fBsampler\fR(9) with \fBhalcmd loadrt\fR or a \fBloadrt\fR command in a HAL file\&. Then \fBhalsampler\fR can be invoked to begin printing data from the FIFO to stdout\&.
+.sp
+Data is printed one line per sample\&. If \fB\-t\fR was specified, the sample number is printed first\&. The data follows, in the order that the pins were defined in the config string\&. For example, if the \fBsampler\fR config string was "ffbs" then a typical line of output (without \fB\-t\fR) would look like:
+.sp
+123\&.55 33\&.4 0 \-12
+.sp
+\fBhalsampler\fR prints data as fast as possible until the FIFO is empty, then it retries at regular intervals, until it is either killed or has printed \fICOUNT\fR samples as requested by \fB\-n\fR\&. Usually, but not always, data printed by \fBhalsampler\fR will be redirected to a file or piped to some other program\&.
+.sp
+The FIFO size should be chosen to absorb samples captured during any momentary disruptions in the flow of data, such as disk seeks, terminal scrolling, or the processing limitations of subsequent program in a pipeline\&. If the FIFO gets full and \fBsampler\fR is forced to overwrite old data, \fBhalsampler\fR will print \fIoverrun\fR on a line by itself to mark each gap in the sampled data\&. If \fB\-t\fR was specified, gaps in the sequential sample numbers in the first column can be used to determine exactly how many samples were lost\&.
+.sp
+The data format for \fBhalsampler\fR output is the same as for \fBhalstreamer\fR(1) input, so \fIwaveforms\fR captured with \fBhalsampler\fR can be replayed using \fBhalstreamer\fR\&. The \fB\-t\fR option should not be used in this case\&.
+.SH "EXIT STATUS"
+.sp
+If a problem is encountered during initialization, \fBhalsampler\fR prints a message to stderr and returns failure\&.
+.sp
+Upon printing \fICOUNT\fR samples (if \fB\-n\fR was specified) it will shut down and return success\&. If it is terminated before printing the specified number of samples, it returns failure\&. This means that when \fB\-n\fR is not specified, it will always return failure when terminated\&.
+.SH "SEE ALSO"
+.sp
+sampler(9), streamer(9), halstreamer(1)
+.SH "AUTHOR"
+.sp
+Original version by John Kasunich, as part of the LinuxCNC project\&. Improvements by several other members of the LinuxCNC development team\&.
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2006 John Kasunich\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

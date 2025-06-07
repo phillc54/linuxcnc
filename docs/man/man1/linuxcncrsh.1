@@ -1,0 +1,615 @@
+'\" t
+.\"     Title: linuxcncrsh
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "LINUXCNCRSH" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+linuxcncrsh \- text\-mode interface for commanding LinuxCNC over the network
+.SH "SYNOPSIS"
+.sp
+\fBlinuxcncrsh\fR [OPTIONS] [\-\- LINUXCNC_OPTIONS]
+.SH "DESCRIPTION"
+.sp
+The command \fBlinuxcncrsh\fR is a fully\-functional text\-based user interface for LinuxCNC\&. Instead of popping up a GUI window like AXIS(1) and Touchy(1) do, it processes text\-mode commands that it receives via the network\&. A human (or a program) can interface with \fBlinuxcncrsh\fR using telnet(1), nc(1) or similar programs\&.
+.sp
+It cannot be stressed enough that all features of LinuxCNC are available via the \fBlinuxcncrsh\fR interface\&. It can substitute a graphical UI or be started in addition to it\&. If your environment needs to control/monitor more than one machine from a single location, this text interface may raise your interest\&. Also, a speech to text interface may be easier to adapt to this text\-based interface than to a graphical one\&.
+.SH "OPTIONS"
+.PP
+\fB\-p\fR,\fB\-\-port\fR \fIPORT_NUMBER\fR
+.RS 4
+Specify the port for linuxcncrsh to listen on\&. Defaults to 5007 if omitted\&.
+.RE
+.PP
+\fB\-n\fR,\fB\-\-name\fR \fISERVER_NAME\fR
+.RS 4
+Sets the server name that linuxcncrsh will use to identify itself during handshaking with a new client\&. Defaults to EMCNETSVR if omitted\&.
+.RE
+.PP
+\fB\-w\fR,\fB\-\-connectpw\fR PASSWORD
+.RS 4
+Specify the connection password to use during handshaking with a new client\&. Note that the password is sent in the clear, so it can be read by anyone who can read packets on the network between the server and the client\&. Defaults to EMC if omitted\&.
+.RE
+.PP
+\fB\-e\fR,\fB\-\-enablepw\fR \fIPASSWORD\fR
+.RS 4
+Specify the password required to enable LinuxCNC via linuxcncrsh\&. Note that the password is sent in the clear, so it can be read by anyone who can read packets on the network between the server and the client\&. Defaults to EMCTOO if omitted\&.
+.RE
+.PP
+\fB\-s\fR,\fB\-\-sessions\fR \fIMAX_SESSIONS\fR
+.RS 4
+Specify the maximum number of simultaneous connections\&. Defaults to \-1 (no limit) if not specified\&.
+
+In addition to the options listed above, linuxcncrsh accepts an optional special LINUXCNC_OPTION at the end:
+.RE
+.PP
+\fB\-ini\fR \fILINUXCNC_INI_FILE\fR
+.RS 4
+LinuxCNC INI file to use\&. The \-ini option
+\fBmust\fR
+be preceded by two dashes: "\-\-"\&. Defaults to
+\fIemc\&.ini\fR
+if omitted\&.
+.RE
+.SH "STARTING LINUXCNCRSH"
+.sp
+To use \fBlinuxcncrsh\fR instead of a normal LinuxCNC GUI like AXIS or Touchy, specify it in your INI file like this:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[DISPLAY]
+
+DISPLAY=linuxcncrsh
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+To use linuxcncrsh in addition to a normal GUI, you can either 1\&. start it at the end of your HAL file, or 2\&. run it by hand in a terminal window\&.
+.sp
+To start it from HAL, add a line like this to the end of your HAL file:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+loadusr linuxcncrsh [OPTIONS] [\-\- LINUXCNC_OPTIONS]
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+To start it from the terminal, run linuxcncrsh manually like this:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+linuxcncrsh [OPTIONS] [\-\- LINUXCNC_OPTIONS]
+.fi
+.if n \{\
+.RE
+.\}
+.SH "CONNECTING"
+.sp
+Once LinuxCNC is up and \fBlinuxcncrsh\fR is running, you can connect to it using \fBtelnet\fR or \fBnc\fR or similar:
+.PP
+\fBtelnet\fR \fIHOST\fR \fIPORT\fR
+.RS 4
+\fIHOST\fR
+is the hostname or IP address of the computer running linuxcncrsh, and
+\fIPORT\fR
+is the port it\(cqs listening on (5007 if you did not give linuxcncrsh the \-\-port option)\&.
+.RE
+.SH "NETWORK PROTOCOL"
+.sp
+linuxcncrsh accepts TCP connections on the port specified by the \-\-port option, or 5007 if not specified\&.
+.sp
+The client sends requests, and the linuxcncrsh server returns replies\&. Requests consist of a command word followed by optional command\-specific parameters\&. Requests and most request parameters are case insensitive\&. The exceptions are passwords, file paths and text strings\&.
+.sp
+Requests to linuxcncrsh are terminated with line endings, any combination of one or more \fI\er\fR and \fI\en\fR characters\&. Replies from linuxcncrsh are terminated with the sequence \fI\er\en\fR\&.
+.sp
+The supported commands are as follows:
+.PP
+\fBhello\fR \fI<password>\fR \fI<client>\fR \fI<version>\fR
+.RS 4
+<password> must match linuxcncrsh\(cqs connect password, or "EMC" if no \-\-connectpw was supplied\&. The three arguments may not contain whitespace\&. If a valid password was entered the server will respond with:
+
+HELLO ACK <ServerName> <ServerVersion>
+
+If an invalid password or any other syntax error occurs then the server responds with:
+
+HELLO NAK
+.RE
+.PP
+\fBget\fR \fI<subcommand>\fR \fI[<parameters>]\fR
+.RS 4
+The get command takes one of the LinuxCNC sub\-commands (described in the section
+\fBLinuxCNC Subcommands\fR, below) and zero or more additional subcommand\-specific parameters\&.
+.RE
+.PP
+\fBset\fR \fI<subcommand>\fR \fI<parameters>\fR
+.RS 4
+The set command takes one of the LinuxCNC sub\-commands (described in the section
+\fBLinuxCNC Subcommands\fR, below) and one or more additional parameters\&.
+.RE
+.PP
+\fBquit\fR
+.RS 4
+The quit command disconnects the associated socket connection\&.
+.RE
+.PP
+\fBshutdown\fR
+.RS 4
+The shutdown command tells LinuxCNC to shutdown and disconnect the session\&. This command may only be issued if the Hello has been successfully negotiated and the connection has control of the CNC (see
+\fBenable\fR
+subcommand in the
+\fBLinuxCNC Subcommands\fR
+section, below)\&.
+.RE
+.PP
+\fBhelp\fR
+.RS 4
+The help command will return help information in text format over the connection\&. If no parameters are specified, it will itemize the available commands\&. If a command is specified, it will provide usage information for the specified command\&. Help will respond regardless of whether a "Hello" has been successfully negotiated\&.
+.RE
+.SH "LINUXCNC SUBCOMMANDS"
+.sp
+Subcommands for \fBget\fR and \fBset\fR are:
+.PP
+\fBecho\fR {on|off}
+.RS 4
+With get, any on/off parameter is ignored and the current echo state is returned\&. With set, sets the echo state as specified\&. Echo defaults to on when the connection is first established\&. When echo is on, all commands will be echoed upon receipt\&. This state is local to each connection\&.
+.RE
+.PP
+\fBverbose\fR {on|off}
+.RS 4
+With get, any on/off parameter is ignored and the current verbose state is returned\&. With set, sets the verbose state as specified\&. When verbose mode is on all set commands return positive acknowledgement in the form
+
+SET <COMMAND> ACK
+
+and text error messages will be issued (FIXME: I don\(cqt know what this means)\&. The verbose state is local to each connection, and starts out OFF on new connections\&.
+.RE
+.PP
+\fBenable\fR { \fI<passwd>\fR | off }
+.RS 4
+The session\(cqs enable state indicates whether the current connection is enabled to perform control functions\&. With get, any parameter is ignored, and the current enable state is returned\&. With set and a valid password matching linuxcncrsh\(cqs \-\-enablepw (EMCTOO if not specified), the current connection is enabled for control functions\&. "OFF" may not be used as a password and disables control functions for this connection\&.
+.RE
+.PP
+\fBconfig\fR [TBD]
+.RS 4
+Unused, ignore for now\&.
+.RE
+.PP
+\fBcomm_mode\fR { ascii | binary }
+.RS 4
+With get, any parameter is ignored and the current communications mode is returned\&. With set, will set the communications mode to the specified mode\&. The ASCII mode is the text request/reply mode, the binary protocol is not currently designed or implemented\&.
+.RE
+.PP
+\fBcomm_prot\fR \fI<version>\fR
+.RS 4
+With get, any parameter is ignored and the current protocol version used by the server is returned\&. With set, sets the server to use the specified protocol version, provided it is lower than or equal to the highest version number supported by the server implementation\&.
+.RE
+.PP
+\fBinifile\fR
+.RS 4
+Not currently implemented! With get, returns the string
+\fIemc\&.ini\fR\&. Should return the full path and file name of the current configuration INI file\&. Setting this does nothing\&.
+.RE
+.PP
+\fBplat\fR
+.RS 4
+With get, returns the string
+\fILinux\fR\&.
+.RE
+.PP
+\fBini\fR \fI<var>\fR \fI<section>\fR
+.RS 4
+Not currently implemented, do not use! Should return the string value of
+\fI<var>\fR
+in section
+\fI<section>\fR
+of the INI file\&.
+.RE
+.PP
+\fBdebug\fR \fI<value>\fR
+.RS 4
+With get, any parameter is ignored and the current integer value of EMC_DEBUG is returned\&. Note that the value of EMC_DEBUG returned is the from the UI\(cqs INI file, which may be different than emc\(cqs INI file\&. With set, sends a command to the EMC to set the new debug level, and sets the EMC_DEBUG global here to the same value\&. This will make the two values the same, since they really ought to be the same\&.
+.RE
+.PP
+\fBwait_mode\fR { received | done }
+.RS 4
+The wait_mode setting controls the wait after receiving a command\&. It can be "received" (after the command was sent and received) or "done" (after the command was done)\&. With get, any parameter is ignored and the current wait_mode setting is returned\&. With set, set the wait_mode setting to the specified value\&.
+.RE
+.PP
+\fBwait\fR { received | done }
+.RS 4
+With set, force a wait for the previous command to be received, or done\&.
+.RE
+.PP
+\fBset_timeout\fR \fI<timeout>\fR
+.RS 4
+With set, set the timeout for commands to return to <timeout> seconds\&. Timeout is a real number\&. If it\(cqs ⇐ 0\&.0, it means wait forever\&. Default is 0\&.0, wait forever\&.
+.RE
+.PP
+\fBupdate\fR { none | auto }
+.RS 4
+The update mode controls whether to return fresh or stale values for "get" requests\&. When the update mode is "none" it returns stale values, when it\(cqs "auto" it returns fresh values\&. Defaults to "auto" for new connections\&. Set this to "none" if you like to be confused\&.
+.RE
+.PP
+\fBerror\fR
+.RS 4
+With get, returns the current error string, or "ok" if no error\&.
+.RE
+.PP
+\fBoperator_display\fR
+.RS 4
+With get, returns the current operator display string, or "ok" if none\&.
+.RE
+.PP
+\fBoperator_text\fR
+.RS 4
+With get, returns the current operator text string, or "ok" if none\&.
+.RE
+.PP
+\fBtime\fR
+.RS 4
+With get, returns the time, in seconds, from the start of the epoch\&. This starting time depends on the platform\&.
+.RE
+.PP
+\fBestop\fR { on | off }
+.RS 4
+With get, ignores any parameters and returns the current estop setting as "on" or "off"\&. With set, sets the estop as specified\&. E\-stop "on" means the machine is in the estop state and won\(cqt run\&.
+.RE
+.PP
+\fBmachine\fR { on | off }
+.RS 4
+With get, ignores any parameters and returns the current machine power setting as "on" or "off"\&. With set, sets the machine on or off as specified\&.
+.RE
+.PP
+\fBmode\fR { manual | auto | mdi }
+.RS 4
+With get, ignores any parameters and returns the current machine mode\&. With set, sets the machine mode as specified\&.
+.RE
+.PP
+\fBmist\fR { on | off }
+.RS 4
+With get, ignores any parameters and returns the current mist coolant setting\&. With set, sets the mist setting as specified\&.
+.RE
+.PP
+\fBflood\fR { on | off }
+.RS 4
+With get, ignores any parameters and returns the current flood coolant setting\&. With set, sets the flood setting as specified\&.
+.RE
+.PP
+\fBspindle\fR { forward | reverse | increase | decrease | constant | off } {\fI<spindle>\fR}
+.RS 4
+With get, any parameter is ignored and the current spindle state is returned as "forward", "reverse", "increase", "decrease", or "off"\&. With set, sets the spindle as specified\&. Note that "increase" and "decrease" will cause a speed change in the corresponding direction until a "constant" command is sent\&. If "spindle" is omitted, spindle 0 is selected\&. If \-1, all spindles are selected\&.
+.RE
+.PP
+\fBbrake\fR { on | off } {<spindle>}
+.RS 4
+With get, any parameter is ignored and the current brake setting is returned\&. With set, the brake is set as specified\&. If "spindle" is omitted, spindle 0 is selected\&. If \-1, all spindles are selected\&.
+.RE
+.PP
+\fBtool\fR
+.RS 4
+With get, returns the id of the currently loaded tool\&.
+.RE
+.PP
+\fBtool_offset\fR
+.RS 4
+With get, returns the currently applied tool length offset\&.
+.RE
+.PP
+\fBload_tool_table\fR <file>
+.RS 4
+With set, loads the tool table specified by <file>\&.
+.RE
+.PP
+\fBhome\fR {0|1|2|\&...} | \-1
+.RS 4
+With set, homes the indicated joint or, if \-1, homes all joints\&.
+.RE
+.sp
+\fBjog_stop\fR \fIjoint_number\fR|\fIaxis_letter\fR With set, stop any in\-progress jog on the specified joint or axis\&. If TELEOP_ENABLE is OFF, use \fIjoint_number\fR\&. If TELEOP_ENABLE is ON, use \fIaxis_letter\fR\&.
+.PP
+\fIjog joint_number\fR | \fIaxis_letter\fR \fI<speed>\fR
+.RS 4
+With set, jog the specified joint or axis at <speed>; sign of speed is direction\&. If TELEOP_ENABLE is OFF, use joint_number; If TELEOP_ENABLE is ON, use axis_letter\&.
+.RE
+.PP
+\fBjog_incr\fR \fIjog_number\fR | \fIaxis_letter\fR \fI<speed>\fR \fI<incr>\fR
+.RS 4
+With set, jog the indicated joint or axis by increment <incr> at the
+\fI<speed>\fR; sign of speed is direction\&. If TELEOP_ENABLE is OFF, use
+\fIjoint_number\fR\&. If TELEOP_ENABLE is ON, use
+\fIaxis_letter\fR\&.
+.RE
+.PP
+\fBfeed_override\fR \fI<percent>\fR
+.RS 4
+With get, any parameter is ignored and the current feed override is returned (as a percentage of commanded feed)\&. With set, sets the feed override as specified\&.
+.RE
+.PP
+\fBspindle_override\fR \fI<percent>\fR {\fI<spindle>\fR}
+.RS 4
+With get, any parameter is ignored and the current spindle override is returned (as a percentage of commanded speed)\&. With set, sets the spindle override as specified\&. If "spindle" is omitted, spindle 0 is selected\&. If \-1, all spindles are selected\&.
+.RE
+.PP
+\fBabs_cmd_pos\fR [{0|1|\&...}]
+.RS 4
+With get, returns the specified axis\*(Aq commanded position in absolute coordinates\&. If no axis is specified, returns all axes\*(Aq commanded absolute position\&.
+.RE
+.PP
+\fBabs_act_pos\fR [{0|1|\&...}]
+.RS 4
+With get, returns the specified axis\*(Aq actual position in absolute coordinates\&. If no axis is specified, returns all axes\*(Aq actual absolute position\&.
+.RE
+.PP
+\fBrel_cmd_pos\fR [{0|1|\&...}]
+.RS 4
+With get, returns the specified axis\*(Aq commanded position in relative coordinates, including tool length offset\&. If no axis is specified, returns all axes\*(Aq commanded relative position\&.
+.RE
+.PP
+\fBrel_act_pos\fR [{0|1|\&...}]
+.RS 4
+With get, returns the specified axis\*(Aq actual position in relative coordinates, including tool length offset\&. If no axis is specified, returns all axes\*(Aq actual relative position\&.
+.RE
+.PP
+\fBjoint_pos\fR [{0|1|\&...}]
+.RS 4
+With get, returns the specified joint\(cqs actual position in absolute coordinates, excluding tool length offset\&. If no joint is specified, returns all joints\*(Aq actual absolute position\&.
+.RE
+.PP
+\fBpos_offset [{X|Y|Z|R|P|W}]\fR
+.RS 4
+With get, returns the position offset associated with the world coordinate provided\&.
+.RE
+.PP
+\fBjoint_limit [{0|1|\&...}]\fR
+.RS 4
+With get, returns limit status of the specified joint as "ok", "minsoft", "minhard", "maxsoft", or "maxhard"\&. If no joint number is specified, returns the limit status of all joints\&.
+.RE
+.PP
+\fBjoint_fault [{0|1|\&...}]\fR
+.RS 4
+With get, returns the fault status of the specified joint as "ok" or "fault"\&. If no joint number is specified, returns the fault status of all joints\&.
+.RE
+.PP
+\fBjoint_homed [{0|1|\&...}]\fR
+.RS 4
+With get, returns the homed status of the specified joint as "homed" or "not"\&. If no joint number is specified, returns the homed status of all joints\&.
+.RE
+.PP
+\fBmdi\fR \fI<string>\fR
+.RS 4
+With set, sends
+\fI<string>\fR
+as an MDI command\&.
+.RE
+.PP
+\fBtask_plan_init\fR
+.RS 4
+With set, initializes the program interpreter\&.
+.RE
+.PP
+\fBopen\fR \fI<filename>\fR
+.RS 4
+With set, opens the named file\&. The <filename> is opened by linuxcnc, so it should either be an absolute path or a relative path starting in the LinuxCNC working directory (the directory of the active INI file)\&.
+.RE
+.PP
+\fBrun\fR [\fI<StartLine>\fR]
+.RS 4
+With set, runs the opened program\&. If no StartLine is specified, runs from the beginning\&. If a StartLine is specified, start line, runs from that line\&. A start line of \-1 runs in verify mode\&.
+.RE
+.PP
+\fBpause\fR
+.RS 4
+With set, pause program execution\&.
+.RE
+.PP
+\fBresume\fR
+.RS 4
+With set, resume program execution\&.
+.RE
+.PP
+\fBabort\fR
+.RS 4
+With set, abort program or MDI execution\&.
+.RE
+.PP
+\fBstep\fR
+.RS 4
+With set, step the program one line\&.
+.RE
+.PP
+\fBprogram\fR
+.RS 4
+With get, returns the name of the currently opened program, or "none"\&.
+.RE
+.PP
+\fBprogram_line\fR
+.RS 4
+With get, returns the currently executing line of the program\&.
+.RE
+.PP
+\fBprogram_status\fR
+.RS 4
+With get, returns "idle", "running", or "paused"\&.
+.RE
+.PP
+\fBprogram_codes\fR
+.RS 4
+With get, returns the string for the currently active program codes\&.
+.RE
+.PP
+\fBjoint_type\fR [\fI<joint>\fR]
+.RS 4
+With get, returns "linear", "angular", or "custom" for the type of the specified joint (or for all joints if none is specified)\&.
+.RE
+.PP
+\fBjoint_units\fR [\fI<joint>\fR]
+.RS 4
+With get, returns "inch", "mm", "cm", or "deg", "rad", "grad", or "custom", for the corresponding native units of the specified joint (or for all joints if none is specified)\&. The type of the axis (linear or angular) is used to resolve which type of units are returned\&. The units are obtained heuristically, based on the EMC_AXIS_STAT::units numerical value of user units per mm or deg\&. For linear joints, something close to 0\&.03937 is deemed "inch", 1\&.000 is "mm", 0\&.1 is "cm", otherwise it\(cqs "custom"\&. For angular joints, something close to 1\&.000 is deemed "deg", PI/180 is "rad", 100/90 is "grad", otherwise it\(cqs "custom"\&.
+.RE
+.PP
+\fBprogram_units\fR
+.RS 4
+Synonym for program_linear_units\&.
+.RE
+.PP
+\fBprogram_linear_units\fR
+.RS 4
+With get, returns "inch", "mm", "cm", or "none", for the corresponding linear units that are active in the program interpreter\&.
+.RE
+.PP
+\fBprogram_angular_units\fR
+.RS 4
+With get, returns "deg", "rad", "grad", or "none" for the corresponding angular units that are active in the program interpreter\&.
+.RE
+.PP
+\fBuser_linear_units\fR
+.RS 4
+With get, returns "inch", "mm", "cm", or "custom", for the corresponding native user linear units of the LinuxCNC trajectory level\&. This is obtained heuristically, based on the EMC_TRAJ_STAT::linearUnits numerical value of user units per mm\&. Something close to 0\&.03937 is deemed "inch", 1\&.000 is "mm", 0\&.1 is "cm", otherwise it\(cqs "custom"\&.
+.RE
+.PP
+\fBuser_angular_units\fR
+.RS 4
+Returns "deg", "rad", "grad", or "custom" for the corresponding native user angular units of the LinuxCNC trajectory level\&. Like with linear units, this is obtained heuristically\&.
+.RE
+.PP
+\fBdisplay_linear_units\fR
+.RS 4
+With get, returns "inch", "mm", "cm", or "custom", for the linear units that are active in the display\&. This is effectively the value of linearUnitConversion\&.
+.RE
+.PP
+\fBdisplay_angular_units\fR
+.RS 4
+With get, returns "deg", "rad", "grad", or "custom", for the angular units that are active in the display\&. This is effectively the value of angularUnitConversion\&.
+.RE
+.PP
+\fBlinear_unit_conversion\fR { inch | mm | cm | auto }
+.RS 4
+With get, any parameter is ignored and the active unit conversion is returned\&. With set, sets the unit to be displayed\&. If it\(cqs "auto", the units to be displayed match the program units\&.
+.RE
+.PP
+\fBangular_unit_conversion\fR { deg | rad | grad | auto }
+.RS 4
+With get, any parameter is ignored and the active unit conversion is returned\&. With set, sets the units to be displayed\&. If it\(cqs "auto", the units to be displayed match the program units\&.
+.RE
+.PP
+\fBprobe_clear\fR
+.RS 4
+With set, clear the probe tripped flag\&.
+.RE
+.PP
+\fBprobe_tripped\fR
+.RS 4
+With get, return the probe state \- has the probe tripped since the last clear?
+.RE
+.PP
+\fBprobe_value\fR
+.RS 4
+With get, return the current value of the probe signal\&.
+.RE
+.PP
+\fBprobe\fR \fI<x>\fR \fI<y>\fR \fI<z>\fR
+.RS 4
+With set, move toward a certain location\&. If the probe is tripped on the way stop motion, record the position and raise the probe tripped flag\&.
+.RE
+.PP
+\fBteleop_enable\fR [ on | off ]
+.RS 4
+With get, any parameter is ignored and the current teleop mode is returned\&. With set, sets the teleop mode as specified\&.
+.RE
+.PP
+\fBkinematics_type\fR
+.RS 4
+With get, returns the type of kinematics functions used (identity=1, serial=2, parallel=3, custom=4)\&.
+.RE
+.PP
+\fBoverride_limits\fR { on | off }
+.RS 4
+With get, any parameter is ignored and the override_limits setting is returned\&. With set, the override_limits parameter is set as specified\&. If override_limits is on, disables end of travel hardware limits to allow jogging off of a limit\&. If parameters is off, then hardware limits are enabled\&.
+.RE
+.PP
+\fBoptional_stop\fR {0|1}
+.RS 4
+With get, any parameter is ignored and the current "optional stop on M1" setting is returned\&. With set, the setting is set as specified\&.
+.RE
+.SH "EXAMPLE SESSION"
+.sp
+This section shows an example session to the local machine (\fBlocalhost\fR)\&. Bold items are typed by you, non\-bold is machine output\&. Default values are shown for \-\-port \fIPORT_NUMBER\fR (\fB5007\fR), \-\-conectpw \fIPASSWORD\fR (\fBEMC\fR), and \-\-enablepw \fIPASSWORD\fR (\fBEMCTOO\fR)\&.
+.sp
+The user connects to linuxcncrsh, handshakes with the server (hello), enables machine commanding from this session (set enable), brings the machine out of E\-stop (set estop off) and turns it on (set machine on), homes all the axes, switches the machine to mdi mode, sends an MDI G\-code command, then disconnects and shuts down LinuxCNC\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+> *telnet localhost 5007* +
+Trying 127\&.0\&.0\&.1\&.\&.\&. +
+Connected to 127\&.0\&.0\&.1 +
+Escape character is \*(Aq^]\*(Aq\&. +
+*hello EMC user\-typing\-at\-telnet 1\&.0* +
+HELLO ACK EMCNETSVR 1\&.1 +
+*set enable EMCTOO* +
+set enable EMCTOO +
+*set mode manual* +
+set mode manual +
+*set estop off* +
+set estop off +
+*set machine on* +
+set machine on +
+*set home 0* +
+set home 0 +
+*set home 1* +
+set home 1 +
+*set home 2* +
+set home 2 +
+*set mode mdi* +
+set mode mdi +
+*set mdi g0x1* +
+set mdi g0x1 +
+*help* +
+help +
+Available commands: Hello <password> <client name> <protocol version>
+Get <emc command> Set <emc command> Shutdown Help <command> +
+*help get* +
+help get +
+Usage: Get <emc command> Get commands require that a hello has been
+successfully negotiated\&. Emc command may be one of: Abs_act_pos
+Abs_cmd_pos +
+* \&.\&.\&. * +
+*shutdown* +
+shutdown +
+Connection closed by foreign host\&.
+.fi
+.if n \{\
+.RE
+.\}

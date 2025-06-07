@@ -1,0 +1,42 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/dbounce.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH DBOUNCE "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+dbounce \- alternative debounce component
+.SH SYNOPSIS
+
+This component is similar to the \fBdebounce\fR component
+
+(man \fBdebounce\fR) but uses settable delay pins for each instance
+
+and supports \fBcount\fR= or \fBnames\fR= parameters
+
+(groups are not used)
+.SH FUNCTIONS
+.TP
+\fBdbounce.\fIN\fB\fR
+
+.SH PINS
+.TP
+.B dbounce.\fIN\fB.in\fR bit in \fR
+.br
+.ns
+.TP
+.B dbounce.\fIN\fB.out\fR bit out \fR
+.br
+.ns
+.TP
+.B dbounce.\fIN\fB.delay\fR u32 in \fR(default: \fI5\fR)
+.SH AUTHOR
+
+Dewey Garrett
+.SH LICENSE
+
+GPL

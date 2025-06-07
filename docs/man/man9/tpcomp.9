@@ -1,0 +1,62 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/tpcomp.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH TPCOMP "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+tpcomp \- Trajectory Planning (tp) module skeleton
+.SH SYNOPSIS
+.HP
+Custom Trajectory Planning module loaded with \fB[TRAJ]TPMOD=tpcomp\fR
+
+.SH DESCRIPTION
+
+
+Example of a trajectory planning (tp) module buildable with
+halcompile.
+
+The tpcomp.comp file (src/hal/components/tpcomp.comp)
+illustrates a method to use halcompile to build a
+trajectory planning module based on the files used for the
+default trajectory planner (\fBtpmod\fR).
+
+The example tpcomp.comp is not usable until modified
+for the user environment.  To create a runnable tpcomp
+module, the tpcomp.comp file must be edited to supply 1) a
+valid '#define TOPDIR' and 2) references to valid source
+code file names for all files used.
+
+To avoid updates that overwrite tpcomp.comp, best practice is
+to rename the file and its component name (example:
+\fBuser_tpcomp.comp\fR creates module: \fBuser_tpcomp\fR).
+
+The (renamed) component can be built and installed with
+halcompile and then substituted for the default tp module
+(\fBtpmod\fR) using:
+
+  $ linuxcnc \fB-t user_tpcomp\fR someconfig.ini
+
+or by inifile setting: \fB[TRAJ]TPMOD=user_tpcomp\fR
+
+\fBNote:\fRIf using a deb install:
+
+1) halcompile is provided by the deb package linuxcnc-dev
+
+2) This source file for BRANCHNAME (master,2.9,etc) is downloadable from github:
+
+https://github.com/LinuxCNC/linuxcnc/blob/BRANCHNAME/src/hal/components/tpcomp.comp
+
+.SH PINS
+.TP
+.B tpcomp.\fIN\fB.is-module\fR bit out \fR(default: \fI1\fR)
+.SH AUTHOR
+
+Dewey Garrett
+.SH LICENSE
+
+GPL

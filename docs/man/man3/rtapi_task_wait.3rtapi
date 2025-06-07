@@ -1,0 +1,54 @@
+'\" t
+.\"     Title: rtapi_task_wait
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_TASK_WAIT" "3rtapi" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_task_wait \- suspend execution of this periodic task
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+void rtapi_task_wait();
+.fi
+.if n \{\
+.RE
+.\}
+.SH "DESCRIPTION"
+.sp
+\fBrtapi_task_wait\fR suspends execution of the current task until the next period\&. The task must be periodic\&. If not, the result is undefined\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+Call only from within a periodic realtime task\&.
+.SH "RETURN VALUE"
+.sp
+None
+.SH "SEE ALSO"
+.sp
+rtapi_task_start(3rtapi), rtapi_task_pause(3rtapi)

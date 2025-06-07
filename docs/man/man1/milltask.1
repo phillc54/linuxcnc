@@ -1,0 +1,161 @@
+'\" t
+.\"     Title: milltask
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "MILLTASK" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+milltask \- Non\-realtime task controller for LinuxCNC
+.SH "DESCRIPTION"
+.sp
+The internal process \fBmilltask\fR of LinuxCNC is generally not invoked directly but by an INI file setting: [TASK]TASK=milltask`\&. The \fBmilltask\fR process creates the ini\&.\e* HAL pins listed below and owned by the \fBinihal\fR component\&. These pins may be modified while LinuxCNC is running to alter values that are typically specified statically in an INI file\&.
+.sp
+The \fBinihal\fR pins are sampled in every task cycle, however, commands affected by their values typically use the value present at the time when the command is processed\&. Such commands include all codes handled by the interpreter (\fBG\-code\fR programs and \fBMDI\fR commands) and NML \fBjogging\fR commands issued by a GUI (including \fBhalui\fR)\&. \fBWheel jogging\fR is implemented in the realtime motion module so \fBinihal\fR pin changes (e\&.g\&., ini\&.*\&.max_velocity, ini\&.*\&.max_acceleration) may be honored as soon as altered values are propagated to the motion module\&.
+.SH "PINS"
+.SS "Per\-joint pins (N == joint number)"
+.PP
+\fBini\&.\fR\fIN\fR\fB\&.backlash\fR
+.RS 4
+Allows adjustment of [JOINT_N]\fBBACKLASH\fR
+.RE
+.PP
+\fBini\&.\fR\fIN\fR\fB\&.ferror\fR
+.RS 4
+Allows adjustment of [JOINT_N]\fBFERROR\fR
+.RE
+.PP
+\fBini\&.\fR\fIN\fR\fB\&.min_ferror\fR
+.RS 4
+Allows adjustment of [JOINT_N]\fBMIN_FERROR\fR
+.RE
+.PP
+\fBini\&.\fR\fIN\fR\fB\&.min_limit\fR
+.RS 4
+Allows adjustment of [JOINT_N]\fBMIN_LIMIT\fR
+.RE
+.PP
+\fBini\&.\fR\fIN\fR\fB\&.max_limit\fR
+.RS 4
+Allows adjustment of [JOINT_N]\fBMAX_LIMIT\fR
+.RE
+.PP
+\fBini\&.\fR\fIN\fR\fB\&.max_velocity\fR
+.RS 4
+Allows adjustment of [JOINT_N]\fBMAX_VELOCITY\fR
+.RE
+.PP
+\fBini\&.\fR\fIN\fR\fB\&.max_acceleration\fR
+.RS 4
+Allows adjustment of [JOINT_N]\fBMAX_ACCELERATION\fR
+.RE
+.PP
+\fBini\&.\fR\fIN\fR\fB\&.home\fR
+.RS 4
+Allows adjustment of [JOINT_N]\fBHOME\fR
+.RE
+.PP
+\fBini\&.\fR\fIN\fR\fB\&.home_offset\fR
+.RS 4
+Allows adjustment of [JOINT_N]\fBHOME_OFFSET\fR
+.RE
+.PP
+\fBini\&.\fR\fIN\fR\fB\&.home_offset\fR
+.RS 4
+Allows adjustment of [JOINT_N]\fBHOME_SEQUENCE\fR
+.RE
+.SS "Per\-axis pins (L == axis letter)"
+.PP
+\fBini\&.\fR\fIL\fR\fB\&.min_limit\fR
+.RS 4
+Allows adjustment of [AXIS_L]\fBMIN_LIMIT\fR
+.RE
+.PP
+\fBini\&.\fR\fIL\fR\fB\&.max_limit\fR
+.RS 4
+Allows adjustment of [AXIS_L]\fBMAX_LIMIT\fR
+.RE
+.PP
+\fBini\&.\fR\fIL\fR\fB\&.max_velocity\fR
+.RS 4
+Allows adjustment of [AXIS_L]\fBMAX_VELOCITY\fR
+.RE
+.PP
+\fBini\&.\fR\fIL\fR\fB\&.max_acceleration\fR
+.RS 4
+Allows adjustment of [AXIS_L]\fBMAX_ACCELERATION\fR
+.RE
+.SS "Global pins"
+.PP
+\fBini\&.traj_default_acceleration\fR
+.RS 4
+Allows adjustment of [TRAJ]\fBDEFAULT_ACCELERATION\fR
+.RE
+.PP
+\fBini\&.traj_default_velocity\fR
+.RS 4
+Allows adjustment of [TRAJ]\fBDEFAULT_VELOCITY\fR
+.RE
+.PP
+\fBini\&.traj_max_acceleration\fR
+.RS 4
+Allows adjustment of [TRAJ]\fBMAX_ACCELERATION\fR
+.RE
+.PP
+\fBini\&.traj_max_velocity\fR
+.RS 4
+Allows adjustment of [TRAJ]\fBMAX_VELOCITY\fR
+.RE
+.SS "Global pins (arc_blend trajectory planner)"
+.PP
+\fBini\&.traj_arc_blend_enable\fR
+.RS 4
+Allows adjustment of [TRAJ]\fBARC_BLEND_ENABLE\fR
+.RE
+.PP
+\fBini\&.traj_arc_blend_fallback_enable\fR
+.RS 4
+Allows adjustment of [TRAJ]\fBARC_BLEND_FALLBACK_ENABLE\fR
+.RE
+.PP
+\fBini\&.traj_arc_blend_gap_cycles\fR
+.RS 4
+Allows adjustment of [TRAJ]\fBARC_OPTIMIZATION_DEPTH\fR
+.RE
+.PP
+\fBini\&.traj_arc_blend_optimization_depth\fR
+.RS 4
+Allows adjustment of [TRAJ]\fBARC_BLEND_GAP_CYCLES\fR
+.RE
+.PP
+\fBini\&.traj_arc_blend_ramp_freq\fR
+.RS 4
+Allows adjustment of [TRAJ]\fBARC_BLEND_RAMP_FREQ\fR
+.RE
+.SH "NOTES"
+.sp
+The \fBinihal\fR pins cannot be linked or set in a HAL file that is specified by an INI file [HAL]HALFILE item because they are not created until \fBmilltask\fR is started\&. The \fBinihal\fR pin values can be altered by independent halcmd programs specified by [APPLICATION]APP items or by GUIs that support a [HAL]POSTGUI_HALFILE\&.
+.sp
+The INI file is not automatically updated with values altered by \fBinihal\fR pin settings but can be updated using the calibration program (emccalib\&.tcl) when using a [HAL]POSTGUI_HALFILE\&.

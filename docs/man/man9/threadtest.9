@@ -1,0 +1,31 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/threadtest.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH THREADTEST "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+threadtest \- LinuxCNC HAL component for testing thread behavior
+.SH SYNOPSIS
+.HP
+.B loadrt threadtest [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBthreadtest.\fIN\fB.increment\fR
+
+.TP
+\fBthreadtest.\fIN\fB.reset\fR
+
+.SH PINS
+.TP
+.B threadtest.\fIN\fB.count\fR u32 out \fR
+.SH AUTHOR
+
+Jeff Epler
+.SH LICENSE
+
+GPL

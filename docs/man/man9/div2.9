@@ -1,0 +1,50 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/div2.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH DIV2 "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+div2 \- Quotient of two floating point inputs
+.SH SYNOPSIS
+.HP
+.B loadrt div2 [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH DESCRIPTION
+
+
+A very simple comp to divide a floating point number
+by another floating point number, to get a floating point result.
+Remember, not to use a zero divisor. 
+A zero divisor creates an indefinte result.
+This is simple mathematics. 
+.SH FUNCTIONS
+.TP
+\fBdiv2.\fIN\fB\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B div2.\fIN\fB.in0\fR float in \fR
+the Dividend
+.TP
+.B div2.\fIN\fB.in1\fR float in \fR
+the Divisor
+.TP
+.B div2.\fIN\fB.out\fR float out \fR
+the Quotient   out = in0 / in1
+.SH PARAMETERS
+.TP
+.B div2.\fIN\fB.deadband\fR float rw \fR
+The \fBout\fR will be zero if \fBin\fR is between -\fBdeadband\fR and +\fBdeadband\fR
+.SH SEE ALSO
+
+mult2(9), invert(9) 
+.SH AUTHOR
+
+Noel Rodes
+.SH LICENSE
+
+GPL

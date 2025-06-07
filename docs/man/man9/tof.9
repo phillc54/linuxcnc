@@ -1,0 +1,39 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/tof.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH TOF "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+tof \- IEC TOF timer - delay falling edge on a signal
+.SH SYNOPSIS
+.HP
+.B loadrt tof [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBtof.\fIN\fB\fR (requires a floating-point thread)
+Update the timer
+.SH PINS
+.TP
+.B tof.\fIN\fB.in\fR bit in \fR
+Input signal
+.TP
+.B tof.\fIN\fB.q\fR bit out \fR
+Output signal
+.TP
+.B tof.\fIN\fB.et\fR float out \fR
+Elapsed time since falling edge in seconds
+.SH PARAMETERS
+.TP
+.B tof.\fIN\fB.pt\fR float rw \fR
+Delay time in seconds
+.SH AUTHOR
+
+Chad Woitas
+.SH LICENSE
+
+GPL

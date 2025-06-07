@@ -1,0 +1,245 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/carousel.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH CAROUSEL "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+carousel \- Orient a toolchanger carousel using various encoding schemes
+.SH SYNOPSIS
+
+.B loadrt carousel pockets=\fIN\fR[,\fIN\fR]
+.B encoding=\fIssss\fR[,\fIsss\fR]\fB
+.B num_sense=\fIN\fR[,\fIN\fR]
+.B dir=\fIN\fR[,\fIN]
+
+.RS 4
+.TP
+\fBpockets\fR The number of pockets in each toolchanger.
+Use up to 8 numbers separated by commas to create multiple carousel components.
+.TP
+\fBencoding\fR The position encoding.
+gray, binary, bcd, index, edge, counts or single. Default = 'gray'
+.TP
+\fBnum_sense\fR The number of position sense pins.
+Default = 4.
+.TP
+\fBdir\fR Set to 1 for unidirectional or  2 for bidirectional operation.
+Default = bidirectional
+.TP
+\fBparity\fR Set to 1 for odd parity, 0 for even parity checking.
+Default = 0 (even)
+.RE
+.SH DESCRIPTION
+
+This component is intended to help operate various types of
+carousel-type toolchangers. 
+
+The component can be configured to operate with binary, binary-coded decimal (BCD)
+or gray-coded position feedback ('binary;, 'bcd' and 'gray' modes)
+It can alternatively work with an individual sensor for each tool position
+('single' mode) or with a sensor at each tool position and a separate index
+('index' mode). Systems using a stepper motor or quadrature encoder are
+also supported ('counts' mode).
+\fBedge\fR is a special case of index mode for tool
+changers with pockets on both the rising and falling edges of the position sensor.
+(Seen on at least one Denford Orac.)
+
+Both unidirectional and bidirectional systems are supported and those that reverse
+against a stop when in position. 
+
+The number of carousel component instances created depends on the number of
+entries in the 'pockets' modparam. For example
+
+.B loadrt carousel pockets=10,10,8
+
+Would create 3 carousel instances with 10, 10 and 8 pockets. The other 
+parameters are optional. If absent then defaults will be used. Any missing
+entry will assume the previous value.
+
+When the enable pin is set to true the component will immediately set the 
+"active" pin to true and then (for a bidirectional instance) calculate the
+shortest path to the requested pocket number. The appropriate motor direction
+output pins will then be set. Bit outputs for forward and reverse are provided
+as well as a three-state velocity output for driving a DC motor PWM or a
+velocity-mode stepgen.
+
+The component will monitor the carousel position and, when the correct position
+is reached, set the motor-control pins to 0, set "active" to 0 and set "ready"
+to 1.
+
+In 'index', 'edge' or 'counts'mode there is a need to find the initial
+home position of the carousel.
+The first time that the "enable" pin is set; the carousel will rotate forwards
+searching for a home signal. In 'index' and 'edge' mode this is when
+both the index and pulse inputs are true. In 'counts' mode only the index
+input needs to be set to set home. Additionally in 'counts' mode the usual index-enable
+logic of the encoder counters is supported.
+
+With some carousel designs the carousel will not stop immediately. To allow for
+this set the \fBalign-dc\fR pin to a low velocity to be used for a final latching move, and
+set the \fBdecel-time\fR to a suitable value.
+Once the decel-time has expired the carousel will, if it was moving forwards, reverse back on
+to the position marker, off of the marker and then back on to the FWD edge. If moving in reverse
+it will continue off the marker and then reverse slowly on to the FWD edge.
+This alignment is only possible with a motor-vel controlled bidirectional carousel,
+Other combinations will be accepted but probably will not have the desired behaviour.
+Some tuning will be needed of align-dc and decel-time to achieve reliable operation.
+
+In the unusual case that the index and pulse signals do not align it is
+possible to use HAL logic to achieve the desired pin switching during homing.
+
+Setting "enable" low does not halt the homing move, so if
+homing on first tool change is not needed then the enable pin can be toggled by
+an axis homing pin or a script and the homing process will continue even if that
+driving signal resets during the carousel homing move.
+
+To operate the component with an encoder or stepgen use mode "C". The \fBscale\fR
+pin should be the number of steps or encoder counts between pocket centres. The
+\fBwidth\fR pin can be used to stop the motor some distance before the centre of
+the pocket to allow the motor time to decelerate.
+In mode "C" it is possible to use either the speed/direction control used in other
+modes or to use direct position mode using the counts-target pin. The
+internal scaling of the encoder or stepgen should be set to 1.0. A PID
+hal component will be needed for encoder applications whereas stepgen
+configurations can use a stepgen in position control mode or in velocity
+control mode with a PID.
+
+For tool changers which lock the carousel against a stop the \fBrev-pulse\fR pin can
+be set to a non-zero value. The motor-rev pin will then be set for this many seconds
+at the completion of the tool search and at the same time the reverse duty/cycle
+velocity value will be sent to the motor-vel pin.
+
+.SH FUNCTIONS
+.TP
+\fBcarousel.\fIN\fB\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B carousel.\fIN\fB.pocket-number\fR s32 in \fR
+The pocket to move to when the .enable pin goes high. If the value
+passed is higher than the number of pockets specified in the "pockets" modparam then modulo arithmetic
+is used. This is intended to allow the use of multiple tools in the same holder, as is sometimes
+useful with lathes.
+.TP
+.B carousel.\fIN\fB.enable\fR bit in \fR
+Set this pin high to start movement. Setting it low will stop movement
+.TP
+.B carousel.\fIN\fB.active\fR bit out \fR
+indicates that the component is active
+.TP
+.B carousel.\fIN\fB.ready\fR bit out \fR
+This pin goes high when the carousel is in-position
+.TP
+.B carousel.\fIN\fB.strobe\fR bit in \fR(default: \fI1\fR)
+Use this pin to indicate that the position feedback is valid. Often
+provided by binary encoders
+.TP
+.B carousel.\fIN\fB.parity\fR bit in \fR
+Some encoders supply a parity bit, if this is connected then the
+parity-error output bit will indicate parity errors
+.TP
+.B carousel.\fIN\fB.sense-\fIM\fB\fR bit in  (M=0..personality) \fR
+Carousel position feedback pins. In 'index' mode there 
+will be only 2 pins. sense-0 is the index and sense-1 is the pocket sensor.
+.TP
+.B carousel.\fIN\fB.rev-pulse\fR float in \fR
+The duration in seconds for which a ratchet changer (Boxford, Emco)
+should pulse the reverse pin to lock the holder
+.TP
+.B carousel.\fIN\fB.fwd-dc\fR float in \fR
+Velocity or duty cycle when forwards rotation is desired
+.TP
+.B carousel.\fIN\fB.rev-dc\fR float in \fR
+Velocity or duty cycle when reverse rotation is desired
+.TP
+.B carousel.\fIN\fB.hold-dc\fR float in \fR
+Duty cycle when carousel is in-position (to hold against stop)
+.TP
+.B carousel.\fIN\fB.align-dc\fR float in \fR
+Use this pin to set the speed of a slower alignment move once the changer is in position. Such a system almost
+certainly needs decel-time setting too
+.TP
+.B carousel.\fIN\fB.decel-time\fR float in \fR
+Time to wait for carousel to stop before final alignment and position check
+.TP
+.B carousel.\fIN\fB.counts\fR s32 in \fR
+Connect to the rawcounts of an encoder or a stepgen in 'counts' mode
+.TP
+.B carousel.\fIN\fB.scale\fR s32 in \fR(default: \fI100\fR)
+The number of stepgen or encoder counts between successive pockets
+.TP
+.B carousel.\fIN\fB.width\fR s32 in \fR(default: \fI10\fR)
+How far each side of the exact scale to signal a new pocket
+.TP
+.B carousel.\fIN\fB.home-offset\fR s32 in \fR(default: \fI0\fR)
+The offset (in counts) between the index and pocket 1
+.TP
+.B carousel.\fIN\fB.index-enable\fR bit io \fR
+Used to home to an encoder index
+.TP
+.B carousel.\fIN\fB.jog-fwd\fR bit in \fR
+Jog the carousel forwards one tool position
+.TP
+.B carousel.\fIN\fB.jog-rev\fR bit in \fR
+Jog the carousel in reverse (only if dir = 2).
+It is very important that these pins should be debounced and should probably
+also be interlocked to only operate when the machine is idle.
+.TP
+.B carousel.\fIN\fB.motor-fwd\fR bit out \fR
+Indicates the motor should run forwards (bigger numbers)
+.TP
+.B carousel.\fIN\fB.motor-rev\fR bit out \fR
+Indicates the motor should run reverse.
+.TP
+.B carousel.\fIN\fB.parity-error\fR bit out \fR
+Indicates a parity error
+.TP
+.B carousel.\fIN\fB.current-position\fR s32 out \fR
+This pin indicates the current position feedback
+.TP
+.B carousel.\fIN\fB.motor-vel\fR float out \fR
+The duty-cycle or velocity to drive a DC motor or stepgen
+.TP
+.B carousel.\fIN\fB.homed\fR bit out \fR(default: \fI0\fR)
+Shows that homing is complete. Only used in index and edge modes
+.TP
+.B carousel.\fIN\fB.unhome\fR bit in \fR(default: \fI0\fR)
+Should only really be necessary for testing
+.TP
+.B carousel.\fIN\fB.counts-target\fR float out \fR
+Target position for a stepgen or external PID controller
+.SH PARAMETERS
+.TP
+.B carousel.\fIN\fB.state\fR s32 r \fR(default: \fI0\fR)
+Current component state
+.TP
+.B carousel.\fIN\fB.homing\fR bit r \fR(default: \fI0\fR)
+Shows that homing is in progress. Only used for index mode
+.TP
+.B carousel.\fIN\fB.timer\fR float r \fR
+Shows the value of the internal timer
+.TP
+.B carousel.\fIN\fB.motor-dir\fR s32 r \fR
+Internal tag for search direction
+.TP
+.B carousel.\fIN\fB.counts-offset\fR s32 r \fR
+Internal offset of index pin
+.TP
+.B carousel.\fIN\fB.debounce\fR u32 rw \fR
+How many thread cycles to wait for the position to stabilise
+.TP
+.B carousel.\fIN\fB.target\fR s32 r \fR
+Current target pocket, debug
+.TP
+.B carousel.\fIN\fB.base-counts\fR s32 r \fR(default: \fI0\fR)
+.SH AUTHOR
+
+Andy Pugh
+.SH LICENSE
+
+GPL

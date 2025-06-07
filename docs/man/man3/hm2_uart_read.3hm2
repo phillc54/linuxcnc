@@ -1,0 +1,58 @@
+'\" t
+.\"     Title: hm2_uart_read
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HM2_UART_READ" "3hm2" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hm2_uart_read \- read data from a Hostmot2 UART buffer
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <hostmot2\-serial\&.h>
+int hm2_uart_read(char *name, unsigned char *data);
+.fi
+.if n \{\
+.RE
+.\}
+.SH "DESCRIPTION"
+.sp
+\fBhm2_uart_read\fR read data from the UART "name"\&. "name" is a unique string given to each UART during hostmot2 setup\&. The names of the available channels are printed to standard output during the driver loading process and take the form: hm2\fI_<board name>\fR\&.\fI<board index>\fR\&.uart\&.\fI<index>\fR For example: hm2_5i23\&.0\&.uart\&.0\&.
+.sp
+This function reads a variable number of bytes from the the specified channel\&. It should be used inside a realtime HAL component registered with the main hostmot2 driver using the function hm2_uart_set_read_function in the setup code\&.
+.sp
+Note that the UART Receive FIFO is only 16 bytes deep,(the transmit FIFO is 64 bytes) and "data" needs to be at least that large or undefined mayhem will ensue\&.
+.SH "RETURN VALUE"
+.sp
+Returns the number of bytes read on success and \-1 on failure\&.
+.SH "SEE ALSO"
+.sp
+hm2_uart_setup(3hm2), hm2_uart_send(3hm2)
+.sp
+See src/hal/drivers mesa_uart\&.comp for an example usage\&.

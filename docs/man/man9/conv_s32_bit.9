@@ -1,0 +1,41 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/conv_s32_bit.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH CONV_S32_BIT "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+conv_s32_bit \- Convert a value from s32 to bit
+.SH SYNOPSIS
+.HP
+.B loadrt conv_s32_bit [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBconv-s32-bit.\fIN\fB\fR
+Update 'out' based on 'in'
+.SH PINS
+.TP
+.B conv-s32-bit.\fIN\fB.in\fR s32 in \fR
+.br
+.ns
+.TP
+.B conv-s32-bit.\fIN\fB.out\fR bit out \fR
+.br
+.ns
+.TP
+.B conv-s32-bit.\fIN\fB.out-of-range\fR bit out \fR
+TRUE when 'in' is not in the range of bit
+.SH PARAMETERS
+.TP
+.B conv-s32-bit.\fIN\fB.clamp\fR bit rw \fR
+If TRUE, then clamp to the range of bit.  If FALSE, then allow the value to "wrap around".
+.SH AUTHOR
+
+Jeff Epler
+.SH LICENSE
+
+GPL

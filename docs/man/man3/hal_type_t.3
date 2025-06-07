@@ -1,0 +1,160 @@
+'\" t
+.\"     Title: hal_type_t
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HAL_TYPE_T" "3" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hal_type_t, hal_bool, hal_bit_t, hal_s32_t, hal_u32_t, hal_port_t, hal_float_t, real_t, ireal_t \- typedefs for HAL datatypes
+.SH "DESCRIPTION"
+.PP
+typedef \&... \fBhal_bool;\fR
+.RS 4
+A type which may have a value of 0 or nonzero\&.
+.RE
+.PP
+typedef \&... \fBhal_bit_t;\fR
+.RS 4
+A volatile type which may have a value of 0 or nonzero\&.
+.RE
+.PP
+typedef \&... \fBhal_s32_t\fR;
+.RS 4
+A volatile type which may have a value from \-2147483648 to 2147483647\&.
+.RE
+.PP
+typedef \&... \fBhal_u32_t\fR;
+.RS 4
+A volatile type which may have a value from 0 to 4294967295\&.
+.RE
+.PP
+typedef \&... \fBhal_port_t\fR;
+.RS 4
+A volatile handle to a port object\&. Used with hal_port* functions\&.
+.RE
+.PP
+typedef \&... \fBhal_float_t\fR;
+.RS 4
+A volatile floating\-point type, which typically has the same precision and range as the C type
+\fBdouble\fR\&.
+.RE
+.PP
+typedef \&... \fBreal_t\fR;
+.RS 4
+A nonvolatile floating\-point type with at least as much precision as
+\fBhal_float_t\fR\&.
+.RE
+.PP
+typedef \&... \fBireal_t\fR;
+.RS 4
+A nonvolatile unsigned integral type the same size as
+\fBhal_float_t\fR\&.
+.RE
+.PP
+typedef enum \fBhal_type_t\fR;
+.RS 4
+.PP
+\fBHAL_BIT\fR
+.RS 4
+Corresponds to the type
+\fBhal_bit_t\fR\&.
+.RE
+.PP
+\fBHAL_FLOAT\fR
+.RS 4
+Corresponds to the type
+\fBhal_float_t\fR\&.
+.RE
+.PP
+\fBHAL_S32\fR
+.RS 4
+Corresponds to the type
+\fBhal_s32_t\fR\&.
+.RE
+.PP
+\fBHAL_U32\fR
+.RS 4
+Corresponds to the type
+\fBhal_u32_t\fR\&.
+.RE
+.RE
+.SH "NOTES"
+.sp
+\fBhal_bit_t\fR is typically a typedef to an integer type whose range is larger than just 0 and 1\&. When testing the value of a \fBhal_bit_t\fR, never compare it to 1\&. Prefer one of the following:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+if(b)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+if(b != 0)
+.RE
+.sp
+It is often useful to refer to a type that can represent all the values as a HAL type, but without the volatile qualifier\&. The following types correspond with the HAL types:
+.PP
+hal_bit_t
+.RS 4
+int
+.RE
+.PP
+hal_s32_t
+.RS 4
+__s32
+.RE
+.PP
+hal_u32_t
+.RS 4
+__u32
+.RE
+.PP
+hal_float_t
+.RS 4
+hal_real_t
+.RE
+.PP
+hal_port_t
+.RS 4
+int
+.RE
+.sp
+Take care not to use the types \fBs32\fR and \fBu32\fR\&. These will compile in kernel modules but not in userspace, and not for realtime components when using uspace realtime\&.
+.SH "SEE ALSO"
+.sp
+hal_pin_new(3hal), hal_param_new(3hal)

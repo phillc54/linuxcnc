@@ -1,0 +1,68 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/scaled_s32_sums.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH SCALED_S32_SUMS "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+scaled_s32_sums \- Sum of four inputs (each with a scale)
+.SH SYNOPSIS
+.HP
+.B loadrt scaled_s32_sums [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBscaled-s32-sums.\fIN\fB\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B scaled-s32-sums.\fIN\fB.in0\fR s32 in \fR
+.br
+.ns
+.TP
+.B scaled-s32-sums.\fIN\fB.in1\fR s32 in \fR
+.br
+.ns
+.TP
+.B scaled-s32-sums.\fIN\fB.in2\fR s32 in \fR
+.br
+.ns
+.TP
+.B scaled-s32-sums.\fIN\fB.in3\fR s32 in \fR
+.br
+.ns
+.TP
+.B scaled-s32-sums.\fIN\fB.scale0\fR float in \fR(default: \fI1.0\fR)
+.br
+.ns
+.TP
+.B scaled-s32-sums.\fIN\fB.scale1\fR float in \fR(default: \fI1.0\fR)
+.br
+.ns
+.TP
+.B scaled-s32-sums.\fIN\fB.scale2\fR float in \fR(default: \fI1.0\fR)
+.br
+.ns
+.TP
+.B scaled-s32-sums.\fIN\fB.scale3\fR float in \fR(default: \fI1.0\fR)
+.br
+.ns
+.TP
+.B scaled-s32-sums.\fIN\fB.out-s\fR s32 out \fR
+.br
+.ns
+.TP
+.B scaled-s32-sums.\fIN\fB.out-f\fR float out \fR
+out-s = out-f = (in0 * scale0) + (in1 * scale1) + (in2 * scale2) + (in3 * scale3)
+.SH SEE ALSO
+
+sum2(9), weighted_sum(9)
+.SH AUTHOR
+
+Chris S Morley
+.SH LICENSE
+
+GPL

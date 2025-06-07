@@ -1,0 +1,56 @@
+'\" t
+.\"     Title: pyvcp
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "PYVCP" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+pyvcp \- Virtual Control Panel for LinuxCNC
+.SH "SYNOPSIS"
+.sp
+\fBpyvcp\fR [\fB\-g\fR \fIWxH+X+Y\fR] [\fB\-c\fR \fIcomponent\-name\fR] \fImyfile\&.xml\fR
+.SH "OPTIONS"
+.PP
+\fB\-g\fR \fIWxH+X+Y\fR
+.RS 4
+This sets the initial geometry of the root window\&. Use
+\fIWxH\fR
+for just size,
+\fI+X+Y\fR
+for just position, or
+\fIWxH+X+Y\fR
+for both\&. Size / position use pixel units\&. Position is referenced from top left\&.
+.RE
+.PP
+\fB\-c\fR \fIcomponent\-name\fR
+.RS 4
+Use
+\fIcomponent\-name\fR
+as the HAL component name\&. If the component name is not specified, the basename of the XML file is used\&.
+.RE
+.SH "SEE ALSO"
+.sp
+\fIPython Virtual Control Panel\fR in the LinuxCNC documentation for a description of the xml syntax, along with examples\&.

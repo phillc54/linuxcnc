@@ -1,0 +1,69 @@
+'\" t
+.\"     Title: rtapi_mutex
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_MUTEX" "3rtapi" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_mutex \- Mutex\-related functions
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <rtapi_mutex\&.h>
+
+int rtapi_mutex_try(unsigned long* _mutex_);
+int rtapi_mutex_get(unsigned long* _mutex_);
+int rtapi_mutex_give(unsigned long* _mutex_);
+.fi
+.if n \{\
+.RE
+.\}
+.SH "ARGUMENTS"
+.PP
+mutex
+.RS 4
+A pointer to the mutex\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+\fBrtapi_mutex_try\fR makes a non\-blocking attempt to get the mutex\&. If the mutex is available, it returns 0, and the mutex is no longer available\&. Otherwise, it returns a nonzero value\&.
+.sp
+\fBrtapi_mutex_get\fR blocks until the mutex is available\&.
+.sp
+\fBrtapi_mutex_give\fR releases a mutex acquired by \fBrtapi_mutex_try\fR or \fBrtapi_mutex_get\fR\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+\fBrtapi_mutex_give\fR and \fBrtapi_mutex_try\fR may be used from non\-realtime, init/cleanup, and realtime code\&.
+.sp
+\fBrtapi_mutex_get\fR may not be used from realtime code\&.
+.SH "RETURN VALUE"
+.sp
+\fBrtapi_mutex_try\fR returns 0 for if the mutex was claimed, and nonzero otherwise\&.
+.sp
+\fBrtapi_mutex_get\fR and \fBrtapi_mutex_gif\fR have no return value\&.

@@ -1,0 +1,60 @@
+'\" t
+.\"     Title: hm2_uart_send
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HM2_UART_SEND" "3hm2" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hm2_uart_send \- write data to a Hostmot2 UART
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <hostmot2\-serial\&.h>
+int hm2_uart_send(char* name,  unsigned char data[], int count);
+.fi
+.if n \{\
+.RE
+.\}
+.SH "DESCRIPTION"
+.sp
+\fBhm2_uart_send\fR write \fIcount\fR bytes of data to the UART "name" from the buffer \fIdata\fR\&.
+.sp
+The UART FIFO is 64 bytes deep, attempts to transmit more than 64 bytes may have unexpected effects\&.
+.sp
+"name" is a unique string given to each UART during hostmot2 setup\&. The names of the available channels are printed to standard output during the driver loading process and take the form: hm2\fI_<board name>\fR\&.\fI<board index>\fR\&.uart\&.\fI<index>\fR, for example hm2_5i23\&.0\&.uart\&.0\&.
+.sp
+This function performs writes of data to the specified UART\&. It should be used inside a function in a realtime or non\-realtime HAL component\&.
+.SH "RETURN VALUE"
+.sp
+Returns the number of bytes sent on success and \-1 on failure\&.
+.SH "SEE ALSO"
+.sp
+hm2_uart_setup(3hm2), hm2_uart_read(3hm2)
+.sp
+See src/hal/drivers mesa_uart\&.comp for an example usage\&.

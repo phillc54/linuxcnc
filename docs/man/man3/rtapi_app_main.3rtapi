@@ -1,0 +1,58 @@
+'\" t
+.\"     Title: rtapi_app_main
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_APP_MAIN" "3rtapi" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_app_main \- User\-provided function to initialize a component
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <rtapi_app\&.h>
+int rtapi_app_main(void);
+.fi
+.if n \{\
+.RE
+.\}
+.SH "ARGUMENTS"
+.sp
+None
+.SH "DESCRIPTION"
+.sp
+The body of \fBrtapi_app_main\fR, which is provided by the component author, generally consists of a call to rtapi_init or hal_init, followed by other component\-specific initialization code\&.
+.SH "RETURN VALUE"
+.sp
+Return 0 for success\&. Return a negative errno value (e\&.g\&., \-EINVAL) on error\&. Existing code also returns RTAPI or HAL error values, but using negative errno values gives better diagnostics from insmod\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+Called automatically by the rtapi infrastructure in an initialization (not realtime) context\&.
+.SH "SEE ALSO"
+.sp
+rtapi_app_exit(3rtapi), rtapi_init(3rtapi), hal_init(3hal)

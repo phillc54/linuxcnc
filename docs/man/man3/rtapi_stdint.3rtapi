@@ -1,0 +1,67 @@
+'\" t
+.\"     Title: rtapi_stdint
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_STDINT" "3rtapi" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_stdint \- RTAPI wrappers for linux kernel functionality
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <rtapi_stdint\&.h>
+
+typedef \&.\&.\&. rtapi_s8;
+typedef \&.\&.\&. rtapi_s16;
+typedef \&.\&.\&. rtapi_s32;
+typedef \&.\&.\&. rtapi_s64;
+typedef \&.\&.\&. rtapi_intptr_t;
+typedef \&.\&.\&. rtapi_u8;
+typedef \&.\&.\&. rtapi_u16;
+typedef \&.\&.\&. rtapi_u32;
+typedef \&.\&.\&. rtapi_u64;
+typedef \&.\&.\&. rtapi_uintptr_t;
+#define RTAPI_INT__xx___MIN \&.\&.\&.
+#define RTAPI_INT__xx___MAX \&.\&.\&.
+#define RTAPI_UINT__xx___MAX \&.\&.\&.
+.fi
+.if n \{\
+.RE
+.\}
+.SH "DESCRIPTION"
+.sp
+In kernel space, each rtapi\fI_xxx\fR or RTAPI\fI_XXX\fR identifier is mapped to the underlying kernel functionality, if available\&.
+.sp
+In userspace, or in kernels where the underlying functionality is not provided by a kernel, generally another implementation\(empossibly with reduced functionality\(emis provided\&. (For example, the userspace implementation for rtapi_device_register always succeeds)
+.SH "REALTIME CONSIDERATIONS"
+.sp
+None\&.
+.SH "RETURN VALUE"
+.sp
+As in Linux\&.

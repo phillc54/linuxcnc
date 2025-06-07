@@ -1,0 +1,121 @@
+'\" t
+.\"     Title: io
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "IO" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+io, iocontrol \- interacts with HAL or G\-code in non\-realtime
+.SH "SYNOPSIS"
+.sp
+\fB[EMCIO]\fR \fBEMCIO = io\fR
+.SH "DESCRIPTION"
+.sp
+I/O control handles I/O tasks like coolant, toolchange and E\-stop\&. The signals are turned on and off in non\-realtime with G\-code or in the case of E\-stop in HAL\&.
+.sp
+The following pins are created by the non\-realtime IO controller, usually found in $LINUXCNC_HOME/bin/io\&.
+.sp
+iocontrol is a non\-realtime process \- if you have strict timing requirements or simply need more I/O, consider using the realtime synchronized I/O provided by \fBmotion\fR(9) instead\&.
+.sp
+The INI file is searched for in the directory from which halcmd was run, unless an absolute path is specified\&.
+.SH "PINS"
+.PP
+\fBiocontrol\&.0\&.coolant\-flood\fR (Bit, Out)
+.RS 4
+TRUE when flood coolant is requested\&.
+.RE
+.PP
+\fBiocontrol\&.0\&.coolant\-mist\fR (Bit, Out)
+.RS 4
+TRUE when mist coolant is requested\&.
+.RE
+.PP
+\fBiocontrol\&.0\&.emc\-enable\-in\fR (Bit, In)
+.RS 4
+Should be driven FALSE when an external E\-stop condition exists\&.
+.RE
+.PP
+\fBiocontrol\&.0\&.tool\-change\fR (Bit, Out)
+.RS 4
+TRUE when a tool change is requested\&.
+.RE
+.PP
+\fBiocontrol\&.0\&.tool\-changed\fR (Bit, In)
+.RS 4
+Should be driven TRUE when a tool change is completed\&.
+.RE
+.PP
+\fBiocontrol\&.0\&.tool\-number\fR (s32, Out)
+.RS 4
+Current tool number\&.
+.RE
+.PP
+\fBiocontrol\&.0\&.tool\-prep\-number\fR (s32, Out)
+.RS 4
+The number of the next tool, from the RS274NGC T\-word\&.
+.RE
+.PP
+\fBiocontrol\&.0\&.tool\-prep\-pocket\fR (s32, Out)
+.RS 4
+This is the pocket number (location in the tool storage mechanism) of the tool requested by the most recent T\-word\&.
+.RE
+.PP
+\fBiocontrol\&.0\&.tool\-prepare\fR (Bit, Out)
+.RS 4
+TRUE when a T\fIn\fR
+tool prepare is requested\&.
+.RE
+.PP
+\fBiocontrol\&.0\&.tool\-prepared\fR (Bit, In)
+.RS 4
+Should be driven TRUE when a tool prepare is completed\&.
+.RE
+.PP
+\fBiocontrol\&.0\&.user\-enable\-out\fR (Bit, Out)
+.RS 4
+FALSE when an internal E\-stop condition exists\&.
+.RE
+.PP
+\fBiocontrol\&.0\&.user\-request\-enable\fR (Bit, Out)
+.RS 4
+TRUE when the user has requested that E\-stop be cleared\&.
+.RE
+.PP
+\fBiocontrol\&.0\&.tool\-prep\-index\fR (s32, Out)
+.RS 4
+IO\(cqs internal array index of the prepped tool requested by the most recent T\-word\&. 0 if no tool is prepped\&. On Random toolchanger machines this is the tool\(cqs pocket number (i\&.e\&., the same as the tool\-prep\-pocket pin), on Non\-random toolchanger machines this is a small integer corresponding to the tool\(cqs location in the internal representation of the tool table\&. This parameter returns to 0 after a successful tool change (M6)\&.
+.RE
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues\&.
+.SH "AUTHOR"
+.sp
+Derived from a work by Fred Proctor & Will Shackleford\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2004 the LinuxCNC project\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

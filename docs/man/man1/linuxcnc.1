@@ -1,0 +1,142 @@
+'\" t
+.\"     Title: linuxcnc
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "LINUXCNC" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+linuxcnc \- LinuxCNC (The Enhanced Machine Controller)
+.SH "SYNOPSIS"
+.sp
+\fBlinuxcnc\fR [\fI\-h\fR] [\fI\-v\fR] [\fI\-d\fR] [\fI\-r\fR] [\fI\-l\fR] [\fI\-k\fR] [\fI\-t <tpmodulename> [parameters]\fR] [\fI\-m <homemodulename> [parameters]\fR] [\fI\-H <dirname>\fR] [\fIINI file\fR]
+.SH "DESCRIPTION"
+.sp
+\fBlinuxcnc\fR is used to start LinuxCNC (The Enhanced Machine Controller)\&. It starts the realtime system and then initializes a number of LinuxCNC components (IO, Motion, GUI, HAL, etc)\&. The most important parameter is \fIINI file\fR, which specifies the configuration name you would like to run\&. If \fIINI file\fR is not specified, the \fBlinuxcnc\fR script presents a graphical wizard to let you choose one\&.
+.SH "OPTIONS"
+.PP
+\fB\-h\fR
+.RS 4
+Shows the help
+.RE
+.PP
+\fB\-v\fR
+.RS 4
+Be a little bit verbose\&. This causes the script to print information as it works\&.
+.RE
+.PP
+\fB\-d\fR
+.RS 4
+Print lots of debug information\&. All executed commands are echoed to the screen\&. This mode is useful when something is not working as it should\&.
+.RE
+.PP
+\fB\-r\fR
+.RS 4
+Disable redirection of stdout and stderr to
+~/linuxcnc_print\&.txt
+and
+~/linuxcnc_debug\&.txt
+when stdin is not a tty\&. Used when running linuxcnc tests non\-interactively\&.
+.RE
+.PP
+\fB\-l\fR
+.RS 4
+Use the last\-used INI file without prompting\&. This is often a good choice for a shortcut command or startup item\&.
+.RE
+.PP
+\fB\-k\fR
+.RS 4
+Continue in the presence of errors in HAL files
+.RE
+.PP
+\fB\-t <tpmodulename> [parameters]\fR
+.RS 4
+Specify custom trajectory_planning_module overrides optional INI setting [TRAJ]TPMOD
+.RE
+.PP
+\fB\-m <homemodulename> [parameters]\fR
+.RS 4
+Specify custom homing_module overrides optional INI setting [EMCMOT]HOMEMOD
+.RE
+.PP
+\fB\-H <dirname>\fR
+.RS 4
+Search dirname for HAL files before searching INI directory and system library: $HALLIB_DIR
+.RE
+.PP
+\fB<INIFILE>\fR
+.RS 4
+The INI file is the main piece of a LinuxCNC configuration\&. It is not the entire configuration; there are various other files that go with it (NML files, HAL files, TBL files, VAR files)\&. It is, however, the most important one, because it is the file that holds the configuration together\&. It can adjust a lot of parameters itself, but it also tells
+\fBlinuxcnc\fR
+which other files to load and use\&.
+.RE
+.sp
+There are several ways to specify which config to use:
+.sp
+Specify the absolute path to an INI, e\&.g\&., \fBlinuxcnc\fR \fI/usr/local/linuxcnc/configs/sim/sim\&.ini\fR
+.sp
+Specify a relative path from the current directory, e\&.g\&. \fBlinuxcnc\fR \fIconfigs/sim/sim\&.ini\fR
+.sp
+Otherwise, in the case where the \fBINIFILE\fR is not specified, the behavior will depend on whether you configured LinuxCNC with \fB\-\-enable\-run\-in\-place\fR\&. If so, the LinuxCNC config chooser will search only the configs directory in your source tree\&. If not (or if you are using a packaged version of LinuxCNC), it may search several directories\&. The config chooser is currently set to search the path:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+~/linuxcnc/configs:/home/phill/git/linuxcnc\-dev/configs
+.fi
+.if n \{\
+.RE
+.\}
+.SH "EXAMPLES"
+.sp
+\fBlinuxcnc\fR
+.sp
+\fBlinuxcnc\fR \fIconfigs/sim/sim\&.ini\fR
+.sp
+\fBlinuxcnc\fR \fI/etc/linuxcnc/sample\-configs/stepper/stepper_mm\&.ini\fR
+.SH "SEE ALSO"
+.sp
+\fBhalcmd(1)\fR
+.sp
+Much more information about LinuxCNC and HAL is available in the LinuxCNC and HAL User Manuals, found at /usr/share/doc/linuxcnc/\&.
+.sp
+Web: https://www\&.linuxcnc\&.org/
+.sp
+User forum: https://forum\&.linuxcnc\&.org/
+.SH "BUGS"
+.sp
+None known at this time\&.
+.SH "AUTHOR"
+.sp
+This man page written by Alex Joni, as part of the LinuxCNC Enhanced Machine Controller project\&.
+.SH "REPORTING BUGS"
+.sp
+Please report any bugs at https://github\&.com/LinuxCNC/linuxcnc\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2003 The LinuxCNC authors\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

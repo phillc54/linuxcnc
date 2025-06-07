@@ -1,0 +1,47 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/toggle.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH TOGGLE "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+toggle \- 'push-on, push-off' from momentary pushbuttons
+.SH SYNOPSIS
+.HP
+.B loadrt toggle [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH DESCRIPTION
+
+
+\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u2510]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u250C]\[u2500]\[u2500]\[u2510]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u250C]\[u2500]\[u2500]\[u2510]
+.br
+in\[u00A0]:\[u00A0]\[u2514]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2518]\[u00A0]\[u00A0]\[u2514]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2518]\[u00A0]\[u00A0]\[u2514]\[u2500]\[u2500]
+.br
+\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u2510]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u250C]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2510]
+.br
+out:\[u00A0]\[u2514]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2518]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u2514]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]
+
+.SH FUNCTIONS
+.TP
+\fBtoggle.\fIN\fB\fR
+
+.SH PINS
+.TP
+.B toggle.\fIN\fB.in\fR bit in \fR
+button input
+.TP
+.B toggle.\fIN\fB.out\fR bit io \fR
+on/off output
+.SH PARAMETERS
+.TP
+.B toggle.\fIN\fB.debounce\fR u32 rw \fR(default: \fI2\fR)
+debounce delay in periods
+.SH AUTHOR
+
+John Kasunich
+.SH LICENSE
+
+GPL

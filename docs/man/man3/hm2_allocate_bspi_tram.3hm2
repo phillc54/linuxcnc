@@ -1,0 +1,59 @@
+'\" t
+.\"     Title: hm2_allocate_bspi_tram
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HM2_ALLOCATE_BSPI_TR" "3hm2" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hm2_allocate_bspi_tram \- Allocate the TRAM regions for a BSPI channel
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <hostmot2\-serial\&.h>
+hm2_allocate_bspi_tram(char* name)
+.fi
+.if n \{\
+.RE
+.\}
+.SH "DESCRIPTION"
+.sp
+\fBhm2_allocate_bspi_tram\fR Allocate the TRAM memory for bspi instance "name"\&. "name" is a unique string given to each bspi channel during hostmot2 setup\&. The names of the available channels are printed to standard output during the driver loading process and take the form: hm2_<board name>\&.<board index>\&.bspi\&.<index>, for example: hm2_5i23\&.0\&.bspi\&.0 \&.
+.sp
+This function allocates the TRAM memory and sets up the regular data transfers\&. It should be called only when all the frames have been defined by calls to hm2_tram_add_bspi_frame()\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+Call only from realtime init code, not from other realtime code or non\-realtime components\&.
+.SH "RETURN VALUE"
+.sp
+Returns 0 on success and \-1 on failure\&.
+.SH "SEE ALSO"
+.sp
+hm2_bspi_set_read_function(3hm2), hm2_bspi_setup_chan(3hm2), hm2_bspi_set_write_function(3hm2), hm2_bspi_write_chan(3hm2), hm2_tram_add_bspi_frame(3hm2)
+.sp
+See src/hal/drivers mesa_7i65\&.comp for an example usage\&.

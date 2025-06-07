@@ -1,0 +1,93 @@
+'\" t
+.\"     Title: rtapi_prio
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_PRIO" "3" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_prio, rtapi_prio_highest, rtapi_prio_lowest, rtapi_prio_next_higher, rtapi_prio_next_lower \- thread priority functions
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+int rtapi_prio_highest();
+int rtapi_prio_lowest();
+int rtapi_prio_next_higher(int _prio_);
+int rtapi_prio_next_lower(int _prio_);
+.fi
+.if n \{\
+.RE
+.\}
+.SH "ARGUMENTS"
+.PP
+prio
+.RS 4
+A value returned by a prior
+\fBrtapi_prio_xxx\fR
+call
+.RE
+.SH "DESCRIPTION"
+.sp
+The \fBrtapi_prio_xxxx\fR functions provide a portable way to set task priority\&. The mapping of actual priority to priority number depends on the RTOS\&. Priorities range from \fBrtapi_prio_lowest\fR to \fBrtapi_prio_highest\fR, inclusive\&. To use this API, use one of two methods:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+Set your lowest priority task to
+\fBrtapi_prio_lowest\fR, and for each task of the next lowest priority, set their priorities to
+\fBrtapi_prio_next_higher\fR(previous)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+Set your highest priority task to
+\fBrtapi_prio_highest\fR, and for each task of the next highest priority, set their priorities to
+\fBrtapi_prio_next_lower\fR(previous)\&.
+.RE
+.sp
+N\&.B\&.: A high priority task will preempt or interrupt a lower priority task\&. Linux is always the lowest priority!
+.SH "REALTIME CONSIDERATIONS"
+.sp
+Call these functions only from within init/cleanup code, not from realtime tasks\&.
+.SH "RETURN VALUE"
+.sp
+Returns an opaque real\-time priority number\&.
+.SH "SEE ALSO"
+.sp
+rtapi_task_new(3rtapi)

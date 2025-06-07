@@ -1,0 +1,32 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/conv_u32_u64.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH CONV_U32_U64 "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+conv_u32_u64 \- Convert a value from u32 to u64
+.SH SYNOPSIS
+.HP
+.B loadrt conv_u32_u64 [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBconv-u32-u64.\fIN\fB\fR
+Update 'out' based on 'in'
+.SH PINS
+.TP
+.B conv-u32-u64.\fIN\fB.in\fR u32 in \fR
+.br
+.ns
+.TP
+.B conv-u32-u64.\fIN\fB.out\fR u64 out \fR
+.SH AUTHOR
+
+Jeff Epler
+.SH LICENSE
+
+GPL

@@ -1,0 +1,36 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/xyzacb_trsrn.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH XYZACB_TRSRN "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+xyzacb_trsrn \- Switchable kinematics for 6 axis machine with a rotary table C, rotary spindle B and nutating spindle A
+.SH SYNOPSIS
+.HP
+.B loadrt xyzacb_trsrn [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH DESCRIPTION
+
+
+.if \n[.g] .mso www.tmac
+
+
+
+.SH FUNCTIONS
+.TP
+\fBxyzacb-trsrn.\fIN\fB.fdemo\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B xyzacb-trsrn.\fIN\fB.fpin\fR s32 out \fR(default: \fI0\fR)
+pin to demonstrate use of a conventional (non-kinematics) function fdemo
+.SH AUTHOR
+
+David Mueller
+.SH LICENSE
+
+GPL

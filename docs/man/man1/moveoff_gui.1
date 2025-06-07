@@ -1,0 +1,240 @@
+'\" t
+.\"     Title: moveoff_gui
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "MOVEOFF_GUI" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+moveoff_gui \- a GUI for the moveoff component
+.SH "SYNOPSIS"
+.sp
+\fBmoveoff_gui\fR [\fB\-\-help\fR | \(em \fB\-h\fR | *\-?]
+.sp
+\fBmoveoff_gui\fR [\fIoptions\fR]
+.SH "DESCRIPTION"
+.sp
+Moveoff_gui is a sample graphical user interface (GUI) for controlling a HAL moveoff component to implement HAL\-only offsets\&. See the manpage (man moveoff) for \fBIMPORTANT\fR limitations and warnings\&.
+.sp
+Supported configurations must use a known kinematics module with KINEMATICS_TYPE = KINEMATICS_IDENTITY\&. The modules currently supported are: \fBtrivkins\fR
+.SH "OPTIONS"
+.PP
+\fB\-\-help | \-? | \(em \-h\fR
+.RS 4
+Show options and exit\&.
+.RE
+.PP
+\fB\-mode\fR \fBonpause\fR | always
+.RS 4
+onpause: popup GUI to control offsets when program paused
+
+always: show GUI to control offsets always
+
+Default:
+\fBonpause\fR
+.RE
+.PP
+\fB\-axes\fR \fIaxis\-names\fR
+.RS 4
+Letters from set of {x y z a b c u v w}\&.
+
+Examples: \-axes x, \-axes xyz, \-axes xz (no spaces)
+
+Default:
+\fBxyz\fR
+.RE
+.PP
+\fB\-inc\fR \fIincrementvalue\fR
+.RS 4
+Specify one increment value per \-inc (up to 4)\&.
+
+Defaults: * 0\&.001 0\&.01 0\&.10 1\&.0*
+.RE
+.PP
+\fB\-size\fR \fIinteger\fR
+.RS 4
+Overall gui size is based on font size, typically 8 \- 20\&.
+
+Default:
+\fB14\fR
+.RE
+.PP
+\fB\-loc\fR center | +x+y
+.RS 4
+Initial location on screen\&.
+
+Examples: \-loc center, \-loc +20+100
+
+Default:
+\fBcenter\fR
+.RE
+.PP
+\fB\-autoresume\fR
+.RS 4
+Resume program when move\-enable deasserted\&.
+
+Default: notused
+.RE
+.PP
+\fB\-delay\fR \fIdelay secs\fR
+.RS 4
+Delay for autoresume (allow time to restore spindle speed etc)\&.
+
+Default:
+\fB5\fR
+.RE
+.SH "OTHER OPTIONS"
+.sp
+These options are available for special cases:
+.PP
+\fB\-noentry\fR
+.RS 4
+Disables creation of entry widgets\&.
+
+Default: notused
+.RE
+.PP
+\fB\-no_resume_inhibit\fR
+.RS 4
+Disable use of resume\-inhibit to controlling gui\&.
+
+Default: notused
+.RE
+.PP
+\fB\-no_pause_requirement\fR
+.RS 4
+Disable check for halui\&.program\&.is\-paused\&.
+
+Default: notused
+.RE
+.PP
+\fB\-no_cancel_autoresume\fR
+.RS 4
+Useful for retracting offsets with simple external controls\&.
+
+Default: notused
+.RE
+.PP
+\fB\-no_display\fR
+.RS 4
+Use when both external controls and external displays are in use\&.
+
+Default: notused
+.RE
+.SH "NOTES"
+.sp
+LinuxCNC must be running\&.
+.sp
+Halui must be loaded, typical INI file setting:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[HAL]
+HALUI = halui
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+The moveoff component must be loaded with the name \fImv\fR as: \fBloadrt moveoff names=\fR\fImv \fR\fI\fBpersonality=\fR\fR\fI_number_of_axes\fR
+.sp
+If the pin mv\&.motion\-enable is \fBnot\fR connected when moveoff_gui is started, \fBcontrols will be provided\fR to enable offsets and set offset values\&. If the pin \fBis\fR connected, \fBonly a display\fR of offsets is shown and control must be made by \fBexternal\fR HAL connections\&.
+.sp
+If a pin named *\&.resume\-inhibit exists and is not connected, it will be set while offsets are applied\&. This pin may be provided by the controlling LinuxCNC GUI in use\&. Use of the pin may be disabled with the option \-no_resume_inhibit\&.
+.sp
+The \-autoresume option uses halui\&.program\&.resume to automatically resume program execution when the move\-enable pin is deactivated and all offsets are removed\&. The resume pin is not activated until an additional interval (\-delay delay_secs) elapses\&. This delay interval may be useful for restarting related equipment (a spindle motor for example)\&. While timing the delay, a popup is offered to cancel the automatic program resumption\&.
+.SH "USAGE"
+.sp
+The INI file in the configuration directory must provide HALFILEs to loadrt the moveoff component, connect its pins, and addf its read and write functions in the proper order\&. These steps can be done at runtime using an existing configuration INI file and specifying a system library HALFILE \fBhookup_moveoff\&.tcl\fR as illustrated below:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[HAL]
+HALUI = halui
+HALFILE = user_halfile_1
+etc \&.\&.\&.
+HALFILE = user_halfile_n
+HALFILE = LIB:hookup_moveoff\&.tcl
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+The hookup_moveoff\&.tcl HAL file will use INI file settings for the moveoff component control pins:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[OFFSET]
+EPSILON =
+WAYPOINT_SAMPLE_SECS =
+WAYPOINT_THRESHOLD =
+BACKTRACK_ENABLE =
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+The \fBhookup_moveoff\&.tcl\fR will use INI file settings for the moveoff per\-axis limits:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[AXIS_m]
+OFFSET_MAX_VELOCITY =
+OFFSET_MAX_ACCELERATION =
+OFFSET_MAX_LIMIT =
+OFFSET_MIN_LIMIT =
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+The moveoff_gui program should be specified in the APPLICATIONS stanza of the INI file, for example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[APPLICATIONS]
+DELAY = delay_in_secs_to_allow_hal_connections
+APP = moveoff_gui \-option1 \-option2 \&.\&.\&.
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.sp
+Simulation configurations that demonstrate the moveoff_gui and the moveoff component are located in:
+.sp
+configs/sim/axis/moveoff (axis\-ui) configs/sim/touchy/ngcgui (touchy\-ui)
+.sp
+See also moveoff(9) for details on the component\&.

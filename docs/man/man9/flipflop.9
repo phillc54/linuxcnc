@@ -1,0 +1,44 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/flipflop.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH FLIPFLOP "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+flipflop \- D type flip-flop
+.SH SYNOPSIS
+.HP
+.B loadrt flipflop [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBflipflop.\fIN\fB\fR
+
+.SH PINS
+.TP
+.B flipflop.\fIN\fB.data\fR bit in \fR
+data input
+.TP
+.B flipflop.\fIN\fB.clk\fR bit in \fR
+clock, rising edge writes data to out
+.TP
+.B flipflop.\fIN\fB.set\fR bit in \fR
+when true, force out true
+.TP
+.B flipflop.\fIN\fB.reset\fR bit in \fR
+when true, force out false; overrides set
+.TP
+.B flipflop.\fIN\fB.out\fR bit io \fR
+output
+.TP
+.B flipflop.\fIN\fB.out-not\fR bit io \fR
+inverted output
+.SH AUTHOR
+
+John Kasunich
+.SH LICENSE
+
+GPL

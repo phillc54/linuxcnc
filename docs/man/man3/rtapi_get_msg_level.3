@@ -1,0 +1,61 @@
+'\" t
+.\"     Title: rtapi_get_msg_level
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_GET_MSG_LEVEL" "3" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_get_msg_level, rtapi_set_msg_level \- Get or set the logging level
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+int rtapi_set_msg_level(int level);
+int rtapi_get_msg_level();
+.fi
+.if n \{\
+.RE
+.\}
+.SH "ARGUMENTS"
+.PP
+level
+.RS 4
+The desired logging level\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+Get or set the RTAPI message level used by \fBrtapi_print_msg\fR\&. Depending on the RTOS, this level may apply to a single RTAPI module, or it may apply to a group of modules\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+May be called from non\-realtime, init/cleanup, and realtime code\&.
+.SH "RETURN VALUE"
+.sp
+\fBrtapi_set_msg_level\fR returns a status code, and \fBrtapi_get_msg_level\fR returns the current level\&. RTAPI_MSG_NONE = 0, RTAPI_MSG_ERR = 1, RTAPI_MSG_WARN = 2, RTAPI_MSG_INFO = 3, RTAPI_MSG_DBG = 4,RTAPI_MSG_ALL = 5
+.SH "SEE ALSO"
+.sp
+rtapi_print_msg(3rtapi)

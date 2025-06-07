@@ -1,0 +1,273 @@
+'\" t
+.\"     Title: vfs11_vfd
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "VFS11_VFD" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+vfs11_vfd \- HAL non\-realtime component for Toshiba\-Schneider VF\-S11 Variable Frequency Drives
+.SH "SYNOPSIS"
+.sp
+\fBvfs11_vfd\fR [OPTIONS]
+.SH "DESCRIPTION"
+.sp
+This manual page explains the \fBvfs11_vfd\fR component\&. This component reads and writes to the vfs11 via a Modbus connection\&.
+.sp
+\fBvfs11_vfd\fR is for use with LinuxCNC\&.
+.SH "OPTIONS"
+.PP
+\-n \-\-name <halname>
+.RS 4
+set the HAL component name
+.RE
+.PP
+\-d \-\-debug
+.RS 4
+Turn on debugging messages\&. Also toggled by sending a USR1 signal to the vfs11_vfd process\&.
+.RE
+.PP
+\-m \-\-modbus\-debug
+.RS 4
+Turn on Modbus debugging messages\&. This will cause all Modbus messages to be printed in hex on the terminal\&. Also toggled by sending a USR2 signal to the vfs11_vfd process\&.
+.RE
+.PP
+\-I \-\-ini <INI file>
+.RS 4
+takes configuration from this INI file\&. Defaults to environment variable INI_FILE_NAME\&.
+.RE
+.PP
+\-S \-\-section <section name>
+.RS 4
+take configuration from this section in the INI file\&. Defaults to
+\fIVFS11\fR\&.
+.RE
+.PP
+\-r \-\-report\-device
+.RS 4
+Reports device propertiers on console at startup\&.
+.RE
+.SH "PINS"
+.PP
+<name>\&.acceleration\-pattern (bit, in)
+.RS 4
+when true, set acceleration and deceleration times as defined in registers F500 and F501 respectively\&. Used in PID loops to choose shorter ramp times to avoid oscillation\&.
+.RE
+.PP
+<name>\&.alarm\-code (s32, out)
+.RS 4
+non\-zero if drive is in alarmed state\&. Bitmap describing alarm information (see register FC91 description)\&. Use
+\fIerr\-reset\fR
+(see below) to clear the alarm\&.
+.RE
+.PP
+<name>\&.at\-speed (bit, out)
+.RS 4
+when drive is at commanded speed (see
+\fIspeed\-tolerance\fR
+below)
+.RE
+.PP
+<name>\&.current\-load\-percentage (float, out)
+.RS 4
+Reported from the VFD\&.
+.RE
+.PP
+<name>\&.dc\-brake (bit, in)
+.RS 4
+Engage the DC brake\&. Also turns off spindle\-on\&.
+.RE
+.PP
+<name>\&.enable (bit, in)
+.RS 4
+Enable the VFD\&. If false, all operating parameters are still read but control is released and panel control is enabled (subject to VFD setup)\&.
+.RE
+.PP
+<name>\&.err\-reset (bit, in)
+.RS 4
+Reset errors (alarms a\&.k\&.a Trip and e\-stop status)\&. Resetting the VFD may cause a 2\-second delay until it\(cqs rebooted and Modbus is up again\&.
+.RE
+.PP
+<name>\&.estop (bit, in)
+.RS 4
+Put the VFD into emergency\-stopped status\&. No operation possible until cleared with
+\fIerr\-reset\fR
+or powercycling\&.
+.RE
+.PP
+<name>\&.frequency\-command (float, out)
+.RS 4
+Current target frequency in Hz as set through speed\-command (which is in RPM), from the VFD\&.
+.RE
+.PP
+<name>\&.frequency\-out (float, out)
+.RS 4
+Current output frequency of the VFD\&.
+.RE
+.PP
+<name>\&.inverter\-load\-percentage (float, out)
+.RS 4
+Current load report from VFD\&.
+.RE
+.PP
+<name>\&.is\-e\-stopped (bit, out)
+.RS 4
+The VFD is in emergency stop status (blinking "E" on panel)\&. Use
+\fIerr\-reset\fR
+to reboot the VFD and clear the e\-stop status\&.
+.RE
+.PP
+<name>\&.is\-stopped (bit, out)
+.RS 4
+True when the VFD reports 0 Hz output
+.RE
+.PP
+<name>\&.jog\-mode (bit, in)
+.RS 4
+1 for ON and 0 for OFF, enables the VF\-S11
+\fIjog mode\fR\&. Speed control is disabled, and the output frequency is determined by register F262 (preset to 5 Hz)\&. This might be useful for spindle orientation\&.
+.RE
+.PP
+<name>\&.max\-rpm (float, R)
+.RS 4
+Actual RPM limit based on maximum frequency the VFD may generate, and the motors nameplate values\&. For instance, if
+\fInameplate\-HZ\fR
+is 50, and
+\fInameplate\-RPM_\fR
+is 1410, but the VFD may generate up to 80Hz, then
+\fImax\-rpm\fR
+would read as 2256 (80*1410/50)\&. The frequency limit is read from the VFD at startup\&. To increase the upper frequency limit, the UL and FH parameters must be changed on the panel\&. See the VF\-S11 manual for instructions how to set the maximum frequency\&.
+.RE
+.PP
+<name>\&.modbus\-ok (bit, out)
+.RS 4
+True when the Modbus session is successfully established and the last 10 transactions returned without error\&.
+.RE
+.PP
+<name>\&.motor\-RPM (float, out)
+.RS 4
+Estimated current RPM value, from the VFD\&.
+.RE
+.PP
+<name>\&.output\-current\-percentage (float, out)
+.RS 4
+from the VFD
+.RE
+.PP
+<name>\&.output\-voltage\-percentage (float, out)
+.RS 4
+from the VFD
+.RE
+.PP
+<name>\&.output\-voltage (float, out)
+.RS 4
+from the VFD
+.RE
+.PP
+<name>\&.speed\-command (float, in)
+.RS 4
+Speed sent to VFD in RPM\&. It is an error to send a speed faster than the Motor Max RPM as set in the VFD\&.
+.RE
+.PP
+<name>\&.spindle\-fwd (bit, in)
+.RS 4
+1 for FWD and 0 for REV, sent to VFD\&.
+.RE
+.PP
+<name>\&.spindle\-on (bit, in)
+.RS 4
+1 for ON and 0 for OFF sent to VFD, only on when running\&.
+.RE
+.PP
+<name>\&.spindle\-rev (bit, in)
+.RS 4
+1 for ON and 0 for OFF, only on when running\&.
+.RE
+.PP
+<name>\&.max\-speed (bit, in)
+.RS 4
+Ignore the loop\-time parameter and run Modbus at maximum speed, at the expense of higher CPU usage\&. Suggested use during spindle positioning\&.
+.RE
+.PP
+<name>\&.status (s32, out)
+.RS 4
+Drive Status of the VFD (see the TOSVERT VF\-S11 Communications Function Instruction Manual, register FD01)\&. A bitmap\&.
+.RE
+.PP
+<name>\&.trip\-code (s32, out)
+.RS 4
+Trip code if VF\-S11 is in tripped state\&.
+.RE
+.PP
+<name>\&.error\-count (s32, RW)
+.RS 4
+Total number of transactions returning a Modbus error\&.
+.RE
+.SH "PARAMETERS"
+.PP
+<name>\&.frequency\-limit (float, RO)
+.RS 4
+Upper limit read from VFD setup\&.
+.RE
+.PP
+<name>\&.loop\-time (float, RW)
+.RS 4
+How often the Modbus is polled (default interval 0\&.1 seconds)
+.RE
+.PP
+<name>\&.nameplate\-HZ (float, RW)
+.RS 4
+Nameplate Hz of motor (default 50)\&. Used to calculate target frequency (together with
+\fInameplate\-RPM\fR) for a target RPM value as given by speed\-command\&.
+.RE
+.PP
+<name>\&.nameplate\-RPM (float, RW)
+.RS 4
+Nameplate RPM of motor (default 1410)
+.RE
+.PP
+<name>\&.rpm\-limit (float, RW)
+.RS 4
+Do\-not\-exceed soft limit for motor RPM (defaults to
+\fInameplate\-RPM\fR)\&.
+.RE
+.PP
+<name>\&.tolerance (float, RW)
+.RS 4
+Speed tolerance (default 0\&.01) for determining whether spindle is at speed (0\&.01 meaning: output frequency is within 1% of target frequency)
+.RE
+.SH "USAGE"
+.sp
+The vfs11_vfd driver takes precedence over panel control while it is enabled (see _\&.enable` pin), effectively disabling the panel\&. Clearing the \&.enable pin re\-enableds the panel\&. Pins and parameters can still be set, but will not be written to the VFD untile the \&.enable pin is set\&. Operating parameters are still read while bus control is disabled\&.
+.sp
+Exiting the vfs11_vfd driver in a controlled will release the VFD from the bus and restore panel control\&.
+.sp
+See the LinuxCNC Integrators Manual for more information\&. For a detailed register description of the Toshiba VFD\(cqs, see the "TOSVERT VF\-S11 Communications Function Instruction Manual" (Toshiba document number E6581222) and the "TOSVERT VF\-S11 Instruction manual" (Toshiba document number E6581158)\&.
+.SH "AUTHOR"
+.sp
+Michael Haberler; based on gs2_vfd by Steve Padnos and John Thornton\&.
+.SH "LICENSE"
+.sp
+GPL

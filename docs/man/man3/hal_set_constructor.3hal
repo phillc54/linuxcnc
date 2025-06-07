@@ -1,0 +1,60 @@
+'\" t
+.\"     Title: hal_set_constructor
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HAL_SET_CONSTRUCTOR" "3hal" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hal_set_constructor \- sets the constructor function for this component
+.SH "SYNTAX"
+.sp
+typedef int (\fBhal_constructor_t)(const char\fR prefix, const char* arg); int hal_set_constructor(int \fIcomp_id\fR, hal_constructor_t \fIconstructor\fR)
+.SH "ARGUMENTS"
+.PP
+\fIcomp_id\fR
+.RS 4
+A HAL component identifier returned by an earlier call to
+\fBhal_init\fR\&.
+.RE
+.PP
+\fIprefix\fR
+.RS 4
+The prefix to be given to the pins, parameters, and functions in the new instance\&.
+.RE
+.PP
+\fIarg\fR
+.RS 4
+An argument that may be used by the component to customize this instance\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+As an experimental feature in HAL 2\&.1, components may be \fIconstructable\fR\&. Such a component may create pins and parameters not only at the time the module is loaded, but it may create additional pins and parameters, and functions on demand\&.
+.SH "RETURN VALUE"
+.sp
+Returns a HAL status code\&.
+.SH "SEE ALSO"
+.sp
+halcmd(1)

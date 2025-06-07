@@ -1,0 +1,169 @@
+'\" t
+.\"     Title: mqtt-publisher
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "MQTT\-PUBLISHER" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+mqtt-publisher \- send HAL pin data to MQTT broker periodically
+.SH "SYNOPSIS"
+.sp
+\fBloadusr \-W mqtt\-publisher\fR [\fIoptions\fR] \fBkeys=\fR\fIpin1\fR[,\fIpin2\fR\&...]
+.SH "DESCRIPTION"
+.sp
+\fBmqtt\-publisher\fR is a non\-realtime program that reads HAL values periodically and passes the values to a MQTT broker\&.
+.sp
+When specifying the MQTT settings in the INI file, this is the recommended setup:
+.sp
+HAL file:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+loadusr \-W mqtt\-publisher [MQTT]DRYRUN \-\-mqtt\-broker=[MQTT]BROKER \e
+  \-\-mqtt\-user=[MQTT]USERNAME \-\-mqtt\-password=[MQTT]PASSWORD keys=halui\&.estop\&.is\-activated
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+INI file:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[MQTT]
+DRYRUN = \-\-dryrun
+BROKER = broker\&.local
+USERNAME = username
+PASSWORD = password
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+This component need the Paho python library installed to function\&. On debian this is available from the python3\-paho\-mqtt package\&.
+.SH "OPTIONS"
+.PP
+\fBkeys\fR=\fIpin1[,pin2,\&...]\fR
+.RS 4
+The name of HAL pins, signals and other values to publish using MQTT\&. The names are also used as the JSON keys in the MQTT message published with the broker\&. If multiple "keys=" options are specified, the lists are merged\&.
+.RE
+.PP
+\fB\-\-dryrun\fR
+.RS 4
+Do not set up MQTT connection, only print message to stdout\&. Useful for debugging and testing\&.
+.RE
+.PP
+\fB\-\-mqtt\-broker\fR=\fIFQDN\fR
+.RS 4
+The fully qualified DNS name of the MQTT broker\&. The default broker name is "localhost"\&.
+.RE
+.PP
+\fB\-\-mqtt\-port\fR=\fIPORTNUMBER\fR
+.RS 4
+The port to use of the MQTT broker\&. The default port is 1883\&.
+.RE
+.PP
+\fB\-\-mqtt\-user\fR=\fIUSERNAME\fR
+.RS 4
+The user name to use when connecting to the MQTT broker\&.
+.RE
+.PP
+\fB\-\-mqtt\-password\fR=\fIPASSWORD\fR
+.RS 4
+The password to use when connecting to the MQTT broker\&.
+.RE
+.PP
+\fB\-\-mqtt\-prefix\fR=\fIPREFIX\fR
+.RS 4
+The MQTT prefix/topic to use when publishing to the MQTT broker\&. The default prefix is "devices/linuxcnc/machine"\&.
+.RE
+.SH "FUNCTIONS"
+.PP
+\fBmqtt\-publisher\fR
+.RS 4
+The loop reading HAL values and publishing MQTT messages\&.
+.RE
+.SH "PINS"
+.PP
+\fBmqtt\-publisher\fR\&.\fBenable\fR bit input
+.RS 4
+When TRUE, publish messages to MQTT broker\&. When FALSE, do not publish messages\&. Default is TRUE\&.
+.RE
+.PP
+\fBmqtt\-publisher\fR\&.\fBperiod\fR u32 input
+.RS 4
+The number of seconds to sleep between publishing MQTT messages to the broker\&. Default is 10 seconds\&.
+.RE
+.PP
+\fBmqtt\-publisher\fR\&.\fBlastpublish\fR u32 output
+.RS 4
+When the last MQTT publication was published in number of seconds since EPOC\&. If no publication has taken place, the value is zero\&.
+.RE
+.SH "EXAMPLE"
+.sp
+Any set of HAL pins and signals can be published\&. This setup might be a useful starting point:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+loadusr \-W mqtt\-publisher \e
+  [MQTT]DRYRUN \e
+  \-\-mqtt\-broker=[MQTT]BROKER
+  \-\-mqtt\-user=[MQTT]USERNAME \e
+  \-\-mqtt\-password=[MQTT]PASSWORD \e
+  keys=halui\&.axis\&.a\&.pos\-feedback,halui\&.axis\&.b\&.pos\-feedback,\e
+halui\&.axis\&.c\&.pos\-feedback,halui\&.axis\&.u\&.pos\-feedback,\e
+halui\&.axis\&.v\&.pos\-feedback,halui\&.axis\&.w\&.pos\-feedback,\e
+halui\&.axis\&.x\&.pos\-feedback,halui\&.axis\&.y\&.pos\-feedback,\e
+halui\&.axis\&.z\&.pos\-feedback,halui\&.estop\&.is\-activated,\e
+halui\&.joint\&.0\&.is\-homed,halui\&.joint\&.1\&.is\-homed,halui\&.joint\&.2\&.is\-homed,\e
+halui\&.joint\&.3\&.is\-homed,halui\&.joint\&.4\&.is\-homed,halui\&.joint\&.5\&.is\-homed,\e
+halui\&.joint\&.6\&.is\-homed,halui\&.joint\&.7\&.is\-homed,halui\&.joint\&.8\&.is\-homed,\e
+halui\&.machine\&.is\-on,halui\&.max\-velocity\&.value,halui\&.mode\&.is\-auto,\e
+halui\&.mode\&.is\-manual,halui\&.mode\&.is\-mdi,halui\&.mode\&.is\-teleop,\e
+halui\&.program\&.is\-running
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Note: It is recommended to use the line continuation character "\e" as shown here to improve readability\&. But note that spaces must be left in to delimit options, and must not be included (including at the beginning of a line) inside a single option\&.
+.SH "SEE ALSO"
+.sp
+hal(3hal)
+.SH "AUTHOR"
+.sp
+Component and documentation created by Petter Reinholdtsen, as part of the LinuxCNC project\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2023 Petter Reinholdtsen\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

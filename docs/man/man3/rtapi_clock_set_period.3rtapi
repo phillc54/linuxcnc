@@ -1,0 +1,57 @@
+'\" t
+.\"     Title: rtapi_clock_set_period
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_CLOCK_SET_PERI" "3rtapi" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_clock_set_period \- set the basic time interval for realtime tasks
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+rtapi_clock_set_period(long int nsec);
+.fi
+.if n \{\
+.RE
+.\}
+.SH "ARGUMENTS"
+.PP
+nsec
+.RS 4
+The desired basic time interval for realtime tasks\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+\fBrtapi_clock_set_period\fR sets the basic time interval for realtime tasks\&. All periodic tasks will run at an integer multiple of this period\&. The first call to \fBrtapi_clock_set_period\fR with \fInsec\fR greater than zero will start the clock, using \fInsec\fR as the clock period in nano\-seconds\&. Due to hardware and RTOS limitations, the actual period may not be exactly what was requested\&. On success, the function will return the actual clock period if it is available, otherwise it returns the requested period\&. If the requested period is outside the limits imposed by the hardware or RTOS, it returns \fB\-EINVAL\fR and does not start the clock\&. Once the clock is started, subsequent calls with non\-zero \fInsec\fR return \fB\-EINVAL\fR and have no effect\&. Calling \fBrtapi_clock_set_period\fR with \fInsec\fR set to zero queries the clock, returning the current clock period, or zero if the clock has not yet been started\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+Call only from within init/cleanup code, not from realtime tasks\&. This function is not available from non\-realtime code\&.
+.SH "RETURN VALUE"
+.sp
+The actual period provided by the RTOS, which may be different than the requested period, or a RTAPI status code\&.

@@ -1,0 +1,114 @@
+'\" t
+.\"     Title: enum
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "ENUM" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+enum \- enumerate integer values into bits
+.SH "SYNOPSIS"
+.sp
+\fBloadrt enum enums=\fRE;enum1pin1;enum1pin2;;;enum1pin3,D;;;enum2pin1;enum2pin2 [\fBnames=\fR\fIname1\fR,\fIname2\fR]
+.SH "DESCRIPTION"
+.sp
+\fBenum\fR converts integer values into bits and vice versa\&.
+.sp
+The component is especially suitable for encoding and decoding register values for modbus devices, where control commands and status are frequently encoded as enumerations rather than bits\&. For example, 0 = stop, 1 = forwards, 2 = backwards, 3 = jog\-forwards etc\&.
+.sp
+The pins created and the behaviour of the component are controlled by the load\-time modparams "enums=" and "names="
+.sp
+The \fBenums=\fR parameter should be a comma\-separated list of semicolon\-separated pin labels\&. The enumerated values will increase in sequence starting at zero\&. To skip a value use a zero\-length label, i\&.e\&. two consecutive semicolons, as shown in the examples\&.
+.sp
+There should be no spaces in the "enums=" list\&.
+.sp
+"names=" is an optional list of component instance names\&. If "names=" is omitted the functions and pins will be named "enum\-decode\&...\&." or "enum\-encode\&...\&."
+.sp
+Taking the example configuration above, if \fBenum\-decode\&.01\&.enum2pin1\-in\fR is set to \fBTRUE\fR then the output pin \fBenum\-decode\&.01\&.output\fR will be set to the value 2\&. If \fBenum\-decode\&.01\&.enum2pin2\-in\fR is set to true then the output would be 3\&.
+.sp
+Conversely, if \fBenum\-encode\&.00\&.input\fR is set to 4 then the pin \fBenum\-encode\&.00\&.enum1pin3\-out\fR will be set to \fBTRUE\fR\&.
+.SH "OPTIONS"
+.sp
+Preceding the list of labels should be the control\-codes "D" for decode or "E" for encode\&. A D\-type enum will set the value of HAL bit pins in response to changes to the enum\-decode\&.NN\&.input value, whereas an E\-type enum will set the value of the enum\-encode\&.NN\&.output integer depending on which enum\-encode\&.NN\&.label\-bit value is set\&.
+.sp
+If more than one label\-bit input pin is set the output value will correspond to the pin label later in the list\&.
+.sp
+E and D\-type enumerations may be freely mixed in separate instances\&.
+.SH "FUNCTIONS"
+.PP
+\fBenum\-decode\&.\fR\fINN\fR
+.RS 4
+if instance type = "D"
+.RE
+.PP
+\fBenum\-encode\&.\fR\fINN\fR
+.RS 4
+if instance type = "E"
+.RE
+.SH "PINS"
+.PP
+\fBenum\-decode\&.\fR\fINN\fR\&.input
+.RS 4
+The integer value to be decoded
+.RE
+.PP
+\fBenum\-decode\&.\fR\fINN\fR\&.label\-out
+.RS 4
+Output bits of a decode instance
+.RE
+.PP
+\fBenum\-decode\&.\fR\fINN\fR\&.label\-val
+.RS 4
+The enumeration value corresponding to each specific bit output\&. These are populated in sequence during loading but may be over\-ridden in HAL if convenient\&.
+.RE
+.PP
+\fBenum\-encode\&.\fR\fINN\fR\fB\&.label\-in\fR
+.RS 4
+input bits of a decode instance
+.RE
+.PP
+\fBenum\-encode\&.\fR\fINN\fR\fB\&.label\-val\fR
+.RS 4
+The enumeration value corresponding to each specified bit input\&. These are populated in sequence during loading but may be over\-ridden in HAL if convenient\&.
+.RE
+.PP
+\fBenum\-decode\&.\fR\fINN\fR\fB\&.output\fR
+.RS 4
+The integer value corresponding to the set bit input\&.
+.RE
+.SH "BUGS"
+.sp
+If no bits are set the output value will be zero even if zero is a defined enumeration\&.
+.SH "AUTHOR"
+.sp
+Andy Pugh
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2023 Andy Pugh\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

@@ -1,0 +1,64 @@
+'\" t
+.\"     Title: sim_pin
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "SIM_PIN" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sim_pin \- GUI for displaying and setting one or more HAL inputs
+.SH "SYNOPSIS"
+.sp
+\fB*sim_pin\fR \fI[Options]\fR \fIname1\fR [\fIname2\fR [\fIname3\fR \&...]]*
+.sp
+\fIOptions\fR: \fB\-\-help\fR (shows help text) \fB\-\-title title_string\fR
+.sp
+For bit items, the name may include a /mode= specifier: \fInamei\fR*/mode=\fB[*pulse\fR | \fBtoggle\fR | \fBhold\fR] (default is toggle)
+.SH "DESCRIPTION"
+.sp
+HAL boolean items (bit) and numerical items (u32, s32, float) are supported\&.
+.sp
+If the named input is a numerical type, the GUI displays:
+.sp
+\fBEntry\fR Entry widget for value or a valid Tcl expression\&. \fBSet\fR Pushbutton to set new value from Entry (or use <RETURN>) \fBReset\fR Pushbutton to reset to the value present on initiation If the input is a \fBbit\fR type, the GUI shows a single pushbutton that is controlled by radio\-button selectors:
+.sp
+mode=\fBpulse\fR Pulse input to 1 for each pushbutton press mode=\fBtoggle\fR Toggle input for each pushbutton press mode=\fBhold\fR Set input to 1 while pushbutton pressed
+.sp
+If the bit item mode begins with an uppercase letter, the radio buttons for selecting other modes are not shown
+.SH "NOTES"
+.sp
+LinuxCNC or a standalone HAL application must be running
+.sp
+A named item can specify a \fBpin\fR, \fBparam\fR, or \fBsignal\fR\&. The named item must be writable:
+.sp
+\fBpin IN or I/O\fR (and not connected to a signal with a writer) \fBparam RW\fR \fBsignal connected to a writable pin\fR
+.SH "USAGE"
+.sp
+\fBsim_pin\fR can be used interactively from a shell command line or started automatically from a configuration INI file\&.
+.SH "EXAMPLE"
+.sp
+Example for INI file usage:
+.sp
+[APPLICATIONS] DELAY = 5 APP = \fBsim_pin\fR \e halui\&.machine\&.off/mode=pulse \e ini\&.traj_arc_blend_enable \e motion\-command\-handler\-tmax

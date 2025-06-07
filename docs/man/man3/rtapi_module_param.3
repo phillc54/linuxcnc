@@ -1,0 +1,131 @@
+'\" t
+.\"     Title: rtapi_module_param
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_MODULE_PARAM" "3" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_module_param, EXPORT_FUNCTION, RTAPI_MP_INT, RTAPI_MP_LONG, RTAPI_MP_STRING, RTAPI_MP_ARRAY_INT, RTAPI_MP_ARRAY_LONG, RTAPI_MP_ARRAY_STRING, MODULE_LICENSE \- Specifying module parameters
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+RTAPI_MP_INT(_var_, _description_);
+RTAPI_MP_LONG(_var_, _description_);
+RTAPI_MP_STRING(_var_, _description_);
+RTAPI_MP_ARRAY_INT(_var_, _num_, _description_);
+RTAPI_MP_ARRAY_LONG(_var_, _num_, _description_);
+RTAPI_MP_ARRAY_STRING(_var_, _num_, _description_);
+MODULE_LICENSE(_license_);
+MODULE_AUTHOR(_author_);
+MODULE_DESCRIPTION(_description_);
+EXPORT_FUNCTION(_function_);
+.fi
+.if n \{\
+.RE
+.\}
+.SH "ARGUMENTS"
+.PP
+var
+.RS 4
+The variable where the parameter should be stored
+.RE
+.PP
+description
+.RS 4
+A short description of the parameter or module
+.RE
+.PP
+num
+.RS 4
+The maximum number of values for an array parameter
+.RE
+.PP
+license
+.RS 4
+The license of the module, for instance "GPL"
+.RE
+.PP
+author
+.RS 4
+The author of the module
+.RE
+.PP
+function
+.RS 4
+The pointer to the function to be exported
+.RE
+.SH "DESCRIPTION"
+.sp
+These macros are portable ways to declare kernel module parameters\&. They must be used in the global scope, and are not followed by a terminating semicolon\&. They must be used after the associated variable or function has been defined\&.
+.SH "NOTES"
+.sp
+EXPORT_FUNCTION makes a symbol available for use by a subsequently loaded component\&. It is unrelated to HAL functions, which are described in hal_export_funct(3hal)
+.SH "INTERPRETATION OF LICENSE STRINGS"
+.sp
+\fBMODULE_LICENSE\fR follows the kernel\(cqs definition of license strings\&. Notably, "GPL" indicates "GNU General Public License v2 \fIor later\fR"\&. (emphasis ours)\&.
+.PP
+"GPL"
+.RS 4
+GNU General Public License v2 or later
+.RE
+.PP
+"GPL v2"
+.RS 4
+GNU General Public License v2
+.RE
+.PP
+"GPL and additional rights"
+.RS 4
+GNU General Public License v2 rights and more
+.RE
+.PP
+"Dual BSD/GPL"
+.RS 4
+GNU General Public License v2 or BSD license choice
+.RE
+.PP
+"Dual MIT/GPL"
+.RS 4
+GNU General Public License v2 or MIT license choice
+.RE
+.PP
+"Dual MPL/GPL"
+.RS 4
+GNU General Public License v2 or Mozilla license choice
+.RE
+.PP
+"Proprietary"
+.RS 4
+Non\-free products
+.RE
+.sp
+It is still good practice to include a license block which indicates the author, copyright date, and disclaimer of warranty as recommended by the GNU GPL\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+Not available in userspace code\&.

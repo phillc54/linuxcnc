@@ -1,0 +1,219 @@
+'\" t
+.\"     Title: schedrmt
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "SCHEDRMT" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+schedrmt \- telnet based scheduler for LinuxCNC
+.SH "SYNOPSIS"
+.sp
+\fBschedrmt\fR {\fB\-\-\fR \fB\-\-port\fR \fI<port number>\fR \fB\-\-name\fR \fI<server name>\fR \fB\-\-connectpw\fR \fI<password>\fR \fB\-\-enablepw\fR \fI<password>\fR \fB\-\-sessions\fR \fI<max sessions>\fR \fB\-\-path\fR \fI<path>\fR \fB\-ini\fR \fI<INI file>\fR}
+.SH "DESCRIPTION"
+.PP
+With \(em \-\-port
+.RS 4
+Waits for socket connections (Telnet) on specified socket, without port uses default port 5007\&.
+.RE
+.PP
+With \(em \-\-name \fI<server name>\fR
+.RS 4
+Sets the server name to specified name for Hello\&.
+.RE
+.PP
+With \(em \-\-connectpw \fI<password>\fR
+.RS 4
+Sets the connection password to
+\fIpassword\fR\&. Default
+\fIEMC\fR\&.
+.RE
+.PP
+With \(em \-\-enablepw \fI<password>\fR
+.RS 4
+Sets the enable password to
+\fIpassword\fR\&. Default
+\fIEMCTOO\fR\&.
+.RE
+.PP
+With \(em \-\-sessions <max sessions>
+.RS 4
+Sets the maximum number of simultaneous connextions to max sessions\&. Default is no limit (\-1)\&.
+.RE
+.PP
+With \(em \-\-path
+.RS 4
+Sets the base path to program (G\-Code) files, default is "\&.\&./\&.\&./nc_files/"\&. Make sure to include the final slash (/)\&.
+.RE
+.PP
+With \(em \-ini \fI<INI file>\fR
+.RS 4
+Uses specified
+\fIINI file\fR
+instead of default
+\fIemc\&.ini\fR\&.
+.RE
+.sp
+There are six commands supported, for which the commands set and get contain LinuxCNC\-specific sub\-commands based on the commands supported by emcsh, but where the "emc_" prefix is omitted\&. Commands and most parameters are not case\-sensitive\&. The exceptions are passwords, file paths and text strings\&.
+.sp
+The supported commands are as follows: =⇒ HELLO ⇐=:: Hello \fI<password>\fR \fI<client>\fR \fI<version>\fR If a valid password was entered the server will respond with HELLO ACK \fI<Server Name>\fR \fI<Server Version>\fR, here server name and server version are looked up from the implementation\&. If an invalid password or any other syntax error occurs then the server responds with: HELLO NAK\&. =⇒ Get ⇐=:: The get command includes one of the emc sub\-commands, described below and zero or more additional parameters\&. =⇒ Set ⇐=:: The set command inclides one of the emc sub\-commands, described below and one or more additional parameters\&. =⇒ Quit ⇐=:: The quit command disconnects the associated socket connection\&. =⇒ Shutdown ⇐=:: The shutdown command tells EMC to shutdown before quitting the connection\&. This command may only be issued if the Hello has been successfully negotiated and the connection has control of the CNC (see enable sub\-command below)\&. This command has no parameters\&. =⇒ Help ⇐= The help command will return help information in text format over the telnet connection\&. If no parameters are specified, it will itemize the available commands\&. If a command is specified, it will provide usage information for the specified command\&. Help will respond regardless of whether a "Hello" has been successfully negotiated\&.
+.sp
+\fBEMC sub\-commands\fR:
+.PP
+echo on | off
+.RS 4
+With get will return the current echo state, with set, sets the echo state\&. When echo is on, all commands will be echoed upon receipt\&. This state is local to each connection\&.
+.RE
+.PP
+verbose on | off
+.RS 4
+With get will return the current verbose state, with set, sets the verbose state\&. When in verbose mode is on, all set commands return positive acknowledgement in the form SET
+\fI<COMMAND>\fR
+ACK\&. In addition, text error messages will be issued when in verbose mode\&. This state is local to each connection\&.
+.RE
+.PP
+enable \fI<pwd>\fR | off
+.RS 4
+With get will return On or Off to indicate whether the current connection is enabled to perform control functions\&. With set and a valid password, the current connection is enabled for control functions\&.
+OFF
+may not be used as a password and disables control functions for this connection\&.
+.RE
+.PP
+config
+.RS 4
+TBD
+.RE
+.PP
+comm_mode ascii | binary
+.RS 4
+With get, will return the current communications mode\&. With set, will set the communications mode to the specified mode\&. The binary protocol is TBD\&.
+.RE
+.PP
+comm_prot \fI<version no>\fR
+.RS 4
+With get, returns the current protocol version used by the server\&. With set, sets the server to use the specified protocol version, provided it is lower than or equal to the highest version number supported by the server implementation\&.
+.RE
+.PP
+INIFILE
+.RS 4
+Returns the path and file name of the current configuration INI file\&.
+.RE
+.PP
+plat
+.RS 4
+Returns the platform for which this was compiled, e\&.g\&., linux_2_0_36
+.RE
+.PP
+ini \fI<var>\fR \fI<section>\fR
+.RS 4
+Returns the string value of
+\fI<var>\fR
+in section
+\fI<section>\fR, in EMC_INIFILE\&.
+.RE
+.PP
+debug {\fI<new value>\fR}
+.RS 4
+With get, returns the integer value of EMC_DEBUG, in the EMC\&. Note that it may not be true that the local EMC_DEBUG variable here (in emcsh and the GUIs that use it) is the same as the EMC_DEBUG value in the EMC\&. This can happen if the EMC is started from one INI file, and the GUI is started with another that has a different value for DEBUG\&. With set, sends a command to the EMC to set the new debug level, and sets the EMC_DEBUG global here to the same value\&. This will make the two values the same, since they really ought to be the same\&.
+.RE
+.PP
+QMode \fI<mode>\fR stop | run | pause | resume (Set only) | error (Get only)
+.RS 4
+With no arg, returns the program queue status as "stop", "run", "pause" or "error"\&. Otherwise, sends a command to set the current mode to "stop", "run" or "pause"\&.
+.RE
+.PP
+QStatus \fI<Queue Size>\fR \fI<First Tag Id>\fR \fI<Last Tag Id>\fR \fI<Queue CRC>\fR (Get only)
+.RS 4
+Returns then number of programs in queue (Queue Size), the Tag id of the first program in the queue, the Tag id of the last program in the queue, and the CRC of all of the Tag Ids in the queue\&. The actual calculation of the CRC is not important, the purpose is to be able to compare the current CRC with the previous CRC\&. If they differ, then there has been a change to the size or order of the programs in queue\&.
+.RE
+.PP
+AutoTagId \fI<Start Id>\fR
+.RS 4
+With get, returns the next autoincremented unique tag id to associate with a queue record\&. With set, resets auto tag generation to begin at the specified value\&.
+.RE
+.PP
+PgmAdd \fI<priority>\fR \fI<tag id>\fR \fI<x>\fR \fI<y>\fR \fI<z>\fR \fI<zone>\fR \fI<file name>\fR \fI<feed override>\fR \fI<spindle override>\fR \fI<tool>\fR
+.RS 4
+With set, adds a program to the queue with priority of the program, a unique tag identifying the program, the x, y and z offsets or zone for the origin of the program, the path + file name, the feed and spindle overrides to apply, and the default tool to use\&. If tag id is zero, the tag id will be generated automatically\&. If zone is zero, then the x, y, and z offsets will be used, otherwise zones 1 to 9 correspond to G54 to G59\&.3 respectively\&.
+.RE
+.PP
+PgmById \fI<tag id>\fR [\fIpriority\fR] [\fItag id\fR] [\fIx\fR] [\fIy\fR] [\fIz\fR] [\fIzone\fR] [\fIfile name\fR] [\fIfeed override\fR] [\fIspindle override\fR] [\fItool\fR]
+.RS 4
+With get, returns the queue entry matching the specified tag id, including the priority, tag id, x, y, and z coordinates, the zone, file name, feed and spindle overrides and the default tool\&.
+.RE
+.PP
+PgmByIndex <_index_> [\fIpriority\fR] [\fItag id\fR] [\fIx\fR] [\fIy\fR] [\fIz\fR] [\fIzone\fR] [\fIfile name\fR] [\fIfeed override\fR] [\fIspindle override\fR] [\fItool\fR]
+.RS 4
+With get, returns the queue entry matching the specified index into the queue, including the priority, tag id, x, y, and z coordinates, the zone, file name, feed and spindle overrides and the default tool\&.
+.RE
+.PP
+PgmAll
+.RS 4
+With get, performs effectively a PgmByIndex for every entry in the queue\&. Each result will be returned in the form: "PGMBYINDEX \&..." with cr lf at the end of each record\&.
+.RE
+.PP
+PriorityById <_tag id_> <_priority_>
+.RS 4
+With get, returns the priority of the queue entry matching the specified tag\&. With set, changes the priority of the queue entry to the specified priority\&.
+.RE
+.PP
+PriorityByIndex <_tag id_> <_priority_>
+.RS 4
+With get, returns the priority of the queue entry matching the specified index into the queue\&. With set, changes the priority of the queue entry to the specified priority\&.
+.RE
+.PP
+DeleteById <_tag id_>
+.RS 4
+With set, deletes the queue entry matching the specified tag id\&.
+.RE
+.PP
+DeleteByIndex <_index_>
+.RS 4
+With set, deletes the queue entry matching the specified index into the queue\&.
+.RE
+.PP
+PollRate <_rate_>
+.RS 4
+With set, sets the rate at which the scheduler polls for information\&. The default is 1\&.0 or one second\&. With get, returns the current poll rate\&.
+.RE
+.SH "SEE ALSO"
+.sp
+linuxcnc(1)
+.sp
+Much more information about LinuxCNC and HAL is available in the LinuxCNC and HAL User Manuals, found at /usr/share/doc/LinuxCNC/\&.
+.SH "BUGS"
+.sp
+None known at this time\&.
+.SH "AUTHOR"
+.sp
+This man page written by Andy Pugh, as part of the LinuxCNC project\&.
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2020 Andy Pugh\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

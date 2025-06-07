@@ -1,0 +1,41 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/scale.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH SCALE "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+scale \- LinuxCNC HAL component that applies a scale and offset to its input
+.SH SYNOPSIS
+.HP
+.B loadrt scale [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBscale.\fIN\fB\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B scale.\fIN\fB.in\fR float in \fR
+.br
+.ns
+.TP
+.B scale.\fIN\fB.gain\fR float in \fR
+.br
+.ns
+.TP
+.B scale.\fIN\fB.offset\fR float in \fR
+.br
+.ns
+.TP
+.B scale.\fIN\fB.out\fR float out \fR
+out = in * gain + offset
+.SH AUTHOR
+
+Jeff Epler
+.SH LICENSE
+
+GPL

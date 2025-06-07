@@ -1,0 +1,39 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/deadzone.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH DEADZONE "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+deadzone \- Return the center if within the threshold
+.SH SYNOPSIS
+.HP
+.B loadrt deadzone [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBdeadzone.\fIN\fB\fR (requires a floating-point thread)
+Update \fBout\fR based on \fBin\fR and the parameters.
+.SH PINS
+.TP
+.B deadzone.\fIN\fB.in\fR float in \fR
+.br
+.ns
+.TP
+.B deadzone.\fIN\fB.out\fR float out \fR
+.SH PARAMETERS
+.TP
+.B deadzone.\fIN\fB.center\fR float rw \fR(default: \fI0.0\fR)
+The center of the dead zone
+.TP
+.B deadzone.\fIN\fB.threshold\fR float rw \fR(default: \fI1.0\fR)
+The dead zone is \fBcenter\fR \(+- (\fBthreshold\fR/2)
+.SH AUTHOR
+
+Jeff Epler
+.SH LICENSE
+
+GPL

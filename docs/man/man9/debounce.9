@@ -1,0 +1,68 @@
+'\" t
+.\"     Title: debounce
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "DEBOUNCE" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+debounce \- filter noisy digital inputs
+.SH "SYNOPSIS"
+.sp
+\fBloadrt debounce cfg=\fR\fIsize\fR[,\fIsize\fR,\&...]
+.sp
+Creates debounce groups with the number of filters specified by (\fIsize\fR)\&. Every filter in the same group has the same sample rate and delay\&. For example cfg=2,3 creates two filter groups with 2 filters in the first group and 3 filters in the second group\&.
+.SH "SEE ALSO"
+.sp
+An alternate component named \fBdbounce\fR implements similar functionality using conventional count= and names= parameters\&. Delay settings are implemented by a delay pin for each instance instead of using filter groups\&.
+.SH "DESCRIPTION"
+.sp
+The debounce filter works by incrementing a counter whenever the input is true, and decrementing the counter when it is false\&. If the counter decrements to zero, the output is set false and the counter ignores further decrements\&. If the counter increments up to a threshold, the output is set true and the counter ignores further increments\&. If the counter is between zero and the threshold, the output retains its previous state\&. The threshold determines the amount of filtering: A threshold of 1 does no filtering at all, and a threshold of \fIN\fR requires a signal to be present for \fIN\fR samples before the output changes state\&.
+.SH "FUNCTIONS"
+.PP
+\fBdebounce\&.\fR\fIG\fR
+.RS 4
+Sample all the input pins in group
+\fIG\fR
+and update the output pins\&.
+.RE
+.SH "PINS"
+.PP
+\fBdebounce\&.\fR\fIG\fR\fB\&.\fR\fIF\fR\fB\&.in\fR bit in
+.RS 4
+The F\(cqth input pin in group G\&.
+.RE
+.PP
+\fBdebounce\&.\fR\fIG\fR\fB\&.\fR\fIF\fR\fB\&.out\fR bit out
+.RS 4
+The F\(cqth output pin in group
+\fIG\fR\&. Reflects the last "stable" input seen on the corresponding input pin\&.
+.RE
+.PP
+\fBdebounce\&.\fR\fIG\fR\fB\&.delay\fR signed rw
+.RS 4
+Sets the amount of filtering for all pins in group
+\fIG\fR\&.
+.RE

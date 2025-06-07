@@ -1,0 +1,87 @@
+'\" t
+.\"     Title: watchdog
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "WATCHDOG" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+watchdog \- monitor multiple inputs for a "heartbeat"
+.SH "SYNOPSIS"
+.sp
+\fBloadrt watchdog num_inputs=\fR\fIN\fR
+.sp
+You must specify the number of inputs, from 1 to 32\&. Each input has a separate timeout value\&.
+.SH "FUNCTIONS"
+.PP
+\fBprocess\fR
+.RS 4
+Check all input pins for transitions, clear the
+\fBok\-out\fR
+pin if any input has no transition within its timeout period\&. This function does not use floating point, and should be added to a fast thread\&.
+.RE
+.PP
+\fBset\-timeouts\fR
+.RS 4
+Check for timeout changes, and convert the float timeout inputs to int values that can be used in
+\fBprocess\fR\&. This function also monitors
+enable\-in
+for false to true transitions, and re\-enables monitoring when such a transition is detected\&. This function does use floating point, and it is appropriate to add it to the servo thread\&.
+.RE
+.SH "PINS"
+.PP
+\fBwatchdog\&.input\-\fR\fIN\fR bit in
+.RS 4
+Input number
+\fIN\fR\&. The inputs are numbered from 0 to
+\fBnum_inputs\fR\-1\&.
+.RE
+.PP
+\fBwatchdog\&.enable\-in\fR bit in (default: FALSE)
+.RS 4
+If TRUE, forces out\-ok to be false\&. Additionally, if a timeout occurs on any input, this pin must be set FALSE and TRUE again to re\-start the monitoring of input pins\&.
+.RE
+.PP
+\fBwatchdog\&.ok\-out\fR bit out (default: FALSE)
+.RS 4
+OK output\&. This pin is true only if enable\-in is TRUE and no timeout has been detected\&. This output can be connected to the enable input of a
+\fBcharge_pump\fR
+or
+\fBstepgen\fR
+(in v mode), to provide a heartbeat signal to external monitoring hardware\&.
+.RE
+.SH "PARAMETERS"
+.PP
+\fBwatchdog\&.timeout\-\fR\fIN\fR float in
+.RS 4
+Timeout value for input number
+\fIN\fR\&. The inputs are numbered from 0 to
+\fBnum_inputs\fR\-1\&. The timeout is in seconds, and may not be below zero\&. Note that a timeout of 0\&.0 will likely prevent
+\fBok\-out\fR
+from ever becoming true\&. Also note that excessively long timeouts are relatively useless for monitoring purposes\&.
+.RE
+.SH "LICENSE"
+.sp
+GPL

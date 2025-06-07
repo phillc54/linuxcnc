@@ -1,0 +1,119 @@
+'\" t
+.\"     Title: classicladder
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "CLASSICLADDER" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+classicladder \- realtime software plc based on ladder logic
+.SH "SYNOPSIS"
+.sp
+\fBloadrt classicladder_rt\fR [\fBnumRungs=\fR\fIN\fR] [\fBnumBits=\fR\fIN\fR] [\fBnumWords=\fR\fIN\fR] [\fBnumTimers=\fR\fIN\fR] [\fBnumMonostables=\fR\fIN\fR] [\fBnumCounters=\fR\fIN\fR] [\fBnumPhysInputs=\fR\fIN\fR] [\fBnumPhysOutputs=\fR\fIN\fR] [\fBnumArithmExpr=\fR\fIN\fR] [\fBnumSections=\fR\fIN\fR] [\fBnumSymbols=\fR\fIN\fR] [\fBnumS32in=\fR\fIN\fR] [\fBnumS32out=\fR\fIN\fR] [\fBnumFloatIn=\fR\fIN\fR] [\fBnumFloatOut=\fR\fIN\fR]
+.sp
+\fBloadusr classicladder\fR \fI<file name>\fR [\fB\-\-nogui\fR]
+.SH "DESCRIPTION"
+.sp
+This component consist of a realtime part and a non\-realtime part\&. The non\-realtime part loads the programmable ladder description, while the realtime part provides the pins\&. The file name of the configuration can be changed using an argument to the non\-realtime part\&. By default the non\-realtime part provides a graphical visualisation of the loaded ladder, which can be disabled using the \fI\-\-nogui\fR option to the non\-realtime part\&.
+.sp
+These pins and parameters are created by the realtime \fBclassicladder_rt\fR module\&. Each period (minimum 1000000 ns), ClassicLadder reads the inputs, evaluates the ladder logic defined in the GUI, and then writes the outputs\&.
+.SH "PINS"
+.PP
+\fBclassicladder\&.0\&.in\-\fR\fINN\fR IN bit
+.RS 4
+These bit signal pins map to
+\fB%I\fR\fINN\fR
+variables in ClassicLadder\&.
+.RE
+.PP
+\fBclassicladder\&.0\&.out\-\fR\fINN\fR OUT bit
+.RS 4
+These bit signal pins map to
+\fB%Q\fR\fINN\fR
+variables in ClassicLadder\&. Output from ClassicLadder\&.
+.RE
+.PP
+\fBclassicladder\&.0\&.s32in\-\fR\fINN\fR IN s32
+.RS 4
+Integer input from ClassicLadder\&. These s32 signal pins map to
+\fB%IW\fR\fINN\fR
+variables in ClassicLadder\&.
+.RE
+.PP
+\fBclassicladder\&.0\&.s32out\-\fR\fINN\fR OUT s32
+.RS 4
+Integer output from ClassicLadder\&. These s32 signal pins map to
+\fB%QW\fR\fINN\fR
+variables in ClassicLadder\&.
+.RE
+.PP
+\fBclassicladder\&.0\&.floatin\-\fR\fINN\fR IN float
+.RS 4
+Integer input from ClassicLadder\&. These float signal pins map to
+\fB%IF\fR\fINN\fR
+variables in ClassicLadder\&. These are truncated to S32 values internally, e\&.g\&. 7\&.5 will be 7\&.
+.RE
+.PP
+\fBclassicladder\&.0\&.floatout\-\fR\fINN\fR OUT float
+.RS 4
+Float output from ClassicLadder\&. These float signal pins map to
+\fB%QF\fR\fINN\fR
+variables in ClassicLadder\&.
+.RE
+.PP
+\fBclassicladder\&.0\&.hide_gui\fR IN bit
+.RS 4
+This bit pin hides the ClassicLadder window, while still having the non\-realtime code run\&. This is usually desirable when modbus is used, as modbus requires the non\-realtime code to run\&.
+.RE
+.SH "PARAMETERS"
+.PP
+\fBclassicladder\&.0\&.refresh\&.time\fR RO s32
+.RS 4
+Tells you how long the last refresh took\&.
+.RE
+.PP
+\fBclassicladder\&.0\&.refresh\&.tmax\fR RW s32
+.RS 4
+Tells you how long the longest refresh took\&.
+.RE
+.PP
+\fBclassicladder\&.0\&.ladder\-state\fR RO s32
+.RS 4
+Tells you if the program is running or not
+.RE
+.SH "FUNCTIONS"
+.PP
+\fBclassicladder\&.0\&.refresh\fR FP
+.RS 4
+The rung update rate\&. Add this to the servo thread\&. You can added it to a faster thread but it\&. Will update no faster than once every 1 millisecond (1000000 ns)\&.
+.RE
+.SH "BUGS"
+.sp
+See https://wiki\&.linuxcnc\&.org/cgi\-bin/wiki\&.pl?ClassicLadder_Ver_7\&.124 for the latest\&.
+.SH "SEE ALSO"
+.sp
+\fIClassicLadder\fR chapters in the LinuxCNC documentation for a full description of the \fBClassicLadder\fR syntax and examples\&.
+.sp
+https://wiki\&.linuxcnc\&.org/cgi\-bin/wiki\&.pl?ClassicLadder_Ver_7\&.124

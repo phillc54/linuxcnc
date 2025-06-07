@@ -1,0 +1,90 @@
+'\" t
+.\"     Title: weighted_sum
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "WEIGHTED_SUM" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+weighted_sum \- convert a group of bits to an integer
+.SH "SYNOPSIS"
+.sp
+\fBloadrt weighted_sum wsum_sizes=\fR\fIsize\fR[,\fIsize\fR,\&...]
+.sp
+Creates weighted sum groups each with the given number of input bits (\fIsize\fR)\&.
+.SH "DESCRIPTION"
+.sp
+The weighted_sum converts a group of bits to an integer\&. The conversion is the sum of the weights of the bits that are on plus any offset\&. The weight of the m\-th bit is 2^m\&. This is similar to a binary coded decimal but with more options\&. The hold bit stops processing the input changes so the sum will not change\&.
+.sp
+The default value for each weight is 2^m where m is the bit number\&. This results in a binary to unsigned conversion\&.
+.sp
+There is a limit of 8 weighted summers and each may have up to 16 input bits\&.
+.SH "FUNCTIONS"
+.PP
+\fBprocess_wsums\fR (requires a floating point thread)
+.RS 4
+Read all input values and update all output values\&.
+.RE
+.SH "PINS"
+.PP
+\fBwsum\&.\fR\fIN\fR\fB\&.bit\&.\fR\fIM\fR\fB\&.in\fR bit in
+.RS 4
+The
+\fIm\fRth
+input of weighted summer
+\fIn\fR\&.
+.RE
+.PP
+\fBwsum\&.\fR\fIN\fR\fB\&.hold\fR bit in
+.RS 4
+When TRUE, the
+\fIsum\fR
+output does not change\&. When FALSE, the
+\fIsum\fR
+output tracks the
+\fIbit\fR
+inputs according to the weights and offset\&.
+.RE
+.PP
+\fBwsum\&.\fR\fIN\fR\fB\&.sum\fR signed out
+.RS 4
+The output of the weighted summer\&.
+.RE
+.PP
+\fBwsum\&.\fR\fIN\fR\fB\&.bit\&.\fR\fIM\fR\fB\&.weight\fR signed rw
+.RS 4
+The weight of the
+\fIm\fRth
+input of weighted summer
+\fIn\fR\&. The default value is 2\fIm\fR\&.
+.RE
+.PP
+\fBwsum\&.\fR\fIN\fR\fB\&.offset\fR signed rw
+.RS 4
+The offset is added to the weights corresponding to all TRUE inputs to give the final sum\&.
+.RE
+.SH "SEE ALSO"
+.sp
+scaled_s32_sums(9), sum2(9)

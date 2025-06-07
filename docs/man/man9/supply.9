@@ -1,0 +1,91 @@
+'\" t
+.\"     Title: supply
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "SUPPLY" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+supply \- set output pins with values from parameters (obsolete)
+.SH "SYNOPSIS"
+.sp
+\fBloadrt supply num_chan=\fR\fInum\fR
+.SH "DESCRIPTION"
+.sp
+\fBsupply\fR was used to allow the inputs of other HAL components to be manipulated for testing purposes\&. When it was written, the only way to set the value of an input pin was to connect it to a signal and connect that signal to an output pin of some other component, and then let that component write the pin value\&. \fBsupply\fR was written to be that "other component"\&. It reads values from parameters (set with the HAL command \fBsetp\fR) and writes them to output pins\&.
+.sp
+Since \fBsupply\fR was written, the \fBsetp\fR command has been modified to allow it to set unconnected pins as well as parameters\&. In addition, the \fBsets\fR command was added, which can directly set HAL signals, as long as there are no output pins connected to them\&. Therefore, \fBsupply\fR is obsolete\&.
+.sp
+\fBsupply\fR supports a maximum of eight channels\&. The number of channels actually loaded is set by the \fBnum_chan\fR argument when the module is loaded\&. If \fBnumchan\fR is not specified, the default value is one\&.
+.SH "FUNCTIONS"
+.PP
+\fBsupply\&.\fR\fIN\fR\fB\&.update\fR (uses floating\-point)
+.RS 4
+Updates output pins for channel
+\fIN\fR\&.
+.RE
+.SH "PINS"
+.PP
+\fBsupply\&.\fR\fIN\fR\fB\&.q\fR bit out
+.RS 4
+Output bit, copied from parameter
+\fBsupply\&.\fR\fIN\fR\fB\&.d\fR\&.
+.RE
+.PP
+\fBsupply\&.\fR\fIN\fR\fB\&._q\fR bit out
+.RS 4
+Output bit, inverted copy of parameter
+\fBsupply\&.\fR\fIN\fR\fB\&.d\fR\&.
+.RE
+.PP
+\fBsupply\&.\fR\fIN\fR\fB\&.variable\fR float out
+.RS 4
+Analog output, copied from parameter
+\fBsupply\&.\fR\fIN\fR\fB\&.value\fR\&.
+.RE
+.PP
+\fBsupply\&.\fR\fIN\fR\fB\&._variable\fR float out
+.RS 4
+Analog output, equal to \-1\&.0 times parameter
+\fBsupply\&.\fR\fIN\fR\fB\&.value\fR\&.
+.RE
+.PP
+\fBsupply\&.\fR\fIN\fR\fB\&.d\fR bit rw
+.RS 4
+Data source for
+\fBq\fR
+and
+\fB_q\fR
+output pins\&.
+.RE
+.PP
+\fBsupply\&.\fR\fIN\fR\fB\&.value\fR bit rw
+.RS 4
+Data source for
+\fBvariable\fR
+and
+\fB_variable\fR
+output pins\&.
+.RE

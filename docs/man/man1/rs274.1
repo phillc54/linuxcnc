@@ -1,0 +1,165 @@
+'\" t
+.\"     Title: rs274
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RS274" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rs274 \- standalone G\-code interpreter
+.SH "SYNOPSIS"
+.sp
+\fBrs274\fR [\fB\-p\fR interp\&.so] [\fB\-t\fR tool\&.tbl] [\fB\-v\fR var\-file\&.var] [\fB\-n\fR 0|1|2] [\fB\-b\fR] [\fB\-s\fR] [\fB\-g\fR] [ \fIinput_file\fR [\fIoutput_file\fR] ]
+.SH "DESCRIPTION"
+.sp
+\fBrs274\fR Standalone G\-code interpreter interface
+.sp
+Usage: rs274 [\-p interp\&.so] [\-t tool\&.tbl] [\-v var\-file\&.var] [\-n 0|1|2] [\-b] [\-s] [\-g] [input file [output file]]
+.SH "OPTIONS"
+.PP
+\-p
+.RS 4
+Specify the pluggable interpreter to use
+.RE
+.PP
+\-t
+.RS 4
+Specify the \&.tbl (tool table) file to use
+.RE
+.PP
+\-v
+.RS 4
+Specify the \&.var (parameter) file to use
+.RE
+.PP
+\-n
+.RS 4
+Specify the continue mode:
+
+0: continue
+
+1: enter MDI mode
+
+2: stop (default)
+.RE
+.PP
+\-b
+.RS 4
+Toggle the
+\fIblock delete\fR
+flag (default: OFF)
+.RE
+.PP
+\-s
+.RS 4
+Toggle the
+\fIprint stack\fR
+flag (default: OFF)
+.RE
+.PP
+\-g
+.RS 4
+Toggle the
+\fIgo (batch mode)\fR
+flag (default: OFF)
+.RE
+.PP
+\-i
+.RS 4
+specify the \&.ini file (default: no ini file)
+.RE
+.PP
+\-T
+.RS 4
+call task_init()
+.RE
+.PP
+\-l
+.RS 4
+specify the log_level (default: \-1)
+.RE
+.SH "EXAMPLE"
+.sp
+To see the output of a loop for example we can run rs274 on the following file and see that the loop never ends\&. To break out of the loop use Ctrl Z\&. The following two files are needed to run the example\&.
+.sp
+FIXME: Some good soul please fix the whitespace for the examples below
+.sp
+test\&.ngc
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#<test> = 123\&.352 o101 while [[#<test> MOD 60 ] NE 0]
+(debug,#<test>) #<test> = [#<test> + 1] 101 endwhile M2
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+test\&.tbl
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+T1 P1 Z0\&.511 D0\&.125 ;1/8 end mill
+T2 P2 Z0\&.1 D0\&.0625 ;1/16 end mill
+T3 P3 Z1\&.273 D0\&.201 ;#7 tap drill
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+command
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+rs274 \-g test\&.ngc \-t test\&.tbl
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.sp
+linuxcnc(1)
+.sp
+Much more information about LinuxCNC and HAL is available in the LinuxCNC and HAL User Manuals, found at /usr/share/doc/LinuxCNC/\&.
+.SH "BUGS"
+.sp
+None known at this time\&.
+.SH "AUTHOR"
+.sp
+This man page written by Andy Pugh, as part of the LinuxCNC project\&.
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2020 Andy Pugh\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

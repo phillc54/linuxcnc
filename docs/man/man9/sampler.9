@@ -1,0 +1,184 @@
+'\" t
+.\"     Title: sampler
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "SAMPLER" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sampler \- sample data from HAL in real time
+.SH "SYNOPSIS"
+.sp
+\fBloadrt sampler\fR \fBdepth=\fR\fIdepth1\fR[,\fIdepth2\fR\&...] \fBcfg=\fR\fIstring1\fR[,\fIstring2\fR\&...]
+.SH "DESCRIPTION"
+.sp
+The HAL component \fBsampler\fR and the program \fBhalsampler\fR(1) are used together to sample HAL data in real time and store it in a file\&. Of these, \fBsampler\fR performs in realtime, exporting HAL pins and creates a FIFO (first\-in, first out queue) in shared memory\&. It then samples data from the HAL and sends these to the FIFO\&. The application \fBhalsampler\fR copies data from the FIFO to stdout, where it can be redirected to a file or piped to some other program\&.
+.SH "OPTIONS"
+.PP
+\fBdepth=\fR\fIdepth1\fR[,\fIdepth2\fR\&...]
+.RS 4
+sets the depth of the realtime`→`non\-realtime FIFO that
+\fBsampler\fR
+creates to buffer the realtime data\&. Multiple values of
+\fIdepth\fR
+(separated by commas) can be specified if you need more than one FIFO (for example if you want to sample data from two different realtime threads)\&.
+.RE
+.PP
+\fBcfg=\fR\fIstring1\fR[,\fIstring2\fR\&...]
+.RS 4
+defines the set of HAL pins that
+\fBsampler\fR
+exports and later samples data from\&. One
+\fIstring\fR
+must be supplied for each FIFO, separated by commas\&.
+\fBsampler\fR
+exports one pin for each character in
+\fIstring\&.\fR
+Legal characters are:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBF, f\fR
+(float pin)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBB, b\fR
+(bit pin)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBS, s\fR
+(s32 pin)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBU, u\fR
+(u32 pin)
+.RE
+.RE
+.SH "FUNCTIONS"
+.PP
+\fBsampler\&.\fR\fIN\fR
+.RS 4
+One function is created per FIFO, numbered from zero\&.
+.RE
+.SH "PINS"
+.PP
+\fBsampler\&.\fR\fIN\fR\fB\&.pin\&.\fR\fIM\fR input
+.RS 4
+Pin for the data that will wind up in column
+\fIM\fR
+of FIFO
+\fIN\fR
+(and in column
+\fIM\fR
+of the output file)\&. The pin type depends on the config string\&.
+.RE
+.PP
+\fBsampler\&.\fR\fIN\fR\fB\&.curr\-depth\fR s32 output
+.RS 4
+Current number of samples in the FIFO\&. When this reaches
+\fIdepth\fR
+new data will begin overwriting old data, and some samples will be lost\&.
+.RE
+.PP
+\fBsampler\&.\fR\fIN\fR\fB\&.full\fR bit output
+.RS 4
+TRUE when the FIFO
+\fIN\fR
+is full, FALSE when there is room for another sample\&.
+.RE
+.PP
+\fBsampler\&.\fR\fIN\fR\fB\&.enable\fR bit input
+.RS 4
+When TRUE, samples are captured and placed in FIFO
+\fIN\fR, when FALSE, no samples are acquired\&. Defaults to TRUE\&.
+.RE
+.SH "PARAMETERS"
+.PP
+\fBsampler\&.\fR\fIN\fR\fB\&.overruns\fR s32 read/write
+.RS 4
+The number of times that
+\fBsampler\fR
+has tried to write data to the HAL pins but found no room in the FIFO\&. It increments whenever
+\fBfull\fR
+is true, and can be reset by the
+\fBsetp\fR
+command\&.
+.RE
+.PP
+\fBsampler\&.\fR\fIN\fR\fB\&.sample\-num\fR s32 read/write
+.RS 4
+A number that identifies the sample\&. It is automatically incremented for each sample, and can be reset using the
+\fBsetp\fR
+command\&. The sample number can optionally be printed in the first column of the output from
+\fBhalsampler\fR, using the
+\fI\-t\fR
+option (see
+\fBman 1 halsampler\fR
+)\&.
+.RE
+.SH "SEE ALSO"
+.sp
+halsampler(1), streamer(9), halstreamer(1)
+.SH "AUTHOR"
+.sp
+Original version by John Kasunich, as part of the LinuxCNC project\&. Improvements by several other members of the LinuxCNC development team\&.
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2006 John Kasunich\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

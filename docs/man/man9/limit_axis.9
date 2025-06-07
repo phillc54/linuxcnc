@@ -1,0 +1,91 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/limit_axis.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH LIMIT_AXIS "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+limit_axis \- Dynamic range based axis limits
+.SH SYNOPSIS
+.HP
+.B loadrt limit_axis [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]] [personality=\fIP1,P2,...\fB]
+.SH DESCRIPTION
+
+limit_axis.c
+
+Limit axis to certain limits at varying inputs
+For example on a spindle with C rotation, to avoid hitting a
+gantry when the height is above Z-10
+ - Use Z axis as feedback
+ - Use 2 ranges (0,-10) (-10, -40)
+ - When Z is above 10, C rotation is limited to range 0
+ - When Z is below 10, C rotation is limited to range 1
+
+ Usage:
+ loadrt limit_axis count=3 personality=2,3,2
+ or
+ loadrt limit_axis names=limit_x,limit_y,limit_z personality=2,3,2
+
+ The "personality" argument defines how many ranges are supported by each instance.
+ (Note that no spaces can be used in the names= and personality= parameters)
+
+ Caveats
+ - Searches ranges from 0 to 9 and will take the first range that matches
+ - Ranges are inclusive min_range <= feedback <= max_range
+ - Max can not be less than minimum for any group
+ - Sticky indicates, to not check other ranges if the feedback is still in the current range
+ - Enable allows for a range to be turned on/off, for cases such as avoiding a tool changer, but allowing sometimes
+.SH FUNCTIONS
+.TP
+\fBlimit-axis.\fIN\fB\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B limit-axis.\fIN\fB.error-no-range\fR bit out \fR
+error pin indicating that no range matches the fb
+.TP
+.B limit-axis.\fIN\fB.min-output\fR float out \fR
+Minimum limit output
+.TP
+.B limit-axis.\fIN\fB.max-output\fR float out \fR
+Maximum limit output
+.TP
+.B limit-axis.\fIN\fB.fb\fR float in \fR
+Feedback pin, the value of this pin determines which range is active
+.TP
+.B limit-axis.\fIN\fB.current-range\fR u32 out \fR
+Indicates which range is currently active
+.TP
+.B limit-axis.\fIN\fB.min-limit-\fIMM\fB\fR float in  (MM=00..personality) \fR
+The array of minimum limits to select from
+.TP
+.B limit-axis.\fIN\fB.max-limit-\fIMM\fB\fR float in  (MM=00..personality) \fR
+The array of macimum limits
+.TP
+.B limit-axis.\fIN\fB.min-range-\fIMM\fB\fR float in  (MM=00..personality) \fR
+Defines the range of values with which the fb is compared to set the range
+.TP
+.B limit-axis.\fIN\fB.max-range-\fIMM\fB\fR float in  (MM=00..personality) \fR
+Defines the range of values with which the fb is compared to set the range
+.TP
+.B limit-axis.\fIN\fB.enable-\fIMM\fB\fR bit in  (MM=00..personality) \fR
+Used to enable and disable a specific range
+.TP
+.B limit-axis.\fIN\fB.sticky-\fIMM\fB\fR bit in  (MM=00..personality) \fR
+Used to make specific range 'sticky' or not
+.TP
+.B limit-axis.\fIN\fB.error-range-\fIMM\fB\fR bit out  (MM=00..personality) \fR(default: \fI1\fR)
+Error bit indicating that the fb pin falls outside all ranges
+.TP
+.B limit-axis.\fIN\fB.error-limit-\fIMM\fB\fR bit out  (MM=00..personality) \fR(default: \fI1\fR)
+Error bit indicating that the max limit is not larger than the min limit
+.SH AUTHOR
+
+Chad Woitas
+.SH LICENSE
+
+GPL

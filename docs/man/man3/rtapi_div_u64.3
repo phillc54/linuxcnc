@@ -1,0 +1,78 @@
+'\" t
+.\"     Title: rtapi_div_u64
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_DIV_U64" "3" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_div_u64, rtapi_div_u64_rem, rtapi_div_s64, rtapi_div_s64_rem \- unsigned division of a 64\-bit number by a 32\-bit number
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+__u64 rtapi_div_u64_rem(__u64 dividend, __u32 divisor, __u32* remainder);
+__u64 rtapi_div_u64(__u64 dividend, __u32 divisor);
+__s64 rtapi_div_s64(__s64 dividend, __s32 divisor);
+__s64 rtapi_div_s64_rem(__s64 dividend, __s32 divisor, __s32* remainder);
+.fi
+.if n \{\
+.RE
+.\}
+.SH "ARGUMENTS"
+.PP
+dividend
+.RS 4
+The value to be divided\&.
+.RE
+.PP
+divisor
+.RS 4
+The value to divide by\&.
+.RE
+.PP
+remainder
+.RS 4
+Pointer to the location to store the remainder\&. This may not be a NULL pointer\&. If the remainder is not desired, call
+\fBrtapi_div_u64\fR
+or
+\fBrtapi_div_s64\fR\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+Perform integer division (and optionally compute the remainder) with a 64\-bit dividend and 32\-bit divisor\&.
+.SH "RETURN VALUE"
+.sp
+The result of integer division of \fIdividend\fR / \fIdivisor\fR\&. In versions with the \fIremainder\fR argument, the remainder is stored in the pointed\-to location\&.
+.SH "NOTES"
+.sp
+If the result of the division does not fit in the return type, the result is undefined\&.
+.sp
+This function exists because in kernel space the use of the division operator on a 64\-bit type can lead to an undefined symbol such as __umoddi3 when the module is loaded\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+May be called from init/cleanup code and from within realtime tasks\&. Available in non\-realtime components\&.

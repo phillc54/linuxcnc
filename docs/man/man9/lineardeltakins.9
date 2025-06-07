@@ -1,0 +1,57 @@
+'\" t
+.\"     Title: lineardeltakins
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "LINEARDELTAKINS" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+lineardeltakins \- Kinematics for a linear delta robot
+.SH "SYNOPSIS"
+.sp
+\fBloadrt lineardeltakins\fR
+.SH "KINEMATICS"
+.sp
+The kinematics model is appropriate for a rostock/kossel\-style design with three joints arranged in an equilateral triangle\&. (0,0) is always the center of the working volume\&. Joint 0 is at (0,R) and subsequent joints are 120 degrees clockwise (note that joint 0 is not at zero radians)\&. The length of the arm is \fIL\fR\&.
+.sp
+Joints 0\-2 are the linear carriages\&. Axes ABC and UVW are passed through unchanged in joints 3\-8, so that e\&.g\&., A can still be used to control an extruder\&.
+.SH "PINS"
+.PP
+\fBlineardeltakins\&.R\fR float in
+.RS 4
+Effective diameter of the platform\&.
+.sp
+The radius R is different than the distance from the center of the table to the center of the belt/smooth rod/extrusion that the joints ride on\&. In RepRap delta parlance, R is DELTA_RADIUS which is computed as
+.sp
+DELTA_SMOOTH_ROD_OFFSET \- DELTA_EFFECTOR_OFFSET \- DELTA_CARRIAGE_OFFSET\&.
+.RE
+.PP
+\fBlineardeltakins\&.L\fR float in
+.RS 4
+Length of the rod connecting the carriage to the effector\&. In RepRap delta parlance, L is DELTA_DIAGONAL_ROD\&.
+.RE
+.SH "NOTES"
+.sp
+The R and L values can be adjusted while LinuxCNC is running\&. However, doing so while in coordinated mode will lead to a step change in joint position, which generally will trigger a following error if in joint mode with machine on\&.

@@ -1,0 +1,86 @@
+'\" t
+.\"     Title: rtapi_task_new
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_TASK_NEW" "3" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_task_new, rtapi_task_delete \- create a realtime task
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+int rtapi_task_new(void (*_taskcode_)(void*), void *_arg_, int _prio_,
+                   unsigned long _stacksize_, int _uses_fp_);
+int rtapi_task_delete(int _task_id_);
+.fi
+.if n \{\
+.RE
+.\}
+.SH "ARGUMENTS"
+.PP
+taskcode
+.RS 4
+A pointer to the function to be called when the task is started
+.RE
+.PP
+arg
+.RS 4
+An argument to be passed to the
+\fItaskcode\fR
+function when the task is started
+.RE
+.PP
+prio
+.RS 4
+A task priority value returned by
+\fBrtapi_prio_xxxx\fR
+.RE
+.PP
+uses_fp
+.RS 4
+A flag that tells the OS whether the task uses floating point or not\&.
+.RE
+.PP
+task_id
+.RS 4
+A task ID returned by a previous call to
+\fBrtapi_task_new\fR
+.RE
+.SH "DESCRIPTION"
+.sp
+\fBrtapi_task_new\fR creates but does not start a realtime task\&. The task is created in the "paused" state\&. To start it, call either \fBrtapi_task_start\fR for periodic tasks, or \fBrtapi_task_resume\fR for free\-running tasks\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+Call only from within init/cleanup code, not from realtime tasks\&.
+.SH "RETURN VALUE"
+.sp
+On success, returns a positive integer task ID\&. This ID is used for all subsequent calls that need to act on the task\&. On failure, returns an RTAPI status code\&.
+.SH "SEE ALSO"
+.sp
+rtapi_prio(3rtapi), rtapi_task_start(3rtapi), rtapi_task_wait(3rtapi), rtapi_task_resume(3rtapi)

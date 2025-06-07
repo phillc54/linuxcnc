@@ -1,0 +1,39 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/led_dim.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH LED_DIM "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+led_dim \- HAL component for dimming LEDs
+.SH SYNOPSIS
+.HP
+.B loadrt led_dim [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH DESCRIPTION
+
+
+Component for LED dimming according to human perception of brightness of light.
+.LP
+The output is calculated using the CIE 1931 formula.
+
+.SH FUNCTIONS
+.TP
+\fBled-dim.\fIN\fB\fR (requires a floating-point thread)
+Update the output value
+.SH PINS
+.TP
+.B led-dim.\fIN\fB.in\fR float in \fR
+Brightness input value -> 0 to 1
+.TP
+.B led-dim.\fIN\fB.out\fR float out \fR
+Luminance output value -> 0 to 1
+.SH AUTHOR
+
+Alexander R\[u00F6]ssler
+.SH LICENSE
+
+GPL

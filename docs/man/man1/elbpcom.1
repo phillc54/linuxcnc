@@ -1,0 +1,114 @@
+'\" t
+.\"     Title: elbpcom
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "ELBPCOM" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+elbpcom \- Communicate with Mesa ethernet cards
+.SH "SYNOPSIS"
+.PP
+Common options:
+.RS 4
+\fBelbpcom\fR
+[\fB\-\-ip=\fR\fIIP\fR] [\fB\-\-port=\fR\fIPORT\fR] [\fB\-\-timeout=\fR\fITIMEOUT\fR] [\fB\-\-space=\fR\fIMEMSPACE\fR] [\fB\-\-size=\fR\fITRANSFER_SIZE\fR]
+.RE
+.PP
+Reading data:
+.RS 4
+\fBelbpcom\fR
+[\fIcommon options\fR] [\fB\-\-info\fR]
+\fB\-\-address=\fR\fIADDRESS\fR
+\fB\-\-read=\fR\fILENGTH\fR
+.RE
+.PP
+Writing data:
+.RS 4
+\fBelbpcom\fR
+[\fIcommon options\fR]
+\fB\-\-address=\fR\fIADDRESS\fR
+\fB\-\-write=\fR\fIHEXDATA\fR
+.RE
+.PP
+Read and decode memory space info area:
+.RS 4
+\fBelbpcom\fR
+[\fB\-\-space=\fR\fIMEMSPACE\fR]
+\fB\-\-read\-info\fR
+.RE
+.PP
+Sending arbitrary packets:
+.RS 4
+\fBelbpcom\fR
+[\fIcommon options\fR]
+\fIHEXDATA\fR
+.RE
+.SH "DESCRIPTION"
+.sp
+Read or write data from a Mesa ethernet card that uses the LBP16 protocol, such as the 7I80\&. This can be useful for performing certain low\-level tasks\&.
+.sp
+For more information about the meaning of each address space, see the card documentation\&. Incorrect use of this utility can have negative effects such as changing the board\(cqs IP address or even corrupting the FPGA bitfile in the eeprom\&. For some tasks, such as updating FPGA bitfiles and setting IP addresses, \fBmesaflash\fR(1) is a more appropriate tool\&.
+.sp
+If not specified, the default values are
+.sp
+\fB\-\-ip=\fR\fI192\&.168\&.1\&.121\fR \fB\-\-port=\fR\fI27181\fR \fB\-\-timeout=\fR\fI\&.2\fR \fB\-\-space=\fR\fI0\fR \fB\-\-size=\fR\fI0\fR
+.sp
+If the \fB\-\-size\fR argument \fITRANSFER_SIZE\fR is 0, elbpcom will look up the preferred transfer size of the space in the space\(cqs info area\&.
+.sp
+This example demonstrates reading the HOSTMOT2 identifying string from the IDROM in space 0:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ elbpcom \-\-address 0x104 \-\-read 8
+> 82420401
+< 484f53544d4f5432
+      HOSTMOT2
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+First the request is shown in hex\&. Then the response (if any) is shown in hex\&. Finally, the response is shown in ASCII, with "\&." replacing any non\-ASCII characters\&. This is similar to the following invocations of mesaflash:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ \&./mesaflash  \-\-device 7i80 \-\-rpo 0x104
+54534F48
+$ \&./mesaflash  \-\-device 7i80 \-\-rpo 0x108
+32544F4D
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+but notice its different treatment of byte order\&.
+.SH "SEE ALSO"
+.sp
+mesaflash(1), hostmot2(9), hm2_eth(9), Mesa\(cqs documentation for the Anything I/O boards\&.

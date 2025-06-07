@@ -1,0 +1,101 @@
+'\" t
+.\"     Title: rtapi_task_pause
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_TASK_PAUSE" "3" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_task_pause, rtapi_task_resume \- pause and resume real\-time tasks
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+void rtapi_task_pause(int _task_id_);
+void rtapi_task_resume(int _task_id_);
+.fi
+.if n \{\
+.RE
+.\}
+.SH "ARGUMENTS"
+.PP
+task_id
+.RS 4
+An RTAPI task identifier returned by an earlier call to
+\fBrtapi_task_new\fR\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+\fBrtapi_task_resume\fR starts a task in free\-running mode\&. The task must be in the "paused" state\&.
+.sp
+A free running task runs continuously until either:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+It is prempted by a higher priority task\&. It will resume as soon as the higher priority task releases the CPU\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+It calls a blocking function, like
+\fBrtapi_sem_take\fR\&. It will resume when the function unblocks\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+It is returned to the "paused" state by
+\fBrtapi_task_pause\fR\&. May be called from init/cleanup code, and from within realtime tasks\&.
+.RE
+.sp
+\fBrtapi_task_pause\fR causes a task to stop execution and change to the "paused" state\&. The task can be free\-running or periodic\&. Note that \fBrtapi_task_pause\fR may called from any task, or from init or cleanup code, not just from the task that is to be paused\&. The task will resume execution when either \fBrtapi_task_resume\fR or \fBrtapi_task_start\fR (depending on whether this is a free\-running or periodic task) is called\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+May be called from init/cleanup code, and from within realtime tasks\&.
+.SH "RETURN VALUE"
+.sp
+An RTAPI status code\&.
+.SH "SEE ALSO"
+.sp
+rtapi_task_new(3rtapi), rtapi_task_start(3rtapi)

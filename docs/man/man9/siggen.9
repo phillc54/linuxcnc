@@ -1,0 +1,147 @@
+'\" t
+.\"     Title: siggen
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "SIGGEN" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+siggen \- signal generator
+.SH "SYNOPSIS"
+.sp
+\fBloadrt siggen\fR[\fBnum_chan=\fR\fInum\fR | \fBnames=\fR\fIname1\fR[,\fIname2\fR\&...]]
+.SH "DESCRIPTION"
+.sp
+\fBsiggen\fR is a signal generator that can be used for testing and other applications that need simple waveforms\&. It produces sine, cosine, triangle, sawtooth, and square waves of variable frequency, amplitude, and offset, which can be used as inputs to other HAL components\&.
+.sp
+\fBsiggen\fR supports a maximum of sixteen channels\&. The number of channels actually loaded is set by the \fBnum_chan\fR argument when the module is loaded\&. Alternatively, specify \fBnames=\fR and unique names separated by commas\&.
+.sp
+The \fBnum_chan=\fR and \fBnames=\fR specifiers are mutually exclusive\&. If neither \fBnum_chan=\fR nor \fBnames=\fR are specified, the default value is one\&.
+.SH "NAMING"
+.sp
+The names for pins, parameters, and functions are prefixed as:
+.sp
+\fBsiggen\&.\fR\fIN\fR\fB\&.\fR for \fIN\fR = 0, 1, \&..., \fInum\fR\-1 when using \fBnum_chan=\fR\fB\fInum\fR\fR
+.sp
+\fBname\fR\fIN\fR\&. for name\fIN\fR = name1, name2, \&... when using \fBnames=name1,name2,\&...\fR
+.sp
+The \fBsiggen\&.\fR\fIN\fR\fB\&.\fR format is shown in the following descriptions\&.
+.SH "FUNCTIONS"
+.PP
+\fBsiggen\&.\fR\fIN\fR\fB\&.update\fR (uses floating\-point)
+.RS 4
+Updates output pins for signal generator
+\fIN\fR\&. Each time it is called it calculates a new sample\&. It should be called many times faster than the desired signal frequency, to avoid distortion and aliasing\&.
+.RE
+.SH "PINS"
+.PP
+\fBsiggen\&.\fR\fIN\fR\fB\&.frequency\fR float in
+.RS 4
+The output frequency for signal generator
+\fIN\fR, in Hertz\&. The default value is 1\&.0 Hertz\&.
+.RE
+.PP
+\fBsiggen\&.\fR\fIN\fR\fB\&.amplitude\fR float in
+.RS 4
+The output amplitude for signal generator
+\fIN\fR\&. If
+\fBoffset\fR
+is zero, the outputs will swing from \-\fBamplitude\fR
+to +\fBamplitude\fR\&. The default value is 1\&.00\&.
+.RE
+.PP
+\fBsiggen\&.\fR\fIN\fR\fB\&.offset\fR float in
+.RS 4
+The output offset for signal generator
+\fIN\fR\&. This value is added directly to the output signal\&. The default value is zero\&.
+.RE
+.PP
+\fBsiggen\&.\fR\fIN\fR\fB\&.reset\fR bit in
+.RS 4
+Resets output pins to predetermined states:
+
+\fBsine\fR: 0
+
+\fBsawtooth\fR: 0
+
+\fBsquare\fR: \-1 * amplitude
+
+\fBcosine\fR: \-1 * amplitude
+
+\fBtriangle\fR: \-1 * amplitude
+.RE
+.PP
+\fBsiggen\&.\fR\fIN\fR\fB\&.clock\fR bit out
+.RS 4
+The clock output\&. Bit type clock signal output at the commanded frequency\&.
+.RE
+.PP
+\fBsiggen\&.\fR\fIN\fR\fB\&.square\fR float out
+.RS 4
+The square wave output\&. Positive while
+\fBtriangle\fR
+and
+\fBcosine\fR
+are ramping upwards, and while
+\fBsine\fR
+is negative\&.
+.RE
+.PP
+\fBsiggen\&.\fR\fIN\fR\fB\&.sine\fR float out
+.RS 4
+The sine output\&. Lags
+\fBcosine\fR
+by 90 degrees\&.
+.RE
+.PP
+\fBsiggen\&.\fR\fIN\fR\fB\&.cosine\fR float out
+.RS 4
+The cosine output\&. Leads
+\fBsine\fR
+by 90 degrees\&.
+.RE
+.PP
+\fBsiggen\&.\fR\fIN\fR\fB\&.triangle\fR float out
+.RS 4
+The triangle wave output\&. Ramps up while
+\fBsquare\fR
+is positive, and down while
+\fBsquare\fR
+is negative\&. Reaches its positive and negative peaks at the same time as
+\fBcosine\fR\&.
+.RE
+.PP
+\fBsiggen\&.\fR\fIN\fR\fB\&.sawtooth\fR float out
+.RS 4
+The sawtooth output\&. Ramps upwards to its positive peak, then instantly drops to its negative peak and starts ramping again\&. The drop occurs when
+\fBtriangle\fR
+and
+\fBcosine\fR
+are at their positive peaks, and coincides with the falling edge of
+\fBsquare\fR\&.
+.RE
+.SH "PARAMETERS"
+.sp
+None

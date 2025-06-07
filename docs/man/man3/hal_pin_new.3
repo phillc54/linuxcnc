@@ -1,0 +1,112 @@
+'\" t
+.\"     Title: hal_pin_new
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HAL_PIN_NEW" "3" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hal_pin_new, hal_pin_bit_new, hal_pin_float_new, hal_pin_u32_new, hal_pin_s32_new, hal_pin_port_new, hal_pin_bit_newf, hal_pin_float_newf, hal_pin_u32_newf \- creates a HAL pin
+.SH "SYNTAX"
+.sp
+int hal_pin_bit_new(const char* \fIname\fR, hal_pin_dir_t \fIdir\fR, hal_bit_t** \fIdata_ptr_addr\fR, int \fIcomp_id\fR)
+.sp
+int hal_pin_float_new(const char* \fIname\fR, hal_pin_dir_t \fIdir\fR, hal_float_t** \fIdata_ptr_addr\fR, int \fIcomp_id\fR)
+.sp
+int hal_pin_u32_new(const char* \fIname\fR, hal_pin_dir_t \fIdir\fR, hal_u32_t** \fIdata_ptr_addr\fR, int \fIcomp_id\fR)
+.sp
+int hal_pin_s32_new(const char* \fIname\fR, hal_pin_dir_t \fIdir\fR, hal_s32_t** \fIdata_ptr_addr\fR, int \fIcomp_id\fR)
+.sp
+int hal_pin_port_new(const char* \fIname\fR, hal_pin_dir_t \fIdir\fR, hal_port_t** \fIdata_ptr_addr\fR, int \fIcomp_id\fR)
+.sp
+int hal_pin_bit_newf(hal_pin_dir_t \fIdir\fR, hal_bit_t** \fIdata_ptr_addr\fR, int \fIcomp_id\fR, const char* \fIfmt\fR, \fI\&...\fR)
+.sp
+int hal_pin_float_newf(hal_pin_dir_t \fIdir\fR, hal_float_t** \fIdata_ptr_addr\fR, int \fIcomp_id\fR, const char* \fIfmt\fR, \fI\&...\fR)
+.sp
+int hal_pin_u32_newf(hal_pin_dir_t \fIdir\fR, hal_u32_t** \fIdata_ptr_addr\fR, int \fIcomp_id\fR, const char* \fIfmt\fR, \fI\&...\fR)
+.sp
+int hal_pin_s32_newf(hal_pin_dir_t \fIdir\fR, hal_s32_t** \fIdata_ptr_addr\fR, int \fIcomp_id\fR, const char* \fIfmt\fR, \fI\&...\fR)
+.sp
+int hal_pin_port_newf(hal_pin_dir_t \fIdir\fR, hal_port_t** \fIdata_ptr_addr\fR, int \fIcomp_id\fR, const char* \fIfmt\fR, \fI\&...\fR)
+.sp
+int hal_pin_new(const char* \fIname\fR, hal_type_t \fItype\fR, hal_pin_dir_t \fIdir\fR, void** \fIdata_ptr_addr\fR, int \fIcomp_id\fR)
+.SH "ARGUMENTS"
+.PP
+name
+.RS 4
+Name of the pin\&.
+.RE
+.PP
+dir
+.RS 4
+The direction of the pin, from the viewpoint of the component\&. It may be one of
+\fBHAL_IN\fR,
+\fBHAL_OUT\fR, or
+\fBHAL_IO\fR\&. Any number of
+\fBHAL_IN\fR
+or
+\fBHAL_IO\fR
+pins may be connected to the same signal, but at most one
+\fBHAL_OUT\fR
+pin is permitted\&. A component may assign a value to a pin that is
+\fBHAL_OUT\fR
+or
+\fBHAL_IO\fR, but may not assign a value to a pin that is
+\fBHAL_IN\fR\&.
+.RE
+.PP
+data_ptr_addr
+.RS 4
+The address of the pointer\-to\-data, which must lie within memory allocated by
+\fBhal_malloc\fR\&.
+.RE
+.PP
+comp_id
+.RS 4
+HAL component identifier returned by an earlier call to
+\fBhal_init\fR\&.
+.RE
+.PP
+fmt,
+.RS 4
+printf\-style format string and arguments
+.RE
+.PP
+type
+.RS 4
+The type of the param, as specified in
+\fBhal_type_t(3hal)\fR\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+The \fBhal_pin_new\fR family of functions create a new \fIpin\fR object\&. Once a pin has been created, it can be linked to a signal object using \fBhal_link\fR\&. A pin contains a pointer, and the component that owns the pin can dereference the pointer to access whatever signal is linked to the pin\&. (If no signal is linked, it points to a dummy signal\&.)
+.sp
+There are functions for each of the data types that the HAL supports\&. Pins may only be linked to signals of the same type\&.
+.SH "RETURN VALUE"
+.sp
+Returns 0 on success, or a negative errno value on failure\&.
+.SH "SEE ALSO"
+.sp
+hal_type_t(3hal), hal_link(3hal)

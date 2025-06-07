@@ -1,0 +1,32 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/conv_u64_float.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH CONV_U64_FLOAT "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+conv_u64_float \- Convert a value from u64 to float
+.SH SYNOPSIS
+.HP
+.B loadrt conv_u64_float [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBconv-u64-float.\fIN\fB\fR (requires a floating-point thread)
+Update 'out' based on 'in'
+.SH PINS
+.TP
+.B conv-u64-float.\fIN\fB.in\fR u64 in \fR
+.br
+.ns
+.TP
+.B conv-u64-float.\fIN\fB.out\fR float out \fR
+.SH AUTHOR
+
+Jeff Epler
+.SH LICENSE
+
+GPL

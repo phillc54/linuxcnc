@@ -1,0 +1,128 @@
+'\" t
+.\"     Title: haltcl
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HALTCL" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+haltcl \- manipulate the LinuxCNC HAL from the command line using a Tcl interpreter\&.
+.SH "SYNOPSIS"
+.sp
+\fBhaltcl\fR [\fB\-i\fR \fI<INI file>\fR] [\fIfilename\fR]
+.SH "DESCRIPTION"
+.sp
+Tcl is a scripting language from the 90s that is very easy to extend\&. \fBHaltcl\fR extends the regular Tcl interpreter with a set of commands to interact with HAL, i\&.e\&. it allows to manipulate the HAL (Hardware Abstraction Layer) from the command line using a Tcl interpreter\&. \fBhaltcl\fR can optionally read commands from a file (filename), allowing complex HAL configurations to be set up with a single command\&.
+.SH "OPTIONS"
+.PP
+\fB\-i\fR \fI<INI file>\fR
+.RS 4
+If specified, the INI file is read and used to create Tcl global variable arrays\&. An array is created for each SECTION of the INI file with elements for each ITEM in the section\&.
+.sp
+For example, if the INI file contains:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[SECTION_A]
+ITEM_1 = 1
+[SECTION_A]
+ITEM_2 = 2
+[SECTION_B]
+ITEM_1 = 10
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+The corresponding Tcl variables are:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+SECTION_A(ITEM_1) = 1
+SECTION_A(ITEM_2) = 2
+SECTION_B(ITEM_1) = 10
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\fB\-ini\fR \fI<INI file>\fR
+.RS 4
+Declining usage, use
+\fB\-i\fR
+\fI<INI file>\fR
+.RE
+.PP
+\fBfilename\fR
+.RS 4
+If specified, the Tcl commands of
+\fBfilename\fR
+are executed\&. If no filename is specified, haltcl opens an interactive session\&.
+.RE
+.SH "COMMANDS"
+.sp
+The executable \fBhaltcl\fR includes the commands of a Tcl interpreter augmented with commands for the hal language as described for \fBhalcmd\fR(1)\&. The augmented commands can be listed with the command:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+haltcl: hal \-\-commands
+
+addf alias delf delsig getp gets ptype stype help linkpp linkps linksp
+list loadrt loadusr lock net newsig save setexact_for_test_suite_only
+setp sets show source start status stop unalias unlinkp unload unloadrt
+unloadusr unlock waitusr
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Two of the augmented commands, \fIlist\fR and \fIgets\fR, require special treatment to avoid conflict with Tcl built\-in commands having the same names\&. To use these commands, precede them with the keyword \fIhal\fR:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+hal list
+hal gets
+.fi
+.if n \{\
+.RE
+.\}
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues\&.
+.SH "COPYRIGHT"
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.
+.SH "SEE ALSO"
+.sp
+halcmd(1), halrun(1)

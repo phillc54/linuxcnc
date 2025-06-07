@@ -1,0 +1,148 @@
+'\" t
+.\"     Title: halrun
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HALRUN" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+halrun \- manipulate the LinuxCNC HAL from the command line
+.SH "SYNOPSIS"
+.sp
+\fBhalrun \-h\fR
+.sp
+\fBhalrun\fR [\fB\-I\fR] [\fIhalcmd_opts\fR] [\fIfilename[\&.hal|\&.tcl]\fR]
+.sp
+\fBhalrun \-T\fR [\fIhalcmd_opts\fR] [\fIfilename[\&.hal|\&.tcl]\fR]
+.sp
+\fBhalrun \-U\fR
+.SH "DESCRIPTION"
+.sp
+The convenience script \fBhalrun\fR can manipulate the HAL (Hardware Abstraction Layer) from the command line\&. When invoked, \fBhalrun\fR:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Sets up the realtime environment\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Executes a command interpreter (\fBhalcmd\fR
+or
+\fBhaltcl\fR)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+(Optionally) runs an interactive session\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Tears down the realtime environment\&.
+.RE
+.sp
+If no filename is specified, an interactive session is started\&. The session will use \fBhalcmd\fR(1) unless \fB\-T\fR is specified in which case \fBhaltcl\fR(1) will be used\&.
+.sp
+If a filename is specified and neither the \fB\-I\fR nor the \fB\-T\fR option is included, the filename will be processed by the command interpreter corresponding to the filename extension (\fBhalcmd\fR or \fBhaltcl\fR)\&. After processing, the realtime environment will be torn down\&.
+.sp
+If a filename is specified and the \fB\-I\fR or \fB\-T\fR option is included, the file is processed by the appropriate command interpreter and then an interactive session is started for \fBhalcmd\fR or \fBhaltcl\fR according to the \fB\-I\fR or \fB\-T\fR option\&.
+.SH "OPTIONS"
+.PP
+\fBhalcmd_opts\fR
+.RS 4
+When a \&.hal file is specified, the
+\fBhalcmd_opts\fR
+are passed to
+\fBhalcmd\fR\&. See the man page for
+\fBhalcmd\fR(1)\&. When a \&.tcl file is specified, the only valid options are: \-i <INI file> \-f <filename[\&.tcl|\&.hal]> (alternate means of specifying a file)\&.
+.RE
+.PP
+\fB\-I\fR
+.RS 4
+Run an interactive
+\fBhalcmd\fR
+session
+.RE
+.PP
+\fB\-T\fR
+.RS 4
+Run an interactive
+\fBhaltcl\fR
+session\&.
+.RE
+.PP
+\fB\-U\fR
+.RS 4
+Forcibly cause the realtime environment to exit\&. It releases the HAL mutex, requests that all HAL components unload, and stops the realtime system\&.
+\fB\-U\fR
+must be the only commandline argument\&.
+.RE
+.PP
+\fB\-h\fR
+.RS 4
+Display a brief help screen and exit\&.
+.RE
+.SH "BUGS"
+.sp
+None known at this time\&.
+.SH "AUTHOR"
+.sp
+Original version by John Kasunich, as part of the LinuxCNC Enhanced Machine Controller project\&. Now includes major contributions by several members of the project\&.
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2003 John Kasunich\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.
+.SH "SEE ALSO"
+.sp
+halcmd(1), haltcl(1)

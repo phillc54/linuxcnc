@@ -1,0 +1,259 @@
+'\" t
+.\"     Title: hal_input
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HAL_INPUT" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hal_input \- control HAL pins with any Linux input device, including USB HID devices
+.SH "SYNOPSIS"
+.sp
+loadusr \fBhal_input\fR [\fB\-KRAL\fR] \fIinputspec\fR \&...
+.SH "DESCRIPTION"
+.sp
+\fBhal_input\fR is an interface between HAL and any Linux input device, including USB HID devices\&. For each device named, \fBhal_input\fR creates pins corresponding to its keys, absolute axes, and LEDs\&. At a fixed rate of approximately 10 ms, it synchronizes the device and the HAL pins\&.
+.SH "INPUT SPECIFICATION"
+.sp
+The \fIinputspec\fR may be in one of several forms:
+.PP
+A string \fIS\fR
+.RS 4
+A substring or shell\-style pattern match will be tested against the "name" of the device, the "phys" (which gives information about how it is connected), and the "id", which is a string of the form "Bus=\&... Vendor=\&... Product=\&... Version=\&..."\&. You can view the name, phys, and id of attached devices by executing \*(Aqless /proc/bus/input/devices\*(Aq\&. Examples:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+SpaceBall
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+"Vendor=001f Product=0001"
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+serio*/input0
+.RE
+.RE
+.PP
+A number \fIN\fR
+.RS 4
+This opens
+\fB/dev/input/event\fR\fIN\fR\&. Except for devices that are always attached to the system, this number may change over reboots or when the device is removed\&. For this reason, using an integer is not recommended\&.
+.RE
+.sp
+When several devices are identified by the same string, add "\fB:\fR\fIN\fR" where \fIN\fR is the index of the desired device\&. For example, if \fBMouse\fR matches \fBinput3\fR and \fBinput10\fR, then \fBMouse\fR and \fBMouse:0\fR select \fBinput3\fR\&. Specifying \fBmouse:1\fR selects input10\&.
+.sp
+For devices that appear as multiple entries in /dev/input, these indices are likely to stay the same every time\&. For multiple identical devices, these indices are likely to depend on the insertion order, but stay the same across reboots as long as the devices are not moved to different ports or unplugged while the machine is booted\&.
+.sp
+If the first character of the \fIinputspec\fR is a "+", then \fBhal_input\fR requests exclusive access to the device\&. The first device matching an \fIinputspec\fR is used\&. Any number of \fIinputspec\fRs may be used\&.
+.sp
+A \fIsubset option may precede each inputspec\fR\&. The subset option begins with a dash\&. Each letter in the subset option specifies a device feature to \fBinclude\fR\&. Features that are not specified are excluded\&. For instance, to export keyboard LEDs to HAL without exporting keys, use
+.sp
+hal_input \-L \fIkeyboard\fR \&...
+.SH "DEVICE FEATURES SUPPORTED"
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+EV_KEY (buttons and keys)\&. Subset \-K
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+EV_ABS (absolute analog inputs)\&. Subset \-A
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+EV_REL (relative analog inputs)\&. Subset \-R
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+EV_LED (LED outputs)\&. Subset \-L
+.RE
+.SH "HAL PINS AND PARAMETERS"
+.SS "For buttons"
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.btn\-\fR\fIname\fR bit out
+.PP
+\fBinput\&.\fR\fIN\fR\fB\&.btn\-\fR\fIname\fR\fB\-not\fR bit out
+.RS 4
+Created for each button on the device\&.
+.RE
+.SS "For keys"
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.key\-\fR\fIname\fR
+.PP
+\fBinput\fR\fIN\fR\fB\&.key\-\fR\fIname\fR\fB\-not\fR
+.RS 4
+Created for each key on the device\&.
+.RE
+.SS "For absolute axes"
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.abs\-\fR\fIname\fR\fB\-counts\fR s32 out
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.abs\-\fR\fIname\fR\fB\-position\fR float out
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.abs\-\fR\fIname\fR\fB\-scale\fR parameter float rw
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.abs\-\fR\fIname\fR\fB\-offset\fR parameter float rw
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.abs\-\fR\fIname\fR\fB\-fuzz\fR parameter s32 rw
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.abs\-\fR\fIname\fR\fB\-flat\fR parameter s32 rw
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.abs\-\fR\fIname\fR\fB\-min\fR parameter s32 r
+.PP
+\fBinput\&.\fR\fIN\fR\fB\&.abs\-\fR\fIname\fR\fB\-max\fR parameter s32 r
+.RS 4
+Created for each absolute axis on the device\&. Device positions closer than
+\fBflat\fR
+to
+\fBoffset\fR
+are reported as
+\fBoffset\fR
+in
+\fBcounts\fR, and
+\fBcounts\fR
+does not change until the device position changes by at least
+\fBfuzz\fR\&. The position is computed as
+\fBposition\fR
+= (\fBcounts\fR
+\-
+\fBoffset\fR) /
+\fBscale\fR\&. The default value of
+\fBscale\fR
+and
+\fBoffset\fR
+map the range of the axis reported by the operating system to [\-1,1]\&. The default values of
+\fBfuzz\fR
+and
+\fBflat\fR
+are those reported by the operating system\&. The values of
+\fBmin\fR
+and
+\fBmax\fR
+are those reported by the operating system\&.
+.RE
+.SS "For relative axes"
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.rel\-\fR\fIname\fR\fB\-counts\fR s32 out
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.rel\-\fR\fIname\fR\fB\-position\fR float out
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.rel\-\fR\fIname\fR\fB\-reset\fR bit in
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.rel\-\fR\fIname\fR\fB\-scale\fR parameter float rw
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.rel\-\fR\fIname\fR\fB\-absolute\fR parameter s32 rw
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.rel\-\fR\fIname\fR\fB\-precision\fR parameter s32 rw
+.PP
+\fBinput\&.\fR\fIN\fR\fB\&.rel\-\fR\fIname\fR\fB\-last\fR parameter s32 rw
+.RS 4
+Created for each relative axis on the device\&. As long as
+\fBreset\fR
+is true,
+\fBcounts\fR
+is reset to zero regardless of any past or current axis movement\&. Otherwise,
+\fBcounts\fR
+increases or decreases according to the motion of the axis\&.
+\fBcounts\fR
+is divided by position\-scale to give
+\fBposition\fR\&. The default value of
+\fBposition\fR
+is 1\&. There are some devices, notably scroll wheels, which return signed values with less resolution than 32 bits\&. The default value of
+\fBprecision\fR
+is 32\&.
+\fBprecision\fR
+can be set to 8 for a device that returns signed 8 bit values, or any other value from 1 to 32\&.
+\fBabsolute\fR, when set true, ignores duplicate events with the same value\&. This allows for devices that repeat events without any user action to work correctly\&.
+\fBlast\fR
+shows the most recent count value returned by the device, and is used in the implementation of
+\fBabsolute\fR\&.
+.RE
+.SS "For LEDs"
+.sp
+\fBinput\&.\fR\fIN\fR\fB\&.led\-\fR\fIname\fR bit out
+.PP
+\fBinput\&.\fR\fIN\fR\fB\&.led\-\fR\fIname\fR\fB\-invert\fR parameter bit rw
+.RS 4
+Created for each LED on the device\&.
+.RE
+.SH "PERMISSIONS AND UDEV"
+.sp
+By default, the input devices may not be accessible to regular users \(em \fBhal_input\fR requires read\-write access, even if the device has no outputs\&.
+.sp
+Different versions of udev have slightly different, incompatible syntaxes\&. For this reason, it is not possible for this manual page to give an accurate example\&. The \fBudev(7)\fR manual page documents the syntax used on your Linux distribution\&. To view it in a terminal, the command is man 7 udev\&.
+.SH "BUGS"
+.sp
+The initial state of keys, buttons, and absolute axes are erroneously reported as FALSE or 0 until an event is received for that key, button, or axis\&.
+.SH "SEE ALSO"
+.sp
+udev(8), udev(7)

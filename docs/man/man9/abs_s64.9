@@ -1,0 +1,41 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/abs_s64.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH ABS_S64 "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+abs_s64 \- Compute the absolute value and sign of the input signal
+.SH SYNOPSIS
+.HP
+.B loadrt abs_s64 [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBabs-s64.\fIN\fB\fR
+
+.SH PINS
+.TP
+.B abs-s64.\fIN\fB.in\fR s64 in \fR
+input value
+.TP
+.B abs-s64.\fIN\fB.out\fR s64 out \fR
+output value, always non-negative
+.TP
+.B abs-s64.\fIN\fB.sign\fR bit out \fR
+Sign of input, false for positive, true for negative
+.TP
+.B abs-s64.\fIN\fB.is-positive\fR bit out \fR
+true if input is positive, false if input is 0 or negative
+.TP
+.B abs-s64.\fIN\fB.is-negative\fR bit out \fR
+true if input is negative, false if input is 0 or positive
+.SH AUTHOR
+
+ArcEye based on code from Sebastian Kuzminsky
+.SH LICENSE
+
+GPL

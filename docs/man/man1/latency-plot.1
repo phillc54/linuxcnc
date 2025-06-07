@@ -1,0 +1,91 @@
+'\" t
+.\"     Title: latency-plot
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "LATENCY\-PLOT" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+latency-plot \- another way to view latency numbers
+.SH "SYNOPSIS"
+.sp
+\fBlatency\-plot\fR [ \fB\-?\fR | \fB\-\-help\fR ] [ \fB\-H\fR | \fB\-\-hal\fR ] [ \fB\-b\fR | \fB\-\-base\fR \fB\fIns\fR\fR ] [ \fB\-s\fR | \fB\-\-servo\fR \fB\fIns\fR\fR ] [ \fB\-t\fR | \fB\-\-time\fR \fB\fIms\fR\fR ] [ \fB\-\-relative\fR ] [ \fB\-\-actual\fR ]
+.SH "DESCRIPTION"
+.sp
+\fBlatency\-plot\fR makes a strip chart recording for a base and a servo thread\&. It may be useful to see spikes in latency when other applications are started or used\&. Mainly superseded by latency\-histogram\&.
+.sp
+LinuxCNC and HAL should not be running, stop with \fIhalrun \-U\fR\&.
+.sp
+More details: https://linuxcnc\&.org/docs/html/install/latency\-test\&.html
+.SH "OPTIONS"
+.PP
+\fB\-?\fR, \fB\-\-help\fR
+.RS 4
+Show options and exit\&.
+.RE
+.PP
+\fB\-H\fR, \fB\-\-hal\fR, \fB\-b\fR, \fB\-\-base\fR \fIns\fR
+.RS 4
+base thread interval in nanoseconds, default: 25000
+.RE
+.PP
+\fB\-s\fR, \fB\-\-servo\fR \fIns\fR
+.RS 4
+servo thread interval in nanoseconds, default: 1000000
+.RE
+.PP
+\fB\-t\fR, \fB\-\-time\fR \fIms\fR
+.RS 4
+report interval in milliseconds, default: 1000, min: 100, max: 10000
+.RE
+.PP
+\fB\-\-relative\fR
+.RS 4
+relative clock time (default)
+.RE
+.PP
+\fB\-\-actual\fR
+.RS 4
+actual clock time
+.RE
+.SH "SEE ALSO"
+.sp
+\fBlatency\-histogram\fR(1), \fBlatency\-test\fR(1), \fBlinuxcnc\fR(1)
+.sp
+Much more information about LinuxCNC and HAL is available in the LinuxCNC and HAL User Manuals, found at \fI/usr/share/doc/linuxcnc/\fR\&.
+.SH "BUGS"
+.sp
+None known at this time\&.
+.SH "AUTHOR"
+.sp
+This man page written by Andy Pugh, as part of the LinuxCNC project\&.
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2020 Andy Pugh\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

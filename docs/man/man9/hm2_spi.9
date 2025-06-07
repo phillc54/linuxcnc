@@ -1,0 +1,76 @@
+'\" t
+.\"     Title: hm2_spi
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HM2_SPI" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hm2_spi \- This driver has been superseded by the hm2_spix driver\&. LinuxCNC HAL driver for the Mesa Electronics SPI Anything IO boards, with HostMot2 firmware\&.
+.SH "SYNOPSIS"
+.sp
+\fBloadrt hm2_spi\fR [\fBconfig=\fR"\fIstr\fR[,\fIstr\fR\&...]"] [ \fBspidev_path=\fR\fIpath\fR[,\fIpath\fR\&...] ] [\fBspidev_rate=\fR\fIrate\fR[,\fIrate\fR\&...] ]
+.PP
+\fBconfig\fR [default: ""]
+.RS 4
+HostMot2 config strings, described in the hostmot2(9) manpage\&.
+.RE
+.PP
+\fBspidev_path\fR [default: "/dev/spidev1\&.0"]
+.RS 4
+The path to the spi device node, a character special device in /dev
+.RE
+.PP
+\fBspidev_rate\fR [default: 24000]
+.RS 4
+The desired rate of the SPI clock in kHz\&. If the exact specified clock is not available, a lower clock is used\&. Due to shortcomings in the spidev API, it is not possible for hal to report the actual clock used\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+hm2_spi is a device driver that interfaces Mesa\(cqs SPI based Anything I/O boards (with the HostMot2 firmware) to the LinuxCNC HAL\&.
+.sp
+The supported boards are: 7I90HD\&.
+.sp
+The board must have a compatible firmware loaded on the board by the mesaflash(1) program\&.
+.sp
+hm2_spi is only available when LinuxCNC is configured with "uspace" realtime\&.
+.SH "INTERFACE CONFIGURATION"
+.sp
+It is possible for one SPI bus to connect several devices; in this configuration, a master device has several chip select lines\&. In order to meet realtime deadlines, hm2_spi should be used on a dedicated SPI interface not shared with any other slaves\&.
+.SH "REALTIME PERFORMANCE OF LINUX SPIDEV DRIVERS"
+.sp
+As of kernel 3\&.8, most or all kernel SPI drivers do not achieve the high realtime response rate required for a typical LinuxCNC configuration\&. The driver was tested with a modified version of the spi\-s3c64xx SPI driver on the Odroid U3 platform\&. The patched kernel resides on github\&.
+.SH "SPI CLOCK RATES"
+.sp
+The maximum SPI clock of the 7i90 is documented as 50MHz\&. Other elements of the data path between HAL and the 7i90 may impose other limitations\&.
+.SH "NOTE"
+.sp
+This driver has been superseded for most purposes by the hm2_spix driver\&.
+.SH "SEE ALSO"
+.sp
+hostmot2(9) hm2_spix(9)
+.SH "LICENSE"
+.sp
+GPL

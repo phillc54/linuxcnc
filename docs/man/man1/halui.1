@@ -1,0 +1,873 @@
+'\" t
+.\"     Title: halui
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HALUI" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+halui \- observe HAL pins and command LinuxCNC through NML
+.SH "SYNOPSIS"
+.sp
+\fBhalui\fR [\fB\-ini\fR \fI<path\-to\-INI>\fR]
+.SH "DESCRIPTION"
+.sp
+The program \fBhalui\fR is used to build a User Interface using hardware knobs and switches\&. It exports a big number of pins, and acts accordingly when these change\&.
+.SH "OPTIONS"
+.PP
+\fB\-ini\fR \fIfilename\fR
+.RS 4
+Use the
+\fIfilename\fR
+as the configuration file\&. Note: halui must find the nml file specified in the INI, usually that file is in the same folder as the INI, so it makes sense to run halui from that folder\&.
+.RE
+.SH "USAGE"
+.sp
+When run, \fBhalui\fR will export a large number of pins\&. A user can connect those to his physical knobs & switches & leds, and when a change is noticed halui triggers an appropriate event\&.
+.sp
+Caveat, \fBhalui\fR expects the signals to be debounced, so if needed (bad knob contact) connect the physical button to a HAL debounce filter first\&.
+.SH "PINS"
+.SS "Abort"
+.PP
+\fBhalui\&.abort\fR bit in
+.RS 4
+pin for clearing most errors
+.RE
+.SS "Tool"
+.PP
+\fBhalui\&.tool\&.length\-offset\&.a\fR float out
+.RS 4
+current applied tool length offset for the A axis
+.RE
+.PP
+\fBhalui\&.tool\&.length\-offset\&.b\fR float out
+.RS 4
+current applied tool length offset for the B axis
+.RE
+.PP
+\fBhalui\&.tool\&.length\-offset\&.c\fR float out
+.RS 4
+current applied tool length offset for the C axis
+.RE
+.PP
+\fBhalui\&.tool\&.length\-offset\&.u\fR float out
+.RS 4
+current applied tool length offset for the U axis
+.RE
+.PP
+\fBhalui\&.tool\&.length\-offset\&.v\fR float out
+.RS 4
+current applied tool length offset for the V axis
+.RE
+.PP
+\fBhalui\&.tool\&.length\-offset\&.w\fR float out
+.RS 4
+current applied tool length offset for the W axis
+.RE
+.PP
+\fBhalui\&.tool\&.length\-offset\&.x\fR float out
+.RS 4
+current applied tool length offset for the X axis
+.RE
+.PP
+\fBhalui\&.tool\&.length\-offset\&.y\fR float out
+.RS 4
+current applied tool length offset for the Y axis
+.RE
+.PP
+\fBhalui\&.tool\&.length\-offset\&.z\fR float out
+.RS 4
+current applied tool length offset for the Z axis
+.RE
+.PP
+\fBhalui\&.tool\&.diameter\fR float out
+.RS 4
+Current tool diameter, or 0 if no tool is loaded\&.
+.RE
+.PP
+\fBhalui\&.tool\&.number\fR u32 out
+.RS 4
+current selected tool
+.RE
+.SS "Spindle"
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.brake\-is\-on\fR bit out
+.RS 4
+status pin that tells us if brake is on
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.brake\-off\fR bit in
+.RS 4
+pin for deactivating the spindle brake
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.brake\-on\fR bit in
+.RS 4
+pin for activating the spindle brake
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.decrease\fR bit in
+.RS 4
+a rising edge on this pin decreases the current spindle speed by 100
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.forward\fR bit in
+.RS 4
+a rising edge on this pin makes the spindle go forward
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.increase\fR bit in
+.RS 4
+a rising edge on this pin increases the current spindle speed by 100
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.is\-on\fR bit out
+.RS 4
+status pin telling if the spindle is on
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.reverse\fR bit in
+.RS 4
+a rising edge on this pin makes the spindle go reverse
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.runs\-backward\fR bit out
+.RS 4
+status pin telling if the spindle is running backward
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.runs\-forward\fR bit out
+.RS 4
+status pin telling if the spindle is running forward
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.start\fR bit in
+.RS 4
+a rising edge on this pin starts the spindle
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.stop\fR bit in
+.RS 4
+a rising edge on this pin stops the spindle
+.RE
+.SS "Spindle Override"
+.PP
+(SO = spindle override\&. FO = feed override), \fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.override\&.count\-enable\fR bit in (default: \fBTRUE\fR)
+.RS 4
+When TRUE, modify spindle override when counts changes\&.
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.override\&.counts\fR s32 in
+.RS 4
+counts X scale = spindle override percentage
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.override\&.decrease\fR bit in
+.RS 4
+pin for decreasing the SO (\-=scale)
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.override\&.direct\-value\fR bit in
+.RS 4
+pin to enable direct spindle override value input
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.override\&.increase\fR bit in
+.RS 4
+pin for increasing the SO (+=scale)
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.override\&.reset\fR bit in
+.RS 4
+pin for resetting the scale SO value (scale=1\&.0)
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.override\&.scale\fR float in
+.RS 4
+pin for setting the scale of counts for SO
+.RE
+.PP
+\fBhalui\&.spindle\&.\fR\fIN\fR\fB\&.override\&.value\fR float out
+.RS 4
+current FO value
+.RE
+.SS "Program"
+.PP
+\fBhalui\&.program\&.block\-delete\&.is\-on\fR bit out
+.RS 4
+status pin telling that block delete is on
+.RE
+.PP
+\fBhalui\&.program\&.block\-delete\&.off\fR bit in
+.RS 4
+pin for requesting that block delete is off
+.RE
+.PP
+\fBhalui\&.program\&.block\-delete\&.on\fR bit in
+.RS 4
+pin for requesting that block delete is on
+.RE
+.PP
+\fBhalui\&.program\&.is\-idle\fR bit out
+.RS 4
+status pin telling that no program is running
+.RE
+.PP
+\fBhalui\&.program\&.is\-paused\fR bit out
+.RS 4
+status pin telling that a program is paused
+.RE
+.PP
+\fBhalui\&.program\&.is\-running\fR bit out
+.RS 4
+status pin telling that a program is running
+.RE
+.PP
+\fBhalui\&.program\&.optional\-stop\&.is\-on\fR bit out
+.RS 4
+status pin telling that the optional stop is on
+.RE
+.PP
+\fBhalui\&.program\&.optional\-stop\&.off\fR bit in
+.RS 4
+pin requesting that the optional stop is off
+.RE
+.PP
+\fBhalui\&.program\&.optional\-stop\&.on\fR bit in
+.RS 4
+pin requesting that the optional stop is on
+.RE
+.PP
+\fBhalui\&.program\&.pause\fR bit in
+.RS 4
+pin for pausing a program
+.RE
+.PP
+\fBhalui\&.program\&.resume\fR bit in
+.RS 4
+pin for resuming a program
+.RE
+.PP
+\fBhalui\&.program\&.run\fR bit in
+.RS 4
+pin for running a program
+.RE
+.PP
+\fBhalui\&.program\&.step\fR bit in
+.RS 4
+pin for stepping in a program
+.RE
+.PP
+\fBhalui\&.program\&.stop\fR bit in
+.RS 4
+pin for stopping a program (note: this pin does the same thing as halui\&.abort)
+.RE
+.SS "Mode"
+.PP
+\fBhalui\&.mode\&.auto\fR bit in
+.RS 4
+pin for requesting auto mode
+.RE
+.PP
+\fBhalui\&.mode\&.is\-auto\fR bit out
+.RS 4
+pin for auto mode is on
+.RE
+.PP
+\fBhalui\&.mode\&.is\-joint\fR bit out
+.RS 4
+pin showing joint by joint jog mode is on
+.RE
+.PP
+\fBhalui\&.mode\&.is\-manual\fR bit out
+.RS 4
+pin for manual mode is on
+.RE
+.PP
+\fBhalui\&.mode\&.is\-mdi\fR bit out
+.RS 4
+pin for MDI mode is on
+.RE
+.PP
+\fBhalui\&.mode\&.is\-teleop\fR bit out
+.RS 4
+pin showing coordinated jog mode is on
+.RE
+.PP
+\fBhalui\&.mode\&.joint\fR bit in
+.RS 4
+pin for requesting joint by joint jog mode
+.RE
+.PP
+\fBhalui\&.mode\&.manual\fR bit in
+.RS 4
+pin for requesting manual mode
+.RE
+.PP
+\fBhalui\&.mode\&.mdi\fR bit in
+.RS 4
+pin for requesting MDI mode
+.RE
+.PP
+\fBhalui\&.mode\&.teleop\fR bit in
+.RS 4
+pin for requesting coordinated jog mode
+.RE
+.SS "MDI (optional)"
+.PP
+\fBhalui\&.mdi\-command\-\fR\fIXX\fR bit in
+.RS 4
+\fBhalui\fR
+looks for INI variables named [HALUI]MDI_COMMAND, and exports a pin for each command it finds\&. When the pin is driven TRUE,
+\fBhalui\fR
+runs the specified MDI command\&.
+\fIXX\fR
+is a two digit number starting at 00\&. If no [HALUI]MDI_COMMAND variables are set in the INI file, no halui\&.mdi\-command\-XX pins will be exported by halui\&.
+.RE
+.SS "Mist coolant"
+.PP
+\fBhalui\&.mist\&.is\-on\fR bit out
+.RS 4
+pin for mist is on
+.RE
+.PP
+\fBhalui\&.mist\&.off\fR bit in
+.RS 4
+pin for stopping mist
+.RE
+.PP
+\fBhalui\&.mist\&.on\fR bit in
+.RS 4
+pin for starting mist
+.RE
+.SS "Max\-velocity"
+.PP
+\fBhalui\&.max\-velocity\&.count\-enable\fR bit in (default: \fBTRUE\fR)
+.RS 4
+When True, modify max velocity when halui\&.max\-velocity\&.counts changes\&.
+.RE
+.PP
+\fBhalui\&.max\-velocity\&.counts\fR s32 in
+.RS 4
+When \&.count\-enable is True, halui changes the max velocity in response to changes to this pin\&. It\(cqs usually connected to an MPG encoder on an operator\(cqs panel or jog pendant\&. When \&.count\-enable is False, halui ignores this pin\&.
+.RE
+.PP
+\fBhalui\&.max\-velocity\&.direct\-value\fR bit in
+.RS 4
+When this pin is True, halui commands the max velocity directly to (\&.counts * \&.scale)\&. When this pin is False, halui commands the max velocity in a relative way: change max velocity by an amount equal to (change in \&.counts * \&.scale)\&.
+.RE
+.PP
+\fBhalui\&.max\-velocity\&.increase\fR bit in
+.RS 4
+A positive edge (a False to True transition) on this pin increases the max velocity by the value of the \&.scale pin\&. (Note that halui always responds to this pin, independent of the \&.count\-enable pin\&.)
+.RE
+.PP
+\fBhalui\&.max\-velocity\&.decrease\fR bit in
+.RS 4
+A positive edge (a False to True transition) on this pin decreases the max velocity by the value of the \&.scale pin\&. (Note that halui always responds to this pin, independent of the \&.count\-enable pin\&.)
+.RE
+.PP
+\fBhalui\&.max\-velocity\&.scale\fR float in
+.RS 4
+This pin controls the scale of changes to the max velocity\&. Each unit change in \&.counts, and each positive edge on \&.increase and \&.decrease, changes the max velocity by \&.scale\&. The units of the \&.scale pin are machine\-units per second\&.
+.RE
+.PP
+\fBhalui\&.max\-velocity\&.value\fR float out
+.RS 4
+Current value for maximum velocity, in machine\-units per second\&.
+.RE
+.SS "Machine"
+.PP
+\fBhalui\&.machine\&.units\-per\-mm\fR float out
+.RS 4
+pin for machine units\-per\-mm (inch:1/25\&.4, mm:1) according to INI file setting: [TRAJ] LINEAR_UNITS
+.RE
+.PP
+\fBhalui\&.machine\&.is\-on\fR bit out
+.RS 4
+pin for machine is On/Off
+.RE
+.PP
+\fBhalui\&.machine\&.off\fR bit in
+.RS 4
+pin for setting machine Off
+.RE
+.PP
+\fBhalui\&.machine\&.on\fR bit in
+.RS 4
+pin for setting machine On
+.RE
+.SS "Joint"
+.sp
+\fIN\fR = joint number (0 \&... num_joints\-1)
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.select\fR bit in
+.RS 4
+pin for selecting joint
+\fIN\fR
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.is\-selected\fR bit out
+.RS 4
+status pin that joint
+\fIN\fR
+is selected
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.has\-fault\fR bit out
+.RS 4
+status pin telling that joint
+\fIN\fR
+has a fault
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.home\fR bit in
+.RS 4
+pin for homing joint
+\fIN\fR
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.is\-homed\fR bit out
+.RS 4
+status pin telling that joint
+\fIN\fR
+is homed
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.on\-hard\-max\-limit\fR bit out
+.RS 4
+status pin telling that joint
+\fIN\fR
+is on the positive hardware limit
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.on\-hard\-min\-limit\fR bit out
+.RS 4
+status pin telling that joint
+\fIN\fR
+is on the negative hardware limit
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.on\-soft\-max\-limit\fR bit out
+.RS 4
+status pin telling that joint
+\fIN\fR
+is on the positive software limit
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.on\-soft\-min\-limit\fR bit out
+.RS 4
+status pin telling that joint
+\fIN\fR
+is on the negative software limit
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.override\-limits\fR bit out
+.RS 4
+status pin telling that joint
+\fIN\fR\*(Aqs limits are temporarily overridden
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.unhome\fR bit in
+.RS 4
+pin for unhoming joint
+\fIN\fR
+.RE
+.PP
+\fBhalui\&.joint\&.selected\fR u32 out
+.RS 4
+selected joint number (0 \&... num_joints\-1)
+.RE
+.PP
+\fBhalui\&.joint\&.selected\&.has\-fault\fR bit out
+.RS 4
+status pin selected joint is faulted
+.RE
+.PP
+\fBhalui\&.joint\&.selected\&.home\fR bit in
+.RS 4
+pin for homing the selected joint
+.RE
+.PP
+\fBhalui\&.joint\&.selected\&.is\-homed\fR bit out
+.RS 4
+status pin telling that the selected joint is homed
+.RE
+.PP
+\fBhalui\&.joint\&.selected\&.on\-hard\-max\-limit\fR bit out
+.RS 4
+status pin telling that the selected joint is on the positive hardware limit
+.RE
+.PP
+\fBhalui\&.joint\&.selected\&.on\-hard\-min\-limit\fR bit out
+.RS 4
+status pin telling that the selected joint is on the negative hardware limit
+.RE
+.PP
+\fBhalui\&.joint\&.selected\&.on\-soft\-max\-limit\fR bit out
+.RS 4
+status pin telling that the selected joint is on the positive software limit
+.RE
+.PP
+\fBhalui\&.joint\&.selected\&.on\-soft\-min\-limit\fR bit out
+.RS 4
+status pin telling that the selected joint is on the negative software limit
+.RE
+.PP
+\fBhalui\&.joint\&.selected\&.override\-limits\fR bit out
+.RS 4
+status pin telling that the selected joint\(cqs limits are temporarily overridden
+.RE
+.PP
+\fBhalui\&.joint\&.selected\&.unhome\fR bit in
+.RS 4
+pin for unhoming the selected joint
+.RE
+.SS "Joint jogging (N = joint number (0 \&... num_joints\-1))"
+.PP
+\fBhalui\&.joint\&.jog\-deadband\fR float in
+.RS 4
+pin for setting jog analog deadband (jog analog inputs smaller/slower than this (in absolute value) are ignored)\&.
+.RE
+.PP
+\fBhalui\&.joint\&.jog\-speed\fR float in
+.RS 4
+pin for setting jog speed for plus/minus jogging\&.
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.analog\fR float in
+.RS 4
+pin for jogging the joint
+\fIN\fR
+using an float value (e\&.g\&. joystick)\&. The value, typically set between 0\&.0 and \(+-1\&.0, is used as a jog\-speed multiplier\&.
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.increment\fR float in
+.RS 4
+pin for setting the jog increment for joint
+\fIN\fR
+when using increment\-plus/minus
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.increment\-minus\fR bit in
+.RS 4
+a rising edge will will make joint
+\fIN\fR
+jog in the negative direction by the increment amount
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.increment\-plus\fR bit in
+.RS 4
+a rising edge will will make joint
+\fIN\fR
+jog in the positive direction by the increment amount
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.minus\fR bit in
+.RS 4
+pin for jogging joint
+\fIN\fR
+in negative direction at the halui\&.joint\&.jog\-speed velocity
+.RE
+.PP
+\fBhalui\&.joint\&.\fR\fIN\fR\fB\&.plus\fR bit in
+.RS 4
+pin for jogging joint
+\fIN\fR
+in positive direction at the halui\&.joint\&.jog\-speed velocity
+.RE
+.PP
+\fBhalui\&.joint\&.selected\&.increment\fR float in
+.RS 4
+pin for setting the jog increment for the selected joint when using increment\-plus/minus
+.RE
+.PP
+\fBhalui\&.joint\&.selected\&.increment\-minus\fR bit in
+.RS 4
+a rising edge will will make the selected joint jog in the negative direction by the increment amount
+.RE
+.PP
+\fBhalui\&.joint\&.selected\&.increment\-plus\fR bit in
+.RS 4
+a rising edge will will make the selected joint jog in the positive direction by the increment amount
+.RE
+.PP
+\fBhalui\&.joint\&.selected\&.minus\fR bit in
+.RS 4
+pin for jogging the selected joint in negative direction at the halui\&.joint\&.jog\-speed velocity
+.RE
+.PP
+\fBhalui\&.joint\&.selected\&.plus\fR bit in
+.RS 4
+pin for jogging the selected joint bit in in positive direction at the halui\&.joint\&.jog\-speed velocity
+.RE
+.SS "Axis"
+.sp
+\fIL\fR = axis letter (xyzabcuvw)
+.PP
+\fBhalui\&.axis\&.\fR\fIL\fR\fB\&.select\fR bit in
+.RS 4
+pin for selecting axis by letter
+.RE
+.PP
+\fBhalui\&.axis\&.\fR\fIL\fR\fB\&.is\-selected\fR bit out
+.RS 4
+status pin that axis
+\fIL\fR
+is selected
+.RE
+.PP
+\fBhalui\&.axis\&.\fR\fIL\fR\fB\&.pos\-commanded\fR float out
+.RS 4
+Commanded axis position in machine coordinates
+.RE
+.PP
+\fBhalui\&.axis\&.\fR\fIL\fR\fB\&.pos\-feedback\fR float out
+.RS 4
+Feedback axis position in machine coordinates
+.RE
+.PP
+\fBhalui\&.axis\&.\fR\fIL\fR\fB\&.pos\-relative\fR float out
+.RS 4
+Commanded axis position in relative coordinates
+.RE
+.SS "Axis Jogging"
+.sp
+\fIL\fR = axis letter (xyzabcuvw)
+.PP
+\fBhalui\&.axis\&.jog\-deadband\fR float in
+.RS 4
+pin for setting jog analog deadband (jog analog inputs smaller/slower than this (in absolute value) are ignored)
+.RE
+.PP
+\fBhalui\&.axis\&.jog\-speed\fR float in
+.RS 4
+pin for setting jog speed for plus/minus jogging\&.
+.RE
+.PP
+\fBhalui\&.axis\&.\fRL\fB\&.analog\fR float in
+.RS 4
+pin for jogging the axis L using an float value (e\&.g\&. joystick)\&. The value, typically set between 0\&.0 and \(+-1\&.0, is used as a jog\-speed multiplier\&.
+.RE
+.PP
+\fBhalui\&.axis\&.\fR\fIL\fR\fB\&.increment\fR float in
+.RS 4
+pin for setting the jog increment for axis L when using increment\-plus/minus
+.RE
+.PP
+\fBhalui\&.axis\&.\fR\fIL\fR\fB\&.increment\-minus\fR bit in
+.RS 4
+a rising edge will will make axis
+\fIL\fR
+jog in the negative direction by the increment amount
+.RE
+.PP
+\fBhalui\&.axis\&.\fR\fIL\fR\fB\&.increment\-plus\fR bit in
+.RS 4
+a rising edge will will make axis
+\fIL\fR
+jog in the positive direction by the increment amount
+.RE
+.PP
+\fBhalui\&.axis\&.\fR\fIL\fR\fB\&.minus\fR bit in
+.RS 4
+pin for jogging axis
+\fIL\fR
+in negative direction at the halui\&.axis\&.jog\-speed velocity
+.RE
+.PP
+\fBhalui\&.axis\&.\fR\fIL\fR\fB\&.plus\fR bit in
+.RS 4
+pin for jogging axis
+\fIL\fR
+in positive direction at the halui\&.axis\&.jog\-speed velocity
+.RE
+.PP
+\fBhalui\&.axis\&.selected\fR u32 out
+.RS 4
+selected axis (by index: 0:x 1:y 2:z 3:a 4:b 5:cr 6:u 7:v 8:w)
+.RE
+.PP
+\fBhalui\&.axis\&.selected\&.increment\fR float in
+.RS 4
+pin for setting the jog increment for the selected axis when using increment\-plus/minus
+.RE
+.PP
+\fBhalui\&.axis\&.selected\&.increment\-minus\fR bit in
+.RS 4
+a rising edge will will make the selected axis jog in the negative direction by the increment amount
+.RE
+.PP
+\fBhalui\&.axis\&.selected\&.increment\-plus\fR bit in
+.RS 4
+a rising edge will will make the selected axis jog in the positive direction by the increment amount
+.RE
+.PP
+\fBhalui\&.axis\&.selected\&.minus\fR bit in
+.RS 4
+pin for jogging the selected axis in negative direction at the halui\&.axis\&.jog\-speed velocity
+.RE
+.PP
+\fBhalui\&.axis\&.selected\&.plus\fR bit in
+.RS 4
+pin for jogging the selected axis bit in in positive direction at the halui\&.axis\&.jog\-speed velocity
+.RE
+.SS "Flood coolant"
+.PP
+\fBhalui\&.flood\&.is\-on\fR bit out
+.RS 4
+pin for flood is on
+.RE
+.PP
+\fBhalui\&.flood\&.off\fR bit in
+.RS 4
+pin for stopping flood
+.RE
+.PP
+\fBhalui\&.flood\&.on\fR bit in
+.RS 4
+pin for starting flood
+.RE
+.SS "Feed Override"
+.PP
+\fBhalui\&.feed\-override\&.count\-enable\fR bit in (default: \fBTRUE\fR)
+.RS 4
+When TRUE, modify feed override when counts changes\&.
+.RE
+.PP
+\fBhalui\&.feed\-override\&.counts\fR s32 in
+.RS 4
+counts X scale = feed override percentage
+.RE
+.PP
+\fBhalui\&.feed\-override\&.decrease\fR bit in
+.RS 4
+pin for decreasing the FO (\-=scale)
+.RE
+.PP
+\fBhalui\&.feed\-override\&.direct\-value\fR bit in
+.RS 4
+pin to enable direct value feed override input
+.RE
+.PP
+\fBhalui\&.feed\-override\&.increase\fR bit in
+.RS 4
+pin for increasing the FO (+=scale)
+.RE
+.PP
+\fBhalui\&.feed\-override\&.reset\fR bit in
+.RS 4
+pin for resetting the FO (scale=1\&.0)
+.RE
+.PP
+\fBhalui\&.feed\-override\&.scale\fR float in
+.RS 4
+pin for setting the scale on changing the FO
+.RE
+.PP
+\fBhalui\&.feed\-override\&.value\fR float out
+.RS 4
+current feed override value
+.RE
+.SS "Rapid Override"
+.PP
+\fBhalui\&.rapid\-override\&.count\-enable\fR bit in (default: \fBTRUE\fR)
+.RS 4
+When TRUE, modify rapid override when counts changes\&.
+.RE
+.PP
+\fBhalui\&.rapid\-override\&.counts\fR s32 in
+.RS 4
+counts X scale = rapid override percentage
+.RE
+.PP
+\fBhalui\&.rapid\-override\&.decrease\fR bit in
+.RS 4
+pin for decreasing the rapid override (\-=scale)
+.RE
+.PP
+\fBhalui\&.rapid\-override\&.direct\-value\fR bit in
+.RS 4
+pin to enable direct value rapid override input
+.RE
+.PP
+\fBhalui\&.rapid\-override\&.increase\fR bit in
+.RS 4
+pin for increasing the rapid override (+=scale)
+.RE
+.PP
+\fBhalui\&.rapid\-override\&.reset\fR bit in
+.RS 4
+pin for resetting the rapid override (scale=1\&.0)
+.RE
+.PP
+\fBhalui\&.rapid\-override\&.scale\fR float in
+.RS 4
+pin for setting the scale on changing the rapid override
+.RE
+.PP
+\fBhalui\&.rapid\-override\&.value\fR float out
+.RS 4
+current rapid override value
+.RE
+.SS "E\-stop"
+.PP
+\fBhalui\&.estop\&.activate\fR bit in
+.RS 4
+pin for setting E\-stop (LinuxCNC internal) On
+.RE
+.PP
+\fBhalui\&.estop\&.is\-activated\fR bit out
+.RS 4
+pin for displaying E\-stop state (LinuxCNC internal) On/Off
+.RE
+.PP
+\fBhalui\&.estop\&.reset\fR bit in
+.RS 4
+pin for resetting E\-stop (LinuxCNC internal) Off
+.RE
+.SS "Homing"
+.PP
+\fBhalui\&.home\-all\fR bit in
+.RS 4
+pin for requesting home\-all (only available when a valid homing sequence is specified)
+.RE
+.SH "SEE ALSO"
+.sp
+axis(1), iocontrol(1)
+.SH "BUGS"
+.sp
+None known at this time\&.
+.SH "AUTHOR"
+.sp
+Written by Alex Joni, as part of the LinuxCNC project\&. Updated by John Thornton
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2006 Alex Joni\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

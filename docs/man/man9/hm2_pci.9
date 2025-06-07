@@ -1,0 +1,52 @@
+'\" t
+.\"     Title: hm2_pci
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HM2_PCI" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hm2_pci \- LinuxCNC HAL driver for the Mesa Electronics PCI\-based Anything IO boards, with HostMot2 firmware\&.
+.SH "SYNOPSIS"
+.sp
+\fBloadrt hm2_pci\fR [\fBconfig=\fR"\fIstr\fR[,\fIstr\fR\&...]"]
+.PP
+\fBconfig\fR [default: ""]
+.RS 4
+HostMot2 config strings, described in the hostmot2(9) manpage\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+hm2_pci is a device driver that interfaces Mesa\(cqs PCI and PC\-104/Plus based Anything I/O boards (with the HostMot2 firmware) to the LinuxCNC HAL\&.
+.sp
+The supported boards are: the 5i20, 5i21, 5i22, 5i23, 5i24, and 5i25 (all on PCI); the 4i65, 4i68, and 4i69 (on PC\-104/Plus), and the 3x20 (using a 6i68 or 7i68 carrier card) and 6i25 (on PCI Express)\&.
+.sp
+The driver optionally programs the board\(cqs FPGA with firmware when it registers the board with the hostmot2 driver\&. The firmware to load is specified in the \fBconfig\fR modparam, as described in the hostmot2(9) manpage, in the \fIconfig modparam\fR section\&.
+.SH "SEE ALSO"
+.sp
+hostmot2(9)
+.SH "LICENSE"
+.sp
+GPL

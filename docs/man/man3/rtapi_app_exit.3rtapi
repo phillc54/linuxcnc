@@ -1,0 +1,60 @@
+'\" t
+.\"     Title: rtapi_app_exit
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_APP_EXIT" "3rtapi" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_app_exit \- User\-provided function to shut down a component
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <rtapi_app\&.h>
+void rtapi_app_exit(void);
+.fi
+.if n \{\
+.RE
+.\}
+.SH "ARGUMENTS"
+.sp
+None
+.SH "DESCRIPTION"
+.sp
+The body of \fBrtapi_app_exit\fR, which is provided by the component author, generally consists of a call to rtapi_exit or hal_exit, preceded by other component\-specific shutdown code\&.
+.sp
+This code is called when unloading a component which successfully initialized (i\&.e\&., returned zero from its \fBrtapi_app_main\fR)\&. It is not called when the component did not successfully initialize\&.
+.SH "RETURN VALUE"
+.sp
+None\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+Called automatically by the rtapi infrastructure in an initialization (not realtime) context\&.
+.SH "SEE ALSO"
+.sp
+rtapi_app_main(3rtapi), rtapi_exit(3rtapi), hal_exit(3hal)

@@ -1,0 +1,72 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/reset.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH RESET "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+reset \- Resets an IO signal
+.SH SYNOPSIS
+.HP
+.B loadrt reset [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH DESCRIPTION
+
+
+Component to reset IO signals.
+
+This function works like a conditional sets - it is fed with a float
+and/or bit/s32/u32 pins that are I/O, but are save the value only if
+the "trigger" pin is set. The values assigned to those signals are
+passed via the input pins reset_float/s32/u32/bit.
+
+.SH FUNCTIONS
+.TP
+\fBreset.\fIN\fB\fR (requires a floating-point thread)
+Update the output value
+.SH PINS
+.TP
+.B reset.\fIN\fB.trigger\fR bit in \fR
+Trigger input
+.TP
+.B reset.\fIN\fB.out-u32\fR u32 io \fR(default: \fI0\fR)
+Unsigned 32 bit integer output value
+.TP
+.B reset.\fIN\fB.reset-u32\fR u32 in \fR(default: \fI0\fR)
+Unsigned 32 bit integer reset value
+.TP
+.B reset.\fIN\fB.out-s32\fR s32 io \fR(default: \fI0\fR)
+Signed 32 bit integer output value
+.TP
+.B reset.\fIN\fB.reset-s32\fR s32 in \fR(default: \fI0\fR)
+Signed 32 bit integer reset value
+.TP
+.B reset.\fIN\fB.out-float\fR float io \fR(default: \fI0.0\fR)
+Float output value
+.TP
+.B reset.\fIN\fB.reset-float\fR float in \fR(default: \fI0.0\fR)
+Float reset value
+.TP
+.B reset.\fIN\fB.out-bit\fR bit io \fR(default: \fIfalse\fR)
+Bit integer output value
+.TP
+.B reset.\fIN\fB.reset-bit\fR bit in \fR(default: \fIfalse\fR)
+Bit reset value
+.TP
+.B reset.\fIN\fB.retriggerable\fR bit in \fR(default: \fItrue\fR)
+Allow additional edges to reset
+.TP
+.B reset.\fIN\fB.rising\fR bit in \fR(default: \fItrue\fR)
+Trigger on rising edge
+.TP
+.B reset.\fIN\fB.falling\fR bit in \fR(default: \fIfalse\fR)
+Trigger on falling edge
+.SH AUTHOR
+
+Alexander R\[u00F6]ssler
+.SH LICENSE
+
+GPL

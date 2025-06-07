@@ -1,0 +1,114 @@
+'\" t
+.\"     Title: mb2hal
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "MB2HAL" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+mb2hal \- HAL non\-realtime component for Modbus
+.SH "SYNOPSIS"
+.PP
+Default component name
+.RS 4
+loadusr \-W mb2hal config=config_file\&.ini
+.RE
+.PP
+Custom component name
+.RS 4
+loadusr \-Wn mymodule mb2hal config=config_file\&.ini
+.RE
+.SH "DESCRIPTION"
+.sp
+MB2HAL is a generic non\-realtime HAL component to communicate with one or more Modbus devices\&. It supports Modbus RTU and Modbus TCP\&.
+.sp
+See https://linuxcnc\&.org/docs/html/drivers/mb2hal\&.html for more information\&.
+.SH "PINS"
+.SS "fnct_01_read_coils:"
+.sp
+\fBmb2hal\&.m\&.n\&.bit\fR bit out \fBmb2hal\&.m\&.n\&.bit\-inv\fR bit out
+.SS "fnct_02_read_discrete_inputs:"
+.sp
+\fBmb2hal\&.m\&.n\&.bit\fR bit out \fBmb2hal\&.m\&.n\&.bit\-inv\fR bit out
+.SS "fnct_03_read_holding_registers:"
+.sp
+\fBmb2hal\&.m\&.n\&.float\fR float out \fBmb2hal\&.m\&.n\&.int\fR s32 out
+.SS "fnct_04_read_input_registers:"
+.sp
+\fBmb2hal\&.m\&.n\&.float\fR float out \fBmb2hal\&.m\&.n\&.int\fR s32 out
+.SS "fnct_05_write_single_coil:"
+.PP
+\fBmb2hal\&.m\&.n\&.bit\fR bit in
+.RS 4
+NELEMENTS needs to be 1 or PIN_NAMES must contain just one name\&.
+.RE
+.SS "fnct_06_write_single_register:"
+.sp
+\fBmb2hal\&.m\&.n\&.float\fR float in
+.PP
+\fBmb2hal\&.m\&.n\&.int\fR s32 in
+.RS 4
+NELEMENTS needs to be 1 or PIN_NAMES must contain just one name\&.
+
+Both pin values are added and limited to 65535 (UINT16_MAX)\&. Use one and let the other open (read as 0)\&.
+.RE
+.SS "fnct_15_write_multiple_coils:"
+.sp
+\fBmb2hal\&.m\&.n\&.bit\fR bit in
+.SS "fnct_16_write_multiple_registers:"
+.sp
+\fBmb2hal\&.m\&.n\&.float\fR float in
+.PP
+\fBmb2hal\&.m\&.n\&.int\fR s32 in
+.RS 4
+Both pin values are added and limited to 65535 (UINT16_MAX)\&. Use one and let the other open (read as 0)\&.
+.RE
+.SS "Each transaction"
+.PP
+\fBmb2hal\&.m\&.num_errors\fR u32 in
+.RS 4
+Error counter
+.RE
+.sp
+m = HAL_TX_NAME or transaction number if not set n = element number (NELEMENTS)
+.sp
+Example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+mb2hal\&.00\&.01\&.int (TRANSACTION_00, second register)
+mb2hal\&.readStatus\&.01\&.bit (HAL_TX_NAME=readStatus, first bit)
+.fi
+.if n \{\
+.RE
+.\}
+.SH "AUTHOR"
+.sp
+Victor Rocco
+.SH "LICENSE"
+.sp
+GPL

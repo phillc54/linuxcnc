@@ -1,0 +1,39 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/sample_hold.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH SAMPLE_HOLD "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+sample_hold \- Sample and Hold
+.SH SYNOPSIS
+.HP
+.B loadrt sample_hold [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBsample-hold.\fIN\fB\fR
+
+.SH PINS
+.TP
+.B sample-hold.\fIN\fB.in\fR s32 in \fR
+.br
+.ns
+.TP
+.B sample-hold.\fIN\fB.hold\fR bit in \fR
+.br
+.ns
+.TP
+.B sample-hold.\fIN\fB.out\fR s32 out \fR
+.SH SEE ALSO
+
+\fBtristate\fR(9)
+.SH AUTHOR
+
+Stephen Wille Padnos
+.SH LICENSE
+
+GPL

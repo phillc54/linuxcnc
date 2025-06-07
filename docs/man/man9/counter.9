@@ -1,0 +1,108 @@
+'\" t
+.\"     Title: counter
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "COUNTER" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+counter \- counts input pulses (DEPRECATED)
+.SH "SYNOPSIS"
+.sp
+\fBloadrt counter\fR [\fBnum_chan=\fR\fIN\fR]
+.SH "DESCRIPTION"
+.sp
+\fBcounter\fR is a deprecated HAL component and will be removed in a future release\&. Use the \fBencoder\fR component with encoder\&.X\&.counter\-mode set to TRUE\&.
+.sp
+\fBcounter\fR is a HAL component that provides software\- based counting that is useful for spindle position sensing and maybe other things\&. Instead of using a real encoder that outputs quadrature, some lathes have a sensor that generates a simple pulse stream as the spindle turns and an index pulse once per revolution\&. This component simply counts up when a "count" pulse (phase\-A) is received, and if reset is enabled, resets when the "index" (phase\-Z) pulse is received\&.
+.sp
+This is of course only useful for a unidirectional spindle, as it is not possible to sense the direction of rotation\&.
+.sp
+\fBcounter\fR conforms to the "canonical encoder" interface described in the HAL manual\&.
+.SH "FUNCTIONS"
+.PP
+\fBcounter\&.capture\-position\fR (uses floating\-point)
+.RS 4
+Updates the counts, position and velocity outputs based on internal counters\&.
+.RE
+.PP
+\fBcounter\&.update\-counters\fR
+.RS 4
+Samples the phase\-A and phase\-Z inputs and updates internal counters\&.
+.RE
+.SH "PINS"
+.PP
+\fBcounter\&.\fR\fIN\fR\fB\&.phase\-A\fR bit in
+.RS 4
+The primary input signal\&. The internal counter is incremented on each rising edge\&.
+.RE
+.PP
+\fBcounter\&.\fR\fIN\fR\fB\&.phase\-Z\fR bit in
+.RS 4
+The index input signal\&. When the
+\fBindex\-enable\fR
+pin is TRUE and a rising edge on
+\fBphase\-Z\fR
+is seen,
+\fBindex\-enable\fR
+is set to FALSE and the internal counter is reset to zero\&.
+.RE
+.PP
+\fBcounter\&.\fR\fIN\fR\fB\&.index\-enable\fR bit io
+.RS 4
+.RE
+.PP
+\fBcounter\&.\fR\fIN\fR\fB\&.reset\fR bit io
+.RS 4
+.RE
+.PP
+\fBcounter\&.\fR\fIN\fR\fB\&.counts\fR signed out
+.RS 4
+.RE
+.PP
+\fBcounter\&.\fR\fIN\fR\fB\&.position\fR float out
+.RS 4
+.RE
+.PP
+\fBcounter\&.\fR\fIN\fR\fB\&.velocity\fR float out
+.RS 4
+These pins function according to the canonical digital encoder interface\&.
+.RE
+.PP
+\fBcounter\&.\fR\fIN\fR\fB\&.position\-scale\fR float rw
+.RS 4
+This parameter functions according to the canonical digital encoder interface\&.
+.RE
+.PP
+\fBcounter\&.\fR\fIN\fR\fB\&.rawcounts\fR signed ro
+.RS 4
+The internal counts value, updated from
+\fBupdate\-counters\fR
+and reflected in the output pins at the next call to
+\fBcapture\-position\fR\&.
+.RE
+.SH "SEE ALSO"
+.sp
+encoder(9)

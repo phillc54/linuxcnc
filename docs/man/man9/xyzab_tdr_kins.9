@@ -1,0 +1,56 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/xyzab_tdr_kins.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH XYZAB_TDR_KINS "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+xyzab_tdr_kins \- Switchable kinematics for 5 axis machine with rotary table A and B
+.SH SYNOPSIS
+.HP
+.B loadrt xyzab_tdr_kins [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH DESCRIPTION
+
+
+
+This is a switchable kinematics module for a 5-axis milling configuration
+using 3 cartesian linear joints (XYZ) and 2 rotary table joints (AB).
+
+The module contains two kinematic models:
+
+type0 (default) is a trivial XYZAB configuration with joints 0..4 mapped to
+axes XYZAB respectively.
+
+type1 is a XYZAB configuration with tool center point (TCP) compensation.
+
+For an example configuration, run the sim config: '/configs/sim/axis/vismach/5axis/table-dual-rotary/xyzab-tdr.ini'.
+
+Further explanations can be found in the README in '/configs/sim/axis/vismach/5axis/table-dual-rotary/'.
+
+xyzab_tdr_kins.comp was constructed by modifying the template file:
+userkins.comp.
+
+For more information on how to modify userkins.comp run: $ man
+userkins.   Also, see additional information inside: 'userkins.comp'.
+
+For information on kinematics in general see the kinematics
+document chapter (docs/src/motion/kinematics.txt) and for
+switchable kinematics in particular see the switchkins document
+chapter (docs/src/motion/switchkins.txt)
+
+.if \n[.g] .mso www.tmac
+
+.SH PINS
+.TP
+.B xyzab-tdr-kins.\fIN\fB.dummy\fR s32 out \fR(default: \fI0\fR)
+one pin needed to satisfy halcompile requirement
+.SH AUTHOR
+
+David Mueller
+.SH LICENSE
+
+GPL

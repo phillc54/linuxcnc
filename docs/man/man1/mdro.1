@@ -1,0 +1,123 @@
+'\" t
+.\"     Title: mdro
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "MDRO" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+mdro \- manual only Digital Read Out (DRO)
+.SH "SYNOPSIS"
+.sp
+\fBmdro\fR [\fB\-v\fR] [\fB\-p\fR \fIpoint_size\fR] [\fB\-m\fR] [\fB\-l\fR \fIfile\&.var\fR] [\fIaxes\fR]
+.SH "DESCRIPTION"
+.sp
+\fBmdro\fR is a manual only DRO providing functionality similar to a traditional manual DRO\&. It is most useful for manual machines converted to CNC\&. It allows the user to manually control the machine while continuing to use the DRO scales on the axes\&. The GUI can be sized to match the user\(cqs screen\&. It is mouse\-only and touchscreen friendly\&.
+.SH "OPTIONS"
+.sp
+These command line options are normally used when \fBmdro\fR is started in a HAL file\&. See below for the corresponding \&.ini file options\&.
+.PP
+\fBv\fR
+.RS 4
+Turn on verbose debug prints\&.
+\fB\-vv\fR
+is even more verbose\&.
+.RE
+.PP
+\fBp\fR \fIpoint_size\fR
+.RS 4
+Set the point size for the text in the application\&. This option controls the overall size of the window on the screen\&. Default is 20\&. Typical values range from 20 to 30\&.
+.RE
+.PP
+\fBm\fR
+.RS 4
+Set this if the DRO scales provide data scaled in millimeters\&.
+.RE
+.PP
+\fBl\fR \fIfile\&.var\fR
+.RS 4
+Load G54 through G57 coordinates from
+\fIfile\&.var\fR\&.
+.RE
+.PP
+\fIaxes\fR
+.RS 4
+This option is used to specify the names of the axes handled by the program\&. The default is "XYZ"\&. A four axis mill would use "XYZA", and a lathe with a two axis DRO might use "XZ"\&.
+.RE
+.SH "SCREEN CONFIGURATION"
+.sp
+The top of the screen includes a row for each axis specified in \fIaxes\fR\&. Data in these rows are derived from signals on the \fImdro\&.axis\&.n\fR pins that are instantiated when \fBmdro\fR is started\&. Each row includes buttons that allow the value to be be zeroed, to be halved or a new value to be entered\&. There is also a button that enables the index zero process for that axis\&.
+.sp
+The screen includes buttons that allow the selection of one of four different coordinate systems\&. The machine coordinate system can also be selected though it cannot be changed\&.
+.sp
+The screen includes a keypad that can be used with a mouse or a touch screen to enter coordinate data\&.
+.sp
+Finally, buttons on the screen allow the selection of inch or mm data display\&.
+.SH "USAGE"
+.sp
+\fBmdro\fR is normally started from the \fI[DISPLAY]\fR entry in a dedicated \fBmdro\&.ini\fR file\&. The INI file and the associated HAL files should include the pins and signals that support the DRO scales\&. The HAL connections to \fBmdro\fR must be done in the \fIPOSTGUI_HALFILE\fR referenced in the INI file\&.
+.PP
+Other \fI[DISPLAY]\fR section options
+.RS 4
+.PP
+\fIGEOMETRY\fR = \fIaxes\fR
+.RS 4
+Names the coordinate axes used in the program\&. For example, "XYZ" for a 3 axis mill or "XZ" for a lathe, Default is "XYZ"\&.
+.RE
+.PP
+\fIMDRO_VAR_FILE\fR = \fIfile\&.var\fR
+.RS 4
+Preload a VAR file\&. This is typically the VAR file used by the operational code\&.
+.RE
+.PP
+\fIPOINT_SIZE\fR = \fIn\fR
+.RS 4
+This option sets the size of the font used which sets the overall size of the window\&. The default point size is 20, Typical sizes are 20 to 30\&.
+.RE
+.PP
+\fIMM\fR = \fI1\fR
+.RS 4
+Set this if the DRO scales provide data scaled in millimeters\&.
+.RE
+.RE
+.SH "EXAMPLE"
+.sp
+Using an example of "XYZA" for an \fIaxes\fR argument, these pins will be created when \fBmdro\fR starts:
+.sp
+mdro\&.axis\&.0 mdro\&.axis\&.1 mdro\&.axis\&.2 mdro\&.axis\&.3 mdro\&.index\-enable\&.0 mdro\&.index\-enable\&.1 mdro\&.index\-enable\&.2 mdro\&.index\-enable\&.3
+.sp
+In this example, the first row will be labeled "X" and will show the data associated with pin mdro\&.axis\&.0\&. In many configurations, mdro\&.axis\&.0 can be connected directly to x\-pos\-fb in the POSTGUI\-HAL file\&. The index pins should be connected to the corresponding index\-enable pins from the DRO\&.
+.sp
+\fBmdro\fR can also be started via a "loadusr" command in a HAL file for a trial\&. Here\(cqs an example of a sim setup:
+.sp
+loadusr \-W mdro \-l sim\&.var XYZ net x\-pos\-fb ⇒ mdro\&.axis\&.0 net y\-pos\-fb ⇒ mdro\&.axis\&.1 net z\-pos\-fb ⇒ mdro\&.axis\&.2
+.SH "AUTHOR"
+.sp
+Robert Bond
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2022 Robert Bond
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

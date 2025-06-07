@@ -1,0 +1,97 @@
+'\" t
+.\"     Title: axis-remote
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "AXIS\-REMOTE" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+axis-remote \- AXIS Remote Interface
+.SH "SYNOPSIS"
+.sp
+\fBaxis\-remote \fR\fB\fIOPTIONS\fR\fR\fB|\fR\fB\fIFILENAME\fR\fR
+.SH "DESCRIPTION"
+.sp
+\fBaxis\-remote\fR is a small script that triggers commands in a running AXIS GUI\&.
+.sp
+Use \fBaxis\-remote \-\-help\fR for further information\&.
+.SH "OPTIONS"
+.PP
+\fB\-\-ping\fR, \fB\-p\fR
+.RS 4
+Check whether AXIS is running\&.
+.RE
+.PP
+\fB\-\-reload\fR, \fB\-r\fR
+.RS 4
+Make AXIS reload the currently loaded file\&.
+.RE
+.PP
+\fB\-\-clear\fR, \fB\-c\fR
+.RS 4
+Make AXIS clear the backplot\&.
+.RE
+.PP
+\fB\-\-quit\fR, \fB\-q\fR
+.RS 4
+Make AXIS quit\&.
+.RE
+.PP
+\fB\-\-help\fR, \fB\-h\fR, \fB\-?\fR
+.RS 4
+Display a list of valid parameters for
+\fBaxis\-remote\fR\&.
+.RE
+.PP
+\fB\-\-mdi\fR \fICOMMAND\fR, \fB\-m\fR \fICOMMAND\fR
+.RS 4
+Run the MDI command
+\fICOMMAND\fR\&.
+.RE
+.PP
+\fIFILENAME\fR
+.RS 4
+Load the G\-code file
+\fIFILENAME\fR\&.
+.RE
+.SH "SEE ALSO"
+.sp
+axis(1)
+.sp
+Much more information about LinuxCNC and HAL is available in the LinuxCNC and HAL User Manuals, found at /usr/share/doc/linuxcnc/\&.
+.SH "BUGS"
+.sp
+None known at this time\&.
+.SH "AUTHOR"
+.sp
+This man page written by Alex Joni, as part of the LinuxCNC project\&.
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2007 Alex Joni\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

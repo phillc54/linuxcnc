@@ -1,0 +1,41 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/abs_s32.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH ABS_S32 "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+abs_s32 \- Compute the absolute value and sign of the input signal
+.SH SYNOPSIS
+.HP
+.B loadrt abs_s32 [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBabs-s32.\fIN\fB\fR
+
+.SH PINS
+.TP
+.B abs-s32.\fIN\fB.in\fR s32 in \fR
+input value
+.TP
+.B abs-s32.\fIN\fB.out\fR s32 out \fR
+output value, always non-negative
+.TP
+.B abs-s32.\fIN\fB.sign\fR bit out \fR
+Sign of input, false for positive, true for negative
+.TP
+.B abs-s32.\fIN\fB.is-positive\fR bit out \fR
+TRUE if input is positive, FALSE if input is 0 or negative
+.TP
+.B abs-s32.\fIN\fB.is-negative\fR bit out \fR
+TRUE if input is negative, FALSE if input is 0 or positive
+.SH AUTHOR
+
+Sebastian Kuzminsky
+.SH LICENSE
+
+GPL

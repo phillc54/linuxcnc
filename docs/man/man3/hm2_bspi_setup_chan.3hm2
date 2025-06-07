@@ -1,0 +1,110 @@
+'\" t
+.\"     Title: hm2_bspi_setup_chan
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HM2_BSPI_SETUP_CHAN" "3hm2" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hm2_bspi_setup_chan \- setup a Hostmot2 bspi channel
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <hostmot2\-serial\&.h>
+int hm2_bspi_setup_chan(char* name, int chan, int cs, int bits, float mhz,
+                        int delay, int cpol, int cpha, int noclear, int noecho)
+.fi
+.if n \{\
+.RE
+.\}
+.SH "DESCRIPTION"
+.sp
+\fBhm2_bspi_setup_chan\fR allows a realtime component to claim and configure a BSPI channel on a previously configured hostmot2 board\&.
+.PP
+name
+.RS 4
+A unique string given to the BSPI channel during hostmot2 setup\&. The names of the available channels are printed to standard output during the driver loading process and take the form
+\fBhm2_\fR\fIboard\-name\fR\fB\&.\fR\fIboard\-index\fR\fB\&.bspi\&.\fR\fIbspi\-index\fR\&. For example, the first index on the first hm2_5i23 board would be called
+hm2_5i23\&.0\&.bspi\&.0\&.
+.RE
+.PP
+chan
+.RS 4
+Channels are numbered 0 to 15\&. The value on the chip\-select lines is set by cs and need not match the channel number\&.
+.RE
+.PP
+cs
+.RS 4
+The chip select line(s) to assert when accessing this channel\&. BSPI supports 4 chip select lines, so the valid range for cs is 0\-15\&.
+.RE
+.PP
+bits
+.RS 4
+sets the bit\-length of the SPI packet\&. The maximum supported length is 64 bits but this will span two read FIFO entries and will need special handling (values 32 and below require no special handling)\&.
+.RE
+.PP
+mhz
+.RS 4
+sets the chip communication rate\&. The maximum value for this is half the FPGA base frequency, so for example with a 48 MHz 5I23 the max SPI frequency is 24 MHz\&. Values in excess of the max supported will be silently rounded down\&.
+.RE
+.PP
+delay
+.RS 4
+sets the chip select valid delay (in ns)
+.RE
+.PP
+cpha and cpol
+.RS 4
+Set the clock phase and polarity (according to the device datasheet)\&.
+.RE
+.PP
+noclear
+.RS 4
+Controls whether the frame clear bit is set after the 32 bit buffer transfer\&. This parameter should be set to 1 when the frame length is greater than 32 bits and the next data in the FIFO contains the other bits\&.
+.RE
+.PP
+noecho
+.RS 4
+Set to 1 for devices which do not return data (such as DACs)\&.
+.RE
+.PP
+samplelate
+.RS 4
+Set to 1 to sample the received SPI data 1/2 SPI clock later than normal\&. This is useful when high clock rates or isolation cause significant delays from clock to received data\&.
+.RE
+.SH "REALTIME CONSIDERATIONS"
+.sp
+Call only from within realtime init/cleanup code or non\-realtime components, not from realtime tasks\&.
+.SH "RETURN VALUE"
+.sp
+Returns 0 on success and \-1 on failure\&.
+.SH "SEE ALSO"
+.sp
+hm2_allocate_bspi_tram(3hm2), hm2_bspi_set_read_function(3hm2), hm2_bspi_set_write_function(3hm2), hm2_bspi_write_chan(3hm2), hm2_tram_add_bspi_frame(3hm2)
+.sp
+See src/hal/drivers mesa_7i65\&.comp for an example usage\&.

@@ -1,0 +1,72 @@
+'\" t
+.\"     Title: rtapi_open_as_root
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_OPEN_AS_ROOT" "3rtapi" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_open_as_root \- Open a file with "root" privilege
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <rtapi\&.h>
+int rtapi_open_as_root(const char *filename, int flags);
+.fi
+.if n \{\
+.RE
+.\}
+.SH "ARGUMENTS"
+.PP
+filename
+.RS 4
+The filename to open, as in
+\fBopen(2)\fR\&. Note that rtapi has no well\-defined "current directory", so this should be an absolute path, but this is not enforced\&.
+.RE
+.PP
+flags
+.RS 4
+The open flags, as in
+\fBopen(2)\fR\&. Should never include bits that open or create files (e\&.g\&., O_CREAT, O_APPEND, etc) as this API is not intended for creating or writing files, but this is not enforced\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+In "uspace" realtime, root privileges are dropped whenever possible\&. This API temporarily switches on root privileges to open a file, and switches them off before returning\&. This can be useful for example when accessing device nodes or memory\-mapped I/O\&.
+.sp
+In the case of PCI devices on x86 and x86\-64 systems, prefer the linux\-style PCI interfaces provided in \fB<rtapi_pci\&.h>\fR\&.
+.SH "RETURN VALUE"
+.sp
+In case of success, the nonnegative file descriptor opened\&. If the caller does not close it, it remains open until rtapi_app exits\&.
+.sp
+In case of failure, a negative errno value\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+Call only from realtime initcode in "uspace" realtime\&.
+.SH "SEE ALSO"
+.sp
+open(2), rtapi_pci(3)

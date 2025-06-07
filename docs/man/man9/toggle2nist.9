@@ -1,0 +1,71 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/toggle2nist.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH TOGGLE2NIST "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+toggle2nist \- toggle button to nist logic
+.SH SYNOPSIS
+.HP
+.B loadrt toggle2nist [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH DESCRIPTION
+
+
+Toggle2nist can be used with a momentary push button 
+to control a device that has separate on and off inputs
+and an is-on output.
+A debounce delay in cycles can be set for 'in'. (default = 2)
+
+\[bu] On a rising edge on pin \fIin\fR when \fIis-on\fR is low: It sets \fIon\fR until \fIis-on\fR becomes high.
+
+\[bu] On a rising edge on pin \fIin\fR when \fIis-on\fR is high: It sets \fIoff\fR until \fIis-on\fR becomes low.
+
+
+\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u2510]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u250C]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]xxxxxxxxxxxx\[u2510]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u250C]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]xxxxxxxxxxxx\[u2510]
+.br
+in\[u00A0]\[u00A0]\[u00A0]:\[u00A0]\[u2514]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2518]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]xxxxxxxxxxxx\[u2514]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2518]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]xxxxxxxxxxxx\[u2514]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]
+.br
+\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u2510]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u250C]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2510]
+.br
+on\[u00A0]\[u00A0]\[u00A0]:\[u00A0]\[u2514]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2518]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u2514]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]
+.br
+\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u2510]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u250C]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2510]
+.br
+off\[u00A0]\[u00A0]:\[u00A0]\[u2514]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2518]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u2514]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]
+.br
+\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u2510]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u250C]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2510]
+.br
+is-on:\[u00A0]\[u2514]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2518]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u00A0]\[u2514]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]\[u2500]
+
+
+.SH FUNCTIONS
+.TP
+\fBtoggle2nist.\fIN\fB\fR
+
+.SH PINS
+.TP
+.B toggle2nist.\fIN\fB.in\fR bit in \fR
+momentary button in
+.TP
+.B toggle2nist.\fIN\fB.is-on\fR bit in \fR
+current state of device
+.TP
+.B toggle2nist.\fIN\fB.debounce\fR u32 in \fR(default: \fI2\fR)
+debounce delay for 'in'-pin in cycles
+.TP
+.B toggle2nist.\fIN\fB.on\fR bit out \fR
+turn device on
+.TP
+.B toggle2nist.\fIN\fB.off\fR bit out \fR
+turn device off
+.SH AUTHOR
+
+Anders Wallin, David Mueller
+.SH LICENSE
+
+GPL

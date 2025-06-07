@@ -1,0 +1,68 @@
+'\" t
+.\"     Title: rtapi_byteorder
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_BYTEORDER" "3rtapi" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_byteorder \- RTAPI wrappers for linux kernel functionality
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <rtapi_byteorder\&.h>
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+RTAPI_BIG_ENDIAN
+.RS 4
+Defined to 1 if the platform is big\-endian, 0 otherwise\&.
+.RE
+.PP
+RTAPI_LITTLE_ENDIAN
+.RS 4
+Defined to 1 if the platform is little\-endian, 0 otherwise\&.
+.RE
+.PP
+RTAPI_FLOAT_BIG_ENDIAN
+.RS 4
+Defined to 1 if the platform double\-precision value is big\-endian, 0 otherwise\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+In kernel space, each rtapi_xxx or RTAPI_XXX identifier is mapped to the underlying kernel functionality, if available\&.
+.sp
+In userspace, or in kernels where the underlying functionality is not provided by a kernel, generally another implementation\(empossibly with reduced functionality\(emis provided\&. (For example, the userspace implementation for rtapi_byteorder_register always succeeds)
+.SH "REALTIME CONSIDERATIONS"
+.sp
+May be used at any time\&.
+.SH "RETURN VALUE"
+.sp
+As in Linux\&.

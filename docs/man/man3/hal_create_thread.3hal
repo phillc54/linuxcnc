@@ -1,0 +1,68 @@
+'\" t
+.\"     Title: hal_create_thread
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HAL_CREATE_THREAD" "3hal" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hal_create_thread \- Create a HAL thread
+.SH "SYNTAX"
+.sp
+int hal_create_thread(const char* \fIname\fR, unsigned long \fIperiod\fR, int \fIuses_fp\fR)
+.sp
+int hal_thread_delete(const char* \fIname\fR)
+.SH "ARGUMENTS"
+.PP
+name
+.RS 4
+The name of the thread\&.
+.RE
+.PP
+period
+.RS 4
+The interval, in nanoseconds, between iterations of the thread\&.
+.RE
+.PP
+uses_fp
+.RS 4
+Must be nonzero if a function which uses floating\-point will be attached to this thread\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+\fBhal_create_thread\fR establishes a realtime thread that will execute one or more HAL functions periodically\&.
+.sp
+All thread periods are rounded to integer multiples of the hardware timer period, and the timer period is based on the first thread created\&. Threads must be created in order, from the fastest to the slowest\&. HAL assigns decreasing priorities to threads that are created later, so creating them from fastest to slowest results in rate monotonic priority scheduling\&.
+.sp
+\fBhal_delete_thread\fR deletes a previously created thread\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+Call only from realtime init code, not from other realtime or non\-realtime code\&.
+.SH "RETURN VALUE"
+.sp
+Returns a HAL status code\&.
+.SH "SEE ALSO"
+.sp
+hal_export_funct(3hal)

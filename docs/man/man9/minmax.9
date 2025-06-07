@@ -1,0 +1,39 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/minmax.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH MINMAX "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+minmax \- Track the minimum and maximum values of the input to the outputs
+.SH SYNOPSIS
+.HP
+.B loadrt minmax [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBminmax.\fIN\fB\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B minmax.\fIN\fB.in\fR float in \fR
+.br
+.ns
+.TP
+.B minmax.\fIN\fB.reset\fR bit in \fR
+When reset is asserted, 'in' is copied to the outputs
+.TP
+.B minmax.\fIN\fB.max\fR float out \fR
+.br
+.ns
+.TP
+.B minmax.\fIN\fB.min\fR float out \fR
+.SH AUTHOR
+
+Jeff Epler
+.SH LICENSE
+
+GPL

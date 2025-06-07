@@ -1,0 +1,291 @@
+'\" t
+.\"     Title: hal_stream
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HAL_STREAM" "3hal" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hal_stream \- non\-blocking realtime streams
+.SH "SYNOPSIS"
+.sp
+.nf
+#include <hal\&.h>
+int hal_stream_create(hal_stream_t* stream, int comp_id, int key, int depth, const char* typestring);
+void hal_stream_destroy(hal_stream_t* stream);
+int hal_stream_attach(hal_stream_t* stream, int comp_id, int key, const char* typestring);
+int hal_stream_detach(hal_stream_t* stream);
+
+int hal_stream_element_count(hal_stream_t* stream);
+hal_type_t hal_stream_element_type(hal_stream_t* stream, int idx);
+int hal_stream_depth(hal_stream_t* stream);
+int hal_stream_maxdepth(hal_stream_t* stream);
+int hal_stream_num_underruns(hal_stream_t* stream);
+int hal_stream_num_overruns(hal_stream_t* stream);
+
+int hal_stream_read(hal_stream_t* stream, union hal_stream_data* buf, unsigned* sampleno);
+bool hal_stream_readable(hal_stream_t* stream);
+
+int hal_stream_write(hal_stream_t* stream, union hal_stream_data* buf);
+bool hal_stream_writable(hal_stream_t* stream);
+
+#ifdef ULAPI
+void hal_stream_wait_writable(hal_stream_t* stream, sig_atomic_t* stop);
+void hal_stream_wait_readable(hal_stream_t* stream, sig_atomic_t* stop);
+#endif
+.fi
+.SH "DESCRIPTION"
+.sp
+A HAL stream provides a limited ability for two components to communicate data which does not fit within the model of HAL pins\&. A reader and a writer must agree on a \fIkey\fR (32\-bit integer identifier) and a data structure specified by \fItypestring\fR\&. They must also agree which component (the first one loaded) will \fBhal_stream_create\fR the stream, and which component (the second one loaded) will \fBhal_stream_attach\fR to the already\-created stream\&.
+.sp
+The non\-realtime part can be \fBhalstreamer\fR or \fBhalsampler\fR\&. In the case of \fBhalstreamer\fR the key is 0x48535430 plus the channel number\&. In the case of \fBhalsampler\fR the key is 0x48534130 plus the channel number\&.
+.PP
+\fBhal_stream_create\fR
+.RS 4
+Create the given stream, initializing the
+\fIstream\fR
+which is passed by reference\&. It is an undiagnosed error if a stream has already been created with the same
+\fIkey\fR\&.
+.RE
+.PP
+\fBhal_stream_destroy\fR
+.RS 4
+Destroy the given stream\&. It is an undiagnosed error if the stream is still attached by another component\&. It is an undiagnosed error if the stream was attached with
+\fBhal_stream_attach\fR
+rather than created with
+\fBhal_stream_create\fR\&. It is an undiagnosed error if the call to
+\fBhal_stream_destroy\fR
+is omitted\&.
+.RE
+.PP
+\fBhal_stream_attach\fR
+.RS 4
+Attach the given stream, which was already created by
+\fBhal_stream_create\fR\&. If the typestring is specified, this call fails if it does not match the typestring the stream was created with\&. If the typestring argument is NULL, then any typestring is accepted\&.
+.RE
+.PP
+\fBhal_stream_detach\fR
+.RS 4
+Detach the given stream\&. It is an undiagnosed error if the stream was created with
+\fBhal_stream_create\fR
+rather than attached with
+\fBhal_stream_attach\fR\&. It is an undiagnosed error if the call to
+\fBhal_stream_detach\fR
+is omitted\&.
+.RE
+.PP
+\fBhal_stream_element_count\fR
+.RS 4
+Returns the number of pins\&.
+.RE
+.PP
+\fBhal_stream_element_type\fR
+.RS 4
+Returns the type of the given pin number\&.
+.RE
+.PP
+\fBhal_stream_readable\fR
+.RS 4
+Returns true if the stream has at least one sample to read
+.RE
+.PP
+\fBhal_stream_read\fR
+.RS 4
+If the stream has one sample to read, stores it in buf\&.
+.RE
+.PP
+\fBhal_stream_writable\fR
+.RS 4
+Returns true if the stream has room for at least one sample to be written\&.
+.RE
+.PP
+\fBhal_stream_depth\fR
+.RS 4
+Returns the number of samples waiting to be read\&.
+.RE
+.PP
+\fBhal_stream_maxdepth\fR
+.RS 4
+Returns the
+\fBdepth\fR
+argument that the stream was created with\&.
+.RE
+.PP
+\fBhal_stream_num_overruns\fR
+.RS 4
+Returns a number which is incremented each time
+\fBhal_stream_write\fR
+is called without space available\&.
+.RE
+.PP
+\fBhal_stream_num_underruns\fR
+.RS 4
+Returns a number which is incremented each time
+\fBhal_stream_read\fR
+is called without a sample available\&.
+.RE
+.PP
+\fBhal_stream_wait_readable\fR
+.RS 4
+Waits until the stream is readable or the stop flag is set\&.
+.RE
+.PP
+\fBhal_stream_wait_writable\fR
+.RS 4
+Waits until the stream is writable or the stop flag is set\&.
+.RE
+.PP
+\fBhal_stream_read\fR
+.RS 4
+Reads a record from stream\&. If successful, it is stored in the given buffer\&. Optionally, the sample number can be retrieved\&. If no sample is available,
+\fInum_underruns\fR
+is incremented\&. It is an undetected error if more than one component or real\-time function calls
+\fBhal_stream_read\fR
+concurrently\&.
+.RE
+.PP
+\fBhal_stream_write\fR
+.RS 4
+Writes a record to the stream\&. If successful, it copied from the given buffer\&. If no room is available,
+\fInum_overruns\fR
+is incremented\&. In either case, the internal
+\fIsampleno\fR
+value is incremented\&. It is an undetected error if more than one component or real\-time function calls
+\fBhal_stream_write\fR
+concurrently\&.
+.RE
+.SH "ARGUMENTS"
+.PP
+stream
+.RS 4
+A pointer to a stream object\&. In the case of
+\fBhal_stream_create\fR
+and
+\fBhal_stream_attach\fR
+this is an uninitialized stream; in other cases, it must be a stream created or attached by an earlier call and not yet detached or destroyed\&.
+.RE
+.PP
+hal_id
+.RS 4
+An HAL component identifier returned by an earlier call to
+\fBhal_init\fR\&.
+.RE
+.PP
+key
+.RS 4
+The key for the shared memory segment\&.
+.RE
+.PP
+depth
+.RS 4
+The number of samples that can be unread before any samples are lost (overrun)
+.RE
+.PP
+typestring
+.RS 4
+A typestring is a case\-insensitive string which consists of one or more of the following type characters:
+
+[upperalpha, start=2]
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+for bool / hal_bit_t
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+for int32_t / hal_s32_t
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+for uint32_t / hal_u32_t
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 4.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  4." 4.2
+.\}
+for real_t / hal_float_t
+
+A typestring is limited to 16 characters\&.
+.RE
+.RE
+.PP
+buf
+.RS 4
+A buffer big enough to hold all the data in one sample\&.
+.RE
+.PP
+sampleno
+.RS 4
+If non\-NULL, the last sample number is stored here\&. Gaps in this sequence indicate that an overrun occurred between the previous read and this one\&. May be NULL, in which case the sample number is not retrieved\&.
+.RE
+.PP
+stop
+.RS 4
+A pointer to a value which is monitored while waiting\&. If it is nonzero, the wait operation returns early\&. This allows a wait call to be safely terminated in the case of a signal\&.
+.RE
+.SH "SAMPLE CODE"
+.sp
+In the source tree under src/hal/components, \fBsampler\&.c\fR and \fBstreamer\&.c\fR are realtime components that read and write HAL streams\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+\fBhal_stream_read\fR, \fBhal_stream_readable\fR, \fBhal_stream_write\fR, \fBhal_stream_writable\fR, \fBhal_stream_element_count\fR, \fBhal_tream_pin_type\fR, \fBhal_stream_depth\fR, \fBhal_stream_maxdepth\fR, \fBhal_stream_num_underruns\fR, \fBhal_stream_number_overruns\fR may be called from realtime code\&.
+.sp
+\fBhal_stream_wait_writable\fR, \fBhal_stream_wait_writable\fR may be called from ULAPI code\&.
+.sp
+Other functions may be called in any context, including realtime contexts\&.
+.SH "RETURN VALUE"
+.sp
+The functions \fBhal_stream_create\fR, \fBhal_stream_attach\fR, \fBhal_stream_read\fR, \fBhal_stream_write\fR, \fBhal_stream_detach\fR and \fBhal_stream_destroy\fR return an RTAPI status code\&. Other functions\*(Aq return values are explained above\&.
+.SH "BUGS"
+.sp
+The memory overhead of a stream can be large\&. Each element in a record uses 8 bytes, and the implicit sample number also uses 8 bytes\&. As a result, a stream which is used to transport 8\-bit values uses 94% of its memory as overhead\&. However, for modest stream sizes this overhead is not important\&. (This memory is part of its own shared memory region and does not count against the HAL shared memory region used for pins, parameters and signals\&.)
+.SH "SEE ALSO"
+.sp
+sampler(9), streamer(9), halsampler(1), halstreamer(1)

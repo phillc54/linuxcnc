@@ -1,0 +1,53 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/sim_home_switch.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH SIM_HOME_SWITCH "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+sim_home_switch \- Home switch simulator
+.SH SYNOPSIS
+.HP
+.B loadrt sim_home_switch [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH DESCRIPTION
+
+
+After tripping home switch, travel in opposite direction is
+required (amount set by the hysteresis pin).
+A pin (index-enable) is provided for use when
+\fB[JOINT_n]HOME_USE_INDEX\fR is specified to reset
+the I/O pin \fBjoint.N.index-enable\fR.
+
+.SH FUNCTIONS
+.TP
+\fBsim-home-switch.\fIN\fB\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B sim-home-switch.\fIN\fB.cur-pos\fR float in \fR
+Current position (typically: joint.n.motor-pos-fb)
+.TP
+.B sim-home-switch.\fIN\fB.home-pos\fR float in \fR(default: \fI1\fR)
+Home switch position
+.TP
+.B sim-home-switch.\fIN\fB.hysteresis\fR float in \fR(default: \fI0.1\fR)
+Travel required to backoff (hysteresis)
+.TP
+.B sim-home-switch.\fIN\fB.home-sw\fR bit out \fR
+Home switch activated
+.TP
+.B sim-home-switch.\fIN\fB.index-enable\fR bit io \fR
+typ: connect to joint.N.index-enable
+.TP
+.B sim-home-switch.\fIN\fB.index-delay-ms\fR float in \fR(default: \fI10\fR)
+delay in msec to reset index-enable
+.SH AUTHOR
+
+Dewey Garrett
+.SH LICENSE
+
+GPL

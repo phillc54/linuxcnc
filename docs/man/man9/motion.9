@@ -1,0 +1,899 @@
+'\" t
+.\"     Title: motion
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "MOTION" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+motion, axis \- accepts NML motion commands, interacts with HAL in realtime
+.SH "SYNOPSIS"
+.sp
+\fBloadrt motmod\fR [\fBbase_period_nsec=\fR\fIperiod\fR] [\fBbase_thread_fp=\fR\fI0 or 1\fR] [\fBservo_period_nsec=\fR\fIperiod\fR] [\fBtraj_period_nsec=\fR\fIperiod\fR] [\fBnum_joints=\fR\fI[1\-16]\fR] [\fBnum_dio=\fR\fI[1\-64]\fR | \fBnames_dout=\fR\fIname\fR[,\&...] \fBnames_din=\fR\fIname\fR[,\&...]] [\fBnum_aio=\fR\fI[1\-64]\fR | \fBnames_aout=\fR\fIname\fR[,\&...] \fI_names_ain=\fR*\fIname\fR[,\&...]] [\fBnum_misc_error=\fR\fI[0\-64]\fR] [\fBnum_spindles=\fR\fI[1\-8]\fR] [\fBunlock_joints_mask=\fR\fIjointmask\fR] [\fBnum_extrajoints=\fR\fI[0\-16]\fR]
+.sp
+The limits for the following items are compile\-time settings:
+.PP
+\fBnum_joints\fR
+.RS 4
+Maximum number of joints is set by
+\fBEMCMOT_MAX_JOINTS\fR\&.
+.RE
+.PP
+\fBnum_dio\fR
+.RS 4
+Maximum number of digital IO pins is set by
+\fBEMCMOT_MAX_DIO\fR\&. Minimum is 1, if
+\fBnum_dio\fR
+is not specified, it defaults to
+\fBDEFAULT_DIO\fR\&.
+.RE
+.PP
+\fBnames_dout\fR
+.RS 4
+A comma\-separated list of names for digital output pins\&. This parameter is mutually exclusive with
+\fBnum_dio\fR, but can be combined with
+\fBnames_din\fR\&. A maximum of
+\fBEMCMOT_MAX_DIO\fR
+names can be specified\&. The default digital output pin has names like
+\fBmotion\&.digital\-out\-00\fR
+whereas
+\fBnames_dout=\fR\fIis\-homing\-x,is\-homing\-y\fR
+will create the HAL pins
+motion\&.dout\-is\-homing\-x
+and
+motion\&.dout\-is\-homing\-y\&.
+.RE
+.PP
+\fBnames_din\fR
+.RS 4
+A comma\-separated list of names for digital input pins\&. This parameter is mutually exclusive with
+\fBnum_dio\fR, but can be combined with
+\fBnames_dout\fR\&. A maximum of
+\fBEMCMOT_MAX_DIO\fR
+names can be specified\&. The default digital input pin has names like
+\fBmotion\&.digital\-in\-00\fR
+whereas
+\fBnames_din=\fR\fIhomed\-x,homed\-y\fR
+will create the HAL pins
+motion\&.din\-homed\-x
+and
+motion\&.din\-homed\-y\&.
+.RE
+.PP
+\fBnum_aio\fR
+.RS 4
+Maximum number of analog IO pins is set by
+\fBEMCMOT_MAX_AIO\fR\&. Minimum is 1, if
+\fBnum_aio\fR
+is not specified, it defaults to
+\fBDEFAULT_AIO\fR\&.
+.RE
+.PP
+\fBnames_aout\fR
+.RS 4
+A comma\-separated list of names for analog output pins\&. This parameter is mutually exclusive with
+\fBnum_aio\fR, but can be combined with
+\fBnames_ain\fR\&. A maximum of
+\fBEMCMOT_MAX_AIO\fR
+names can be specified\&. The default analog output pin has names like
+\fBmotion\&.analog\-out\-00\fR
+whereas
+\fBnames_aout=\fR\fIfeedrate1,feedrate2\fR
+will create the HAL pins
+motion\&.aout\-feedrate1
+and
+motion\&.aout\-feedrate2\&.
+.RE
+.PP
+\fBnames_ain\fR
+.RS 4
+A comma\-separated list of names for analog input pins\&. This parameter is mutually exclusive with
+\fBnum_aio\fR, but can be combined with
+\fBnames_aout\fR\&. A maximum of
+\fBEMCMOT_MAX_AIO\fR
+names can be specified\&. The default analog input pin has names like
+\fBmotion\&.analog\-in\-00\fR
+whereas
+\fBnames_ain=\fR\fIproxy1,proxy2\fR
+will create the HAL pins
+motion\&.ain\-proxy1
+and
+motion\&.ain\-proxy2\&.
+.RE
+.PP
+\fBnum_misc_error\fR
+.RS 4
+Maximum number of extra error inputs is set by
+\fBEMCMOT_MAX_MISC_ERRORS\fR\&.
+.RE
+.PP
+\fBnames_misc_errors\fR
+.RS 4
+A comma\-separated list of names for extra error inputs\&. This parameter is mutually exclusive with num_misc_error\&. If using num_misc_error the additional error input pins will have names like
+\fBmotion\&.misc\-error\-00\fR
+whereas
+\fBnames_misc_errors=overtemp,undertemp\fR
+will create hal pins
+motion\&.err\-overtemp
+and
+motion\&.err\-undertemp\&.
+.RE
+.PP
+\fBnum_spindles\fR
+.RS 4
+Maximum number of spindles is set by
+\fBEMCMOT_MAX_SPINDLES\fR\&.
+.RE
+.sp
+Pin names starting with "\fBjoint\fR" or "\fBaxis\fR" are read and updated by the motion\-controller function\&.
+.SH "DESCRIPTION"
+.sp
+By default, the base thread does not support floating point\&. Software stepping, software encoder counting, and software pwm do not use floating point\&. \fBbase_thread_fp\fR can be used to enable floating point in the base thread (for example for brushless DC motor control)\&.
+.sp
+These pins and parameters are created by the realtime \fBmotmod\fR module\&. This module provides a HAL interface for LinuxCNC\(cqs motion planner\&. Basically \fBmotmod\fR takes in a list of waypoints and generates a nice blended and constraint\-limited stream of joint positions to be fed to the motor drives\&.
+.sp
+The optional \fBnum_extrajoints\fR parameter specifies a quantity of joints that participate in homing but are not used by kinematics transformations\&. After homing, control of an \fIextra\fR joint is transferred to a posthome command HAL pin (joint\&.N\&.posthome\-cmd) and the motor feedback value is ignored\&. \fIExtra\fR joints must be managed by independent motion planners/controllers (typically using limit3 HAL components)\&. Extra joints maybe unhomed only when motion is disabled\&.
+.sp
+The maximum \fBnum_extrajoints\fR value is equal to the \fBnum_joints\fR value\&. (Note that using the maximum value would allow no operation in world coordinates)\&. The \fBnum_joints\fR value must be equal to the sum of the number of joints used for kinematics calculations plus the number of \fIextra\fR joints\&.
+.sp
+The \fBnum_joints\fR parameter is conventionally set using the INI file setting \fB[KINS]JOINTS=\fRvalue\&. The \fBnum_extrajoints\fR is set by the additional motmod parameter \fB[EMCMOT]motmod num_extrajoints=\fRvalue\&. HAL pin numbering for all joints is zero based [\fB0 \&... num_joints\-1\fR]\&. When specified, \fIextra\fR joints are assigned the last \fBnum_extrajoints\fR in the numbering sequence\&. For example, specifying [KINS]JOINTS=5 and [EMCMOT]motmod num_extrajoints=2 for a 3 joint trivkins configuration \fB[KINS] KINEMATICS=trivkins coordinates=xyz\fR uses joints 0,1,2 for the kinematic joints and joints 3,4 for the \fIextra\fR joints\&.
+.sp
+An equal number of digital or analog IO pins will always be created\&. For example, if \fBnames_din\fR is specified with two pins, two named input and two default named output pins will be created\&. In cases where \fBnames_dout\fR is specified with two pins and \fBnames_din\fR with three pins, two named output and one default named output pin will be created, along with three named input pins\&. This principle applies independently to digital and analog IO pins, allowing for scenarios such as having three digital pins and two analog pins\&.
+.SH "MOTION PINS"
+.PP
+\fBmotion\-command\-handler\&.time\fR OUT S32
+.RS 4
+Time (in CPU clocks) for the motion module motion\-command\-handler
+.RE
+.PP
+\fBmotion\-controller\&.time\fR OUT S32
+.RS 4
+Time (in CPU clocks) for the motion module motion\-controller
+.RE
+.PP
+\fBmotion\&.adaptive\-feed\fR IN FLOAT
+.RS 4
+When adaptive feed is enabled with M52 P1, the commanded velocity is multiplied by this value\&. This effect is multiplicative with the NML\-level feed override value and motion\&.feed\-hold\&. Negative values are valid and will run the G\-code path in reverse\&.
+.RE
+.PP
+\fBmotion\&.analog\-in\-\fR\fINN\fR IN FLOAT
+.RS 4
+These pins are used by M66 Enn wait\-for\-input mode\&.
+.RE
+.PP
+\fBmotion\&.analog\-out\-\fR\fINN\fR OUT FLOAT
+.RS 4
+These pins are used by M67\-68\&.
+.RE
+.PP
+\fBmotion\&.coord\-error\fR OUT BIT
+.RS 4
+TRUE when motion has encountered an error, such as exceeding a soft limit
+.RE
+.PP
+\fBmotion\&.coord\-mode\fR OUT BIT
+.RS 4
+TRUE when motion is in "coordinated mode", as opposed to "teleop mode"
+.RE
+.PP
+\fBmotion\&.current\-vel\fR OUT FLOAT
+.RS 4
+Current cartesian velocity
+.RE
+.PP
+\fBmotion\&.digital\-in\-\fR\fINN\fR IN BIT
+.RS 4
+These pins are used by M66 Pnn wait\-for\-input mode\&.
+.RE
+.PP
+\fBmotion\&.digital\-out\-\fR\fINN\fR OUT BIT
+.RS 4
+These pins are controlled by the M62 through M65 words\&.
+.RE
+.PP
+\fBmotion\&.distance\-to\-go\fR OUT FLOAT
+.RS 4
+Distance remaining in the current move
+.RE
+.PP
+\fBmotion\&.enable\fR IN BIT
+.RS 4
+If this bit is driven FALSE, motion stops, the machine is placed in the "machine off" state, and a message is displayed for the operator\&. For normal motion, drive this bit TRUE\&.
+.RE
+.PP
+\fBmotion\&.eoffset\-active\fR OUT BIT
+.RS 4
+Indicates external offsets are active (non\-zero)
+.RE
+.PP
+\fBmotion\&.eoffset\-limited\fR OUT BIT
+.RS 4
+Indicates motion with external offsets was limited by a soft limit constraint ([AXIS_L]MIN_LIMIT,MAX_LIMIT)\&.
+.RE
+.PP
+\fBmotion\&.feed\-hold\fR IN BIT
+.RS 4
+When Feed Stop Control is enabled with M53 P1, and this bit is TRUE, the feed rate is set to 0\&.
+.RE
+.sp
+Note: feed\-hold applies to G\-code commands \(em not jogs\&.
+.PP
+\fBmotion\&.feed\-inhibit\fR IN BIT
+.RS 4
+When this pin is TRUE, machine motion is inhibited for G\-code commands\&.
+.RE
+.sp
+If the machine is performing a spindle synchronized move when this pin goes TRUE, the spindle synchronized motion will finish, and any following moves will be inhibited (this is to prevent damage to the machine, the tool, or the work piece)\&.
+.sp
+If the machine is in the middle of a (non\-spindle synchronized) move when this pin goes TRUE, the machine will decelerate to a stop at the maximum allowed acceleration rate\&.
+.sp
+Motion resumes when this pin goes FALSE\&.
+.sp
+Note: feed\-inhibit applies to G\-code commands \(em not jogs\&.
+.PP
+\fBmotion\&.feed\-upm\fR OUT FLOAT
+.RS 4
+Current feed rate in G\-code program units per minute for motion\&.motion\-type feed(2) and arc(3)\&. Value is the G\-code program F value multiplied by the current feed override value and the motion\&.adaptive\-feed setting (if M52 active)\&. Value is zero if motion\&.feed\-hold or motion\&.feed\-inhibit are asserted\&. If units (G20 or G21) are not specified in the G\-code file then units will be the last units used\&.
+.RE
+.PP
+\fBmotion\&.feed\-inches\-per\-minute\fR OUT FLOAT
+.RS 4
+Current feed rate in inches per minute for motion\&.motion\-type feed(2) and arc(3)\&. Value is the inch equivalent of the G\-code program F value multiplied by the current feed override value and the motion\&.adaptive\-feed setting (if M52 active)\&. Value is zero if motion\&.feed\-hold or motion\&.feed\-inhibit are asserted\&.
+.RE
+.PP
+\fBmotion\&.feed\-inches\-per\-second\fR OUT FLOAT
+.RS 4
+Current feed rate in inches per second for motion\&.motion\-type feed(2) and arc(3)\&. Value is the inch equivalent of the G\-code program F value multiplied by the current feed override value and the motion\&.adaptive\-feed setting (if M52 active)\&. Value is zero if motion\&.feed\-hold or motion\&.feed\-inhibit are asserted\&.
+.RE
+.PP
+\fBmotion\&.feed\-mm\-per\-minute\fR OUT FLOAT
+.RS 4
+Current feed rate in mm per minute for motion\&.motion\-type feed(2) and arc(3)\&. Value is the mm equivalent of the G\-code program F value multiplied by the current feed override value and the motion\&.adaptive\-feed setting (if M52 active)\&. Value is zero if motion\&.feed\-hold or motion\&.feed\-inhibit are asserted\&.
+.RE
+.PP
+\fBmotion\&.feed\-mm\-per\-second\fR OUT FLOAT
+.RS 4
+Current feed rate in mm per second for motion\&.motion\-type feed(2) and arc(3)\&. Value is the mm equivalent of the G\-code program F value multiplied by the current feed override value and the motion\&.adaptive\-feed setting (if M52 active)\&. Value is zero if motion\&.feed\-hold or motion\&.feed\-inhibit are asserted\&.
+.RE
+.PP
+\fBmotion\&.homing\-inhibit\fR IN BIT
+.RS 4
+If this bit is TRUE, initiation of any joint homing move (including "Home All") is disallowed and an error is reported\&. By default, homing is allowed in joint mode whenever motion is enabled\&.
+.RE
+.PP
+\fBmotion\&.is\-all\-homed\fR OUT BIT
+.RS 4
+TRUE if all active joints is homed\&.
+.RE
+.PP
+\fBmotion\&.jog\-inhibit\fR IN BIT
+.RS 4
+If this bit is TRUE, jogging of any joint or axis is disallowed and an error is reported\&.
+.RE
+.PP
+\fBmotion\&.jog\-stop\fR IN BIT
+.RS 4
+If any jog is active when the pin state changes to TRUE then that jog will be stopped following the associated acceleration values\&.
+.RE
+.PP
+\fBmotion\&.jog\-stop\-immediate\fR IN BIT
+.RS 4
+If any jog is active when the pin state changes to TRUE then that jog will be stopped immediately\&.
+.RE
+.PP
+\fBmotion\&.jog\-is\-active\fR OUT BIT
+.RS 4
+TRUE if any joint or axis is jogging\&.
+.RE
+.PP
+\fBmotion\&.in\-position\fR OUT BIT
+.RS 4
+TRUE if the machine is in position (i\&.e\&., not currently moving towards the commanded position)\&.
+.RE
+.PP
+\fBmotion\&.misc\-error\-\fR\fINN\fR IN BIT
+.RS 4
+Extra error inputs for faults such as over\-temperature sensors, low coolant warnings, custom HAL component errors\&. If driven TRUE this will disable a machine\&. Similar to spindle\&.amp\-fault\-in\&.
+.RE
+.PP
+\fBmotion\&.motion\-enabled\fR OUT BIT
+.RS 4
+.RE
+.PP
+\fBmotion\&.motion\-type\fR OUT S32
+.RS 4
+These values are from src/emc/nml_intf/motion_types\&.h:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+0: Idle (no motion)
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+1: Traverse
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+2: Linear feed
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+3: Arc feed
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+4: Tool change
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+5: Probing
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+6: Rotary unlock for traverse
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\fBmotion\&.on\-soft\-limit\fR OUT BIT, \fBmotion\&.probe\-input\fR IN BIT
+.RS 4
+G38\&.n uses the value on this pin to determine when the probe has made contact\&. TRUE for probe contact closed (touching), FALSE for probe contact open\&.
+.RE
+.PP
+\fBmotion\&.program\-line\fR OUT S32
+.RS 4
+The current program line while executing\&. Zero if not running or between lines while single stepping\&.
+.RE
+.PP
+\fBmotion\&.requested\-vel\fR OUT FLOAT
+.RS 4
+The current requested velocity in user units per second\&. This value is the F\-word setting from the G\-code file, possibly reduced to accommodate machine velocity and acceleration limits\&. The value on this pin does not reflect the feed override or any other adjustments\&.
+.RE
+.PP
+\fBmotion\&.servo\&.last\-period\fR OUT U32
+.RS 4
+The number of CPU clocks between invocations of the servo thread\&. Typically, this number divided by the CPU speed gives the time in seconds, and can be used to determine whether the realtime motion controller is meeting its timing constraints
+.RE
+.PP
+\fBmotion\&.switchkins\-type\fR IN float
+.RS 4
+Kinematics modules that define the functions kinematicsSwitchable() and kinematicsSwitch() receive the
+\fBinteger\fR
+value of this pin to select the machine kinematics functions\&. Extra G\-code commands may be required to synchronize task and motion before and after changes to the pin value\&.
+.RE
+.PP
+\fBmotion\&.teleop\-mode\fR OUT BIT
+.RS 4
+Motion mode is teleop (axis coordinate jogging available)\&.
+.RE
+.PP
+\fBmotion\&.tooloffset\&.L\fR OUT FLOAT
+.RS 4
+Current tool offset for each axis where (\fBL\fR
+is the axis letter, one of:
+\fBx y z a b c u v w\fR)
+.RE
+.PP
+\fBmotion\&.tp\-reverse\fR OUT BIT
+.RS 4
+Trajectory planning is reversed (reverse run)
+.RE
+.SH "AXIS PINS"
+.sp
+(\fBL\fR is the axis letter, one of: \fBx y z a b c u v w\fR)
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.eoffset\fR OUT FLOAT
+.RS 4
+Current external offset\&.
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.eoffset\-clear\fR IN BIT
+.RS 4
+Clear external offset request
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.eoffset\-counts\fR IN S32
+.RS 4
+Counts input for external offset\&. The eoffset\-counts are transferred to an internal register\&. The applied external offset is the product of the register counts and the eoffset\-scale value\&. The register is
+\fBreset to zero at each machine startup\fR\&. If the machine is turned off with an external offset active, the eoffset\-counts pin should be set to zero before restarting\&.
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.eoffset\-enable\fR IN BIT
+.RS 4
+Enable for external offset (also requires INI file setting for [AXIS_L]OFFSET_AV_RATIO)
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.eoffset\-request\fR OUT FLOAT
+.RS 4
+Debug pin for requested external offset\&.
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.eoffset\-scale\fR IN FLOAT
+.RS 4
+Scale for external offset\&.
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.jog\-accel\-fraction\fR IN FLOAT
+.RS 4
+Sets acceleration for wheel jogging to a fraction of the INI max_acceleration for the axis\&. Values greater than 1 or less than zero are ignored\&.
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.jog\-counts\fR IN S32
+.RS 4
+Connect to the "counts" pin of an external encoder to use a physical jog wheel\&.
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.jog\-enable\fR IN BIT
+.RS 4
+When TRUE (and in manual mode), any change to "jog\-counts" will result in motion\&. When false, "jog\-counts" is ignored\&.
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.jog\-scale\fR IN FLOAT
+.RS 4
+Sets the distance moved for each count on "jog\-counts", in machine units\&.
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.jog\-vel\-mode\fR IN BIT
+.RS 4
+When FALSE (the default), the jogwheel operates in position mode\&. The axis will move exactly jog\-scale units for each count, regardless of how long that might take\&. When TRUE, the wheel operates in velocity mode \- motion stops when the wheel stops, even if that means the commanded motion is not completed\&.
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.kb\-jog\-active\fR OUT BIT
+.RS 4
+(free planner axis jogging active (keyboard or halui))
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.pos\-cmd\fR OUT FLOAT
+.RS 4
+The axis commanded position\&. There may be several offsets between the axis and motor coordinates: Backlash compensation, screw error compensation, and home offsets\&. External offsets are reported separately (axis\&.\fIL\fR\&.eoffset)\&.
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.teleop\-pos\-cmd\fR OUT FLOAT, \fBaxis\&.\fR\fIL\fR\fB\&.teleop\-tp\-enable\fR OUT BIT
+.RS 4
+TRUE when the "teleop planner" is enabled for this axis\&.
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.teleop\-vel\-cmd\fR OUT FLOAT
+.RS 4
+The axis\(cqs commanded velocity\&.
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.teleop\-vel\-lim\fR OUT FLOAT
+.RS 4
+The velocity limit for the teleop planner\&.
+.RE
+.PP
+\fBaxis\&.\fR\fIL\fR\fB\&.wheel\-jog\-active\fR OUT BIT
+.RS 4
+.RE
+.SH "JOINT PINS"
+.sp
+\fIN\fR is the joint number (0 \&... \fInum_joints\fR\-1))
+.sp
+Note: Pins marked \fB(DEBUG)\fR serve as debugging aids and are subject to change or removal at any time\&.
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.acc\-cmd\fR OUT FLOAT \fB(DEBUG)\fR
+.RS 4
+The joint\(cqs commanded acceleration\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.active\fR OUT BIT \fB(DEBUG)\fR
+.RS 4
+TRUE when this joint is active\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.amp\-enable\-out\fR OUT BIT
+.RS 4
+TRUE if the amplifier for this joint should be enabled\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.amp\-fault\-in\fR IN BIT
+.RS 4
+Should be driven TRUE if an external fault is detected with the amplifier for this joint\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.backlash\-corr\fR OUT FLOAT \fB(DEBUG)\fR
+.RS 4
+Backlash or screw compensation raw value\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.backlash\-filt\fR OUT FLOAT \fB(DEBUG)\fR
+.RS 4
+Backlash or screw compensation filtered value (respecting motion limits)\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.backlash\-vel\fR OUT FLOAT \fB(DEBUG)\fR
+.RS 4
+Backlash or screw compensation velocity\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.coarse\-pos\-cmd\fR OUT FLOAT \fB(DEBUG)\fR, \fBjoint\&.\fR\fIN\fR\fB\&.error\fR OUT BIT \fB(DEBUG)\fR
+.RS 4
+TRUE when t*his joint has encountered an error, such as a limit switch closing\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.f\-error\fR OUT FLOAT \fB(DEBUG)\fR
+.RS 4
+The actual following error\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.f\-error\-lim\fR OUT FLOAT \fB(DEBUG)\fR
+.RS 4
+The following error limit\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.f\-errored\fR OUT BIT \fB(DEBUG)\fR
+.RS 4
+TRUE when this joint has exceeded the following error limit\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.faulted\fR OUT BIT \fB(DEBUG)\fR, \fBjoint\&.\fR\fIN\fR\fB\&.free\-pos\-cmd\fR OUT FLOAT \fB(DEBUG)\fR
+.RS 4
+The "free planner" commanded position for this joint\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.free\-tp\-enable\fR OUT BIT \fB(DEBUG)\fR
+.RS 4
+TRUE when the "free planner" is enabled for this joint\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.free\-vel\-lim\fR OUT FLOAT \fB(DEBUG)\fR
+.RS 4
+The velocity limit for the free planner\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.home\-state\fR OUT S32 \fB(DEBUG)\fR
+.RS 4
+homing state machine state
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.home\-sw\-in\fR IN BIT
+.RS 4
+Should be driven TRUE if the home switch for this joint is closed\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.homed\fR OUT BIT \fB(DEBUG)\fR
+.RS 4
+TRUE if the joint has been homed\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.homing\fR OUT BIT
+.RS 4
+TRUE if the joint is currently homing\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.in\-position\fR OUT BIT \fB(DEBUG)\fR
+.RS 4
+TRUE if the joint is using the "free planner" and has come to a stop\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.index\-enable\fR IO BIT
+.RS 4
+Should be attached to the index\-enable pin of the joint\(cqs encoder to enable homing to index pulse\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.is\-unlocked\fR IN BIT
+.RS 4
+Indicates joint is unlocked (see JOINT UNLOCK PINS)\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.jog\-accel\-fraction\fR IN FLOAT
+.RS 4
+Sets acceleration for wheel jogging to a fraction of the INI max_acceleration for the joint\&. Values greater than 1 or less than zero are ignored\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.jog\-counts\fR IN S32
+.RS 4
+Connect to the "counts" pin of an external encoder to use a physical jog wheel\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.jog\-enable\fR IN BIT
+.RS 4
+When TRUE (and in manual mode), any change to "jog\-counts" will result in motion\&. When false, "jog\-counts" is ignored\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.jog\-scale\fR IN FLOAT
+.RS 4
+Sets the distance moved for each count on "jog\-counts", in machine units\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.jog\-vel\-mode\fR IN BIT
+.RS 4
+When FALSE (the default), the jogwheel operates in position mode\&. The joint will move exactly jog\-scale units for each count, regardless of how long that might take\&. When TRUE, the wheel operates in velocity mode \- motion stops when the wheel stops, even if that means the commanded motion is not completed\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.kb\-jog\-active\fR OUT BIT \fB(DEBUG)\fR
+.RS 4
+(free planner joint jogging active (keyboard or halui))
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.motor\-offset\fR OUT FLOAT \fB(DEBUG)\fR
+.RS 4
+joint motor offset established when joint is homed\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.motor\-pos\-cmd\fR OUT FLOAT
+.RS 4
+The commanded position for this joint\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.motor\-pos\-fb\fR IN FLOAT
+.RS 4
+The actual position for this joint\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.neg\-hard\-limit\fR OUT BIT \fB(DEBUG)\fR
+.RS 4
+The negative hard limit for the joint
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.neg\-lim\-sw\-in\fR IN BIT
+.RS 4
+Should be driven TRUE if the negative limit switch for this joint is tripped\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.pos\-cmd\fR OUT FLOAT
+.RS 4
+The joint (as opposed to motor) commanded position\&. There may be several offsets between the joint and motor coordinates: backlash compensation, screw error compensation, and home offsets\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.pos\-fb\fR OUT FLOAT
+.RS 4
+The joint feedback position\&. This value is computed from the actual motor position minus joint offsets\&. Useful for machine visualization\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.pos\-hard\-limit\fR OUT BIT \fB(DEBUG)\fR
+.RS 4
+The positive hard limit for the joint\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.pos\-lim\-sw\-in\fR IN BIT
+.RS 4
+Should be driven TRUE if the positive limit switch for this joint is tripped\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.unlock\fR OUT BIT
+.RS 4
+TRUE if the axis is a locked joint (typically a rotary) and a move is commanded (see JOINT UNLOCK PINS)\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.vel\-cmd\fR OUT FLOAT \fB(DEBUG)\fR
+.RS 4
+The joint\(cqs commanded velocity\&.
+.RE
+.PP
+\fBjoint\&.\fR\fIN\fR\fB\&.wheel\-jog\-active\fR OUT BIT \fB(DEBUG)\fR
+.RS 4
+.RE
+.SH "JOINT POSTHOME PINS"
+.sp
+Each joint designated as an \fIextra\fR joint is provided with a HAL pin \fBjoint\&.\fR\fIN\fR\fB\&.posthome\-cmd\fR\&. The pin value is ignored prior to homing\&. After homing, the pin value is augmented by the motor offset value and routed to the \fBjoint\&.\fR\fIN\fR\fB\&.motor\-pos\-cmd\fR\&.
+.SH "JOINT UNLOCK PINS"
+.sp
+The joint pins used for unlocking a joint (\fBjoint\&.\fR\fIN\fR\fB\&.unlock\fR, \fBjoint\&.\fR\fIN\fR\fB\&.is\-unlocked\fR), are created according to the \fBunlock_joints_mask=\fRjointmask parameter for motmod\&. These pins may be required for locking indexers (typically a rotary joint)\&.
+.sp
+The jointmask bits are: (lsb)0:joint0, 1:joint1, 2:joint2, \&...
+.sp
+Example: loadrt motmod \&... \fBunlock_joints_mask=\fR0x38 creates unlock pins for joints 3, 4, 5\&.
+.SH "SPINDLE PINS"
+.sp
+(\fIM\fR is the spindle number (\fB0\fR \&... \fBnum_spindles\-1\fR))
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.amp\-fault\-in\fR IN BIT
+.RS 4
+Should be driven TRUE if an external fault is detected with the amplifier for this spindle\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.at\-speed\fR IN BIT
+.RS 4
+Motion will pause until this pin is TRUE, under the following conditions: Before the first feed move after each spindle start or speed change; before the start of every chain of spindle\-synchronized moves; and if in CSS mode, at every rapid→feed transition\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.brake\fR OUT BIT
+.RS 4
+TRUE when the spindle brake should be applied\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.forward\fR OUT BIT
+.RS 4
+TRUE when the spindle should rotate forward\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.index\-enable\fR I/O BIT
+.RS 4
+For correct operation of spindle synchronized moves, this signal must be hooked to the index\-enable pin of the spindle encoder\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.inhibit\fR IN BIT
+.RS 4
+When TRUE, the spindle speed is set and held to 0\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.is\-oriented\fR IN BIT
+.RS 4
+Acknowledge pin for spindle\-orient\&. Completes orient cycle\&. If spindle\-orient was true when spindle\-is\-oriented was asserted, the spindle\-orient pin is cleared and the spindle\-locked pin is asserted\&. Also, the spindle\-brake pin is asserted\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.locked\fR OUT BIT
+.RS 4
+Spindle orient complete pin\&. Cleared by any of M3, M4 or M5\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.on\fR OUT BIT
+.RS 4
+TRUE when spindle should rotate\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.orient\fR OUT BIT
+.RS 4
+Indicates start of spindle orient cycle\&. Set by M19\&. Cleared by any of M3, M4 or M5\&.
+.RE
+.sp
+If spindle\-orient\-fault is not zero during spindle\-orient true, the M19 command fails with an error message\&.
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.orient\-angle\fR OUT FLOAT
+.RS 4
+Desired spindle orientation for M19\&. Value of the M19 R word parameter plus the value of the [RS274NGC]ORIENT_OFFSET INI parameter\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.orient\-fault\fR IN S32
+.RS 4
+Fault code input for orient cycle\&. Any value other than zero will cause the orient cycle to abort\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.orient\-mode\fR OUT BIT
+.RS 4
+Desired spindle rotation mode\&. Reflects M19 P parameter word\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.reverse\fR OUT BIT
+.RS 4
+TRUE when the spindle should rotate backward\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.revs\fR IN FLOAT
+.RS 4
+For correct operation of spindle synchronized moves, this signal must be hooked to the position pin of the spindle encoder\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.speed\-cmd\-rps\fR FLOAT OUT
+.RS 4
+Commanded spindle speed in units of revolutions per second\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.speed\-in\fR IN FLOAT
+.RS 4
+Actual spindle speed feedback in revolutions per second; used for G96 (constant surface speed) and G95 (feed per revolution) modes\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.speed\-out\fR OUT FLOAT
+.RS 4
+Desired spindle speed in rotations per minute\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.speed\-out\-abs\fR OUT FLOAT
+.RS 4
+Desired spindle speed in rotations per minute, always positive regardless of spindle direction\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.speed\-out\-rps\fR OUT FLOAT
+.RS 4
+Desired spindle speed in rotations per second\&.
+.RE
+.PP
+\fBspindle\&.\fR\fIM\fR\fB\&.speed\-out\-rps\-abs\fR OUT FLOAT
+.RS 4
+Desired spindle speed in rotations per second, always positive regardless of spindle direction\&.
+.RE
+.SH "MOTION PARAMETERS"
+.sp
+Many of the parameters serve as debugging aids, and are subject to change or removal at any time\&.
+.PP
+\fBmotion\-command\-handler\&.tmax\fR RW S32
+.RS 4
+Show information about the execution time of these HAL functions in CPU clocks\&.
+.RE
+.PP
+\fBmotion\-command\-handler\&.tmax\-increased\fR RO S32, \fBmotion\-controller\&.tmax\fR RW S32
+.RS 4
+Show information about the execution time of these HAL functions in CPU clocks\&.
+.RE
+.PP
+\fBmotion\-controller\&.tmax\-increased\fR RO BIT
+.RS 4
+.RE
+.PP
+\fBmotion\&.debug\-\fR\fI*\fR
+.RS 4
+These values are used for debugging purposes\&.
+.RE
+.SH "FUNCTIONS"
+.sp
+Generally, these functions are both added to the servo\-thread in the order shown\&.
+.PP
+\fBmotion\-command\-handler\fR
+.RS 4
+Receive and process incoming motion commands\&. The pin named
+\fBmotion\-command\-handler\&.time\fR
+and parameters
+\fBmotion\-command\-handler\&.tmax,tmax\-increased\fRare created for this function\&.
+.RE
+.PP
+\fBmotion\-controller\fR
+.RS 4
+Runs the LinuxCNC motion controller\&. The pin named
+\fBmotion\-controller\&.time\fR
+and parameters
+\fBmotion\-controller\&.tmax,tmax\-increased\fR
+are created for this function\&.
+.RE
+.SH "BUGS"
+.sp
+This manual page is incomplete\&.
+.sp
+Identification of pins categorized with \fB(DEBUG)\fR is dubious\&.
+.SH "SEE ALSO"
+.sp
+iocontrol(1), milltask(1), spindle(9)

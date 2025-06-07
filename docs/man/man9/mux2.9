@@ -1,0 +1,42 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/mux2.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH MUX2 "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+mux2 \- Select from one of two input values
+.SH SYNOPSIS
+.HP
+.B loadrt mux2 [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBmux2.\fIN\fB\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B mux2.\fIN\fB.sel\fR bit in \fR
+.br
+.ns
+.TP
+.B mux2.\fIN\fB.out\fR float out \fR
+Follows the value of in0 if sel is FALSE, or in1 if sel is TRUE
+.TP
+.B mux2.\fIN\fB.in1\fR float in \fR
+.br
+.ns
+.TP
+.B mux2.\fIN\fB.in0\fR float in \fR
+.SH SEE ALSO
+
+mux4(9), mux8(9), mux16(9), mux_generic(9).
+.SH AUTHOR
+
+Jeff Epler
+.SH LICENSE
+
+GPL

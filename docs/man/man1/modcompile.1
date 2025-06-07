@@ -1,0 +1,87 @@
+'\" t
+.\"     Title: modcompile
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "MODCOMPILE" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+modcompile \- Utility for compiling Modbus drivers
+.SH "SYNOPSIS"
+.sp
+\fBmodcompile \-h\fR
+.sp
+\fBmodcompile\fR [\fB\-k\fR] [\fB\-n\fR] [\fB\-v\fR] all
+.sp
+\fBmodcompile\fR [\fB\-k\fR] [\fB\-n\fR] [\fB\-v\fR] module\&.mod \&...
+.SH "DESCRIPTION"
+.sp
+The \fBmodcompile\fR utility is used to compile modbus drivers that use the PktUART interface of Mesa cards\&.
+.sp
+See the main LinuxCNC documentation for more details\&.
+.sp
+https://linuxcnc\&.org/docs/stable/html/drivers/mesa_modbus\&.html
+.SH "OPTIONS"
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Brief help message\&.
+.RE
+.PP
+\fB\-k\fR, \fB\-\-keep\fR
+.RS 4
+Keep the temporary files\&. The program will print a line where these are located\&. You will be responsible for deleting them\&.
+.RE
+.PP
+\fB\-n\fR, \fB\-\-noinstall\fR
+.RS 4
+Do not run the install step for the compiled module\&. This option is probably only useful if you also use the
+\fB\-\-keep\fR
+option\&.
+.RE
+.PP
+\fB\-v\fR, \fB\-\-verbose\fR
+.RS 4
+Do a verbose build, showing all steps detailed while being performed\&.
+.RE
+.SH "SEE ALSO"
+.sp
+linuxcnc(1)
+.sp
+Much more information about LinuxCNC and HAL is available in the LinuxCNC and HAL User Manuals, found at /usr/share/doc/LinuxCNC/\&.
+.SH "BUGS"
+.sp
+None known at this time\&.
+.SH "AUTHOR"
+.sp
+This man page written by Andy Pugh, as part of the LinuxCNC project\&.
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2023 Andy Pugh\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

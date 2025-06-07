@@ -1,0 +1,617 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/plasmac.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH PLASMAC "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+plasmac \- A plasma cutter controller
+.SH SYNOPSIS
+.HP
+.B loadrt plasmac
+.SH DESCRIPTION
+
+
+
+A plasma cutting table control component for use with the LinuxCNC 2.10.
+
+.I VERSION:
+.br
+008
+
+.I SUMMARY:
+.br
+Usage of this component is demonstrated in the QtPlasmaC example configurations included with LinuxCNC.
+
+.I DISCLAIMER:
+.br
+THE AUTHOR OF THIS SOFTWARE ACCEPTS ABSOLUTELY NO LIABILITY FOR ANY HARM OR LOSS RESULTING FROM ITS USE.
+
+IT IS EXTREMELY UNWISE TO RELY ON SOFTWARE ALONE FOR SAFETY.
+
+Any machinery capable of harming persons must have provisions for completely stopping all motors and moving parts etc. before persons enter any danger area.
+
+All machinery must be designed to comply with local and national safety codes, and the author of this software can not, and does not, take any responsibility for such compliance.
+
+.SH FUNCTIONS
+.TP
+\fBplasmac\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B plasmac.arc-fail-delay\fR float in \fR
+arc start failure timeout (seconds)
+.TP
+.B plasmac.arc-lost-delay\fR float in \fR
+arc lost delay during a cut (seconds)
+.TP
+.B plasmac.arc-ok-high\fR float in \fR
+maximum voltage level for Arc OK signal [mode 0] (volts)
+.TP
+.B plasmac.arc-ok-in\fR bit in \fR
+external arc ok input signal [mode 1 & mode 2]
+.TP
+.B plasmac.arc-ok-low\fR float in \fR
+minimum voltage level for Arc OK signal [mode 0] (volts)
+.TP
+.B plasmac.arc-max-starts\fR s32 in \fR
+maximum attempts at starting the arc
+.TP
+.B plasmac.arc-voltage-in\fR float in \fR
+arc voltage input [mode 0 & mode 1] see Notes above
+.TP
+.B plasmac.arc-voltage-offset\fR float in \fR
+offset to set arc voltage to 0 at 0 volts
+.TP
+.B plasmac.arc-voltage-scale\fR float in \fR
+scale to convert arc_voltage input to actual volts
+.TP
+.B plasmac.thc-auto\fR bit in \fR
+enable automatic thc activation
+.TP
+.B plasmac.axis-x-max-limit\fR float in \fR
+axis x maximum limit, connect to ini.x.max-limit
+.TP
+.B plasmac.axis-x-min-limit\fR float in \fR
+axis x minimum limit, connect to ini.x.min-limit
+.TP
+.B plasmac.axis-x-position\fR float in \fR
+current x axis position, connect to axis.x.pos-cmd
+.TP
+.B plasmac.axis-y-max-limit\fR float in \fR
+axis y maximum limit, connect to ini.y.max-limit
+.TP
+.B plasmac.axis-y-min-limit\fR float in \fR
+axis y minimum limit, connect to ini.y.min-limit
+.TP
+.B plasmac.axis-y-position\fR float in \fR
+current y axis position, connect to axis.y.pos-cmd
+.TP
+.B plasmac.axis-z-max-limit\fR float in \fR
+axis z maximum limit, connect to ini.z.max-limit
+.TP
+.B plasmac.axis-z-min-limit\fR float in \fR
+axis z minimum limit, connect to ini.z.min-limit
+.TP
+.B plasmac.axis-z-position\fR float in \fR
+current z axis position, connect to joint.N.pos-fb
+.TP
+.B plasmac.breakaway\fR bit in \fR
+torch breakaway switch (optional, see float_switch)
+.TP
+.B plasmac.consumable-change\fR bit in \fR
+change consumables in torch
+.TP
+.B plasmac.cornerlock-enable\fR bit in \fR
+enable corner lock
+.TP
+.B plasmac.cornerlock-threshold\fR float in \fR
+corner lock threshold (% of requested feed rate), speeds below this disable THC
+.TP
+.B plasmac.current-velocity\fR float in \fR
+current machine velocity, connect to motion.current-vel
+.TP
+.B plasmac.cut-feed-rate\fR float in \fR
+cut feed rate from current material (machine units per minute)
+.TP
+.B plasmac.cut-height\fR float in \fR
+cut height (machine units)
+.TP
+.B plasmac.cut-recovery\fR bit in \fR
+recover from cut error
+.TP
+.B plasmac.cut-volts\fR float in \fR
+cut voltage (volts)
+.TP
+.B plasmac.cutting-start\fR bit in \fR
+start a new cut, connect to spindle.0.on
+.TP
+.B plasmac.debug-print\fR bit in \fR
+if true will print state changes as a debug aid
+.TP
+.B plasmac.dry-run\fR bit in \fR
+perform a dry run without probing
+.TP
+.B plasmac.external-estop\fR bit in \fR
+external E-stop input
+.TP
+.B plasmac.feed-override\fR float in \fR
+feed override value from GUI (connect to halui.feed-override.value)
+.TP
+.B plasmac.feed-reduction\fR float in \fR
+reduce adaptive feed to this percentage (connect to motion.analog-out-03)
+.TP
+.B plasmac.float-switch\fR bit in \fR
+float switch input (can also act as breakaway if it actuates when torch breaks away)
+.TP
+.B plasmac.float-switch-travel\fR float in \fR
+float switch travel (machine units)
+.TP
+.B plasmac.gcode-scale\fR float in \fR(default: \fI1\fR)
+current G-code scale
+.TP
+.B plasmac.height-override\fR float in \fR
+height override adjustment (volts)
+.TP
+.B plasmac.height-per-volt\fR float in \fR
+torch height change per volt (machine units)
+.TP
+.B plasmac.homed\fR bit in \fR
+machine is homed
+.TP
+.B plasmac.ignore-arc-ok-0\fR bit in \fR
+don't require arc ok for start or cutting
+.TP
+.B plasmac.ignore-arc-ok-1\fR bit in \fR
+don't require arc ok for start or cutting
+.TP
+.B plasmac.kerf-width\fR float in \fR
+placeholder for better G-code portability between GUIs
+.TP
+.B plasmac.override-jog\fR bit in \fR
+override jog inhibit
+.TP
+.B plasmac.offset-set-probe\fR bit in \fR
+deploy probe for setting offsets
+.TP
+.B plasmac.offset-set-scribe\fR bit in \fR
+deploy scribe for setting offsets
+.TP
+.B plasmac.laser-mode\fR bit in \fR
+laser mode for fiber lasers
+.TP
+.B plasmac.laser-recovery-start\fR s32 in \fR
+start laser offset for cut recovery
+.TP
+.B plasmac.laser-x-offset\fR s32 in \fR
+alignment laser x axis offset (scaled units)
+.TP
+.B plasmac.laser-y-offset\fR s32 in \fR
+alignment laser y axis offset (scaled units)
+.TP
+.B plasmac.lowpass-frequency\fR float in \fR
+lowpass cutoff frequency for arc voltage output
+.TP
+.B plasmac.machine-is-on\fR bit in \fR
+machine is on signal
+.TP
+.B plasmac.max-offset\fR s32 in \fR(default: \fI5\fR)
+maximum height offset
+.TP
+.B plasmac.mesh-arc-ok\fR bit in \fR(default: \fIFALSE\fR)
+don't require arc ok for mesh mode
+.TP
+.B plasmac.mesh-enable\fR bit in \fR
+enable mesh cutting mode
+.TP
+.B plasmac.mode\fR s32 in \fR
+operating mode
+.TP
+.B plasmac.motion-type\fR s32 in \fR
+motion type, connect to motion.motion-type
+.TP
+.B plasmac.move-down\fR bit in \fR
+external thc down switch [mode 2]
+.TP
+.B plasmac.move-up\fR bit in \fR
+external thc up switch [mode 2]
+.TP
+.B plasmac.multi-tool\fR bit in \fR(default: \fI1\fR)
+allows the use of multiple tools
+.TP
+.B plasmac.offset-feed-rate\fR float in \fR
+probe offset velocity (machine units per minute)
+.TP
+.B plasmac.offset-probe-delay\fR float in \fR
+wait for probe to deploy (seconds)
+.TP
+.B plasmac.offset-probe-x\fR float in \fR
+X axis offset for offset probe (machine units)
+.TP
+.B plasmac.offset-probe-y\fR float in \fR
+Y axis offset for offset probe (machine units)
+.TP
+.B plasmac.offsets-active\fR bit in \fR
+offsets are active, connect to motion.eoffsets-active
+.TP
+.B plasmac.ohmic-sense-on-delay\fR s32 in \fR(default: \fI3\fR)
+debounce cycles for ohmic sense on
+.TP
+.B plasmac.ohmic-sense-off-delay\fR s32 in \fR(default: \fI3\fR)
+debounce cycles for ohmic sense off
+.TP
+.B plasmac.ohmic-sense-in\fR bit in \fR
+ohmic sense relay input
+.TP
+.B plasmac.ohmic-max-attempts\fR s32 in \fR
+maximum ohmic probe attempts before fallback to float switch
+.TP
+.B plasmac.ohmic-probe\fR bit in \fR
+ohmic probe input, from ohmic-sense-out or external component/pin
+.TP
+.B plasmac.ohmic-probe-enable\fR bit in \fR
+enable ohmic probe
+.TP
+.B plasmac.ohmic-probe-offset\fR float in \fR
+Z axis offset for ohmic probe (machine units)
+.TP
+.B plasmac.ohmic-test\fR bit in \fR
+test for shorted torch
+.TP
+.B plasmac.ok-sample-counts\fR s32 in \fR(default: \fI10\fR)
+arc_ok number of valid samples required [mode 0]
+.TP
+.B plasmac.ok-sample-threshold\fR float in \fR(default: \fI10\fR)
+arc_ok maximum arc voltage deviation allowed [mode 0]
+.TP
+.B plasmac.pause-at-end\fR float in \fR
+time to pause at end of cut
+.TP
+.B plasmac.paused-motion-speed\fR float in \fR
+multiplier for speed of motion when paused, from -1 to 1
+.TP
+.B plasmac.pid-d-gain\fR float in \fR
+derivative gain input [mode 0 & mode 1]
+.TP
+.B plasmac.pid-i-gain\fR float in \fR
+integral gain input [mode 0 & mode 1]
+.TP
+.B plasmac.pid-p-gain\fR float in \fR
+proportional gain input [mode 0 & mode 1]
+.TP
+.B plasmac.pierce-delay\fR float in \fR
+time required to pierce stock (seconds)
+.TP
+.B plasmac.probe-feed-rate\fR float in \fR
+probe down velocity (machine units per minute)
+.TP
+.B plasmac.probe-final-speed\fR s32 in \fR(default: \fI1\fR)
+final probe speed (steps per servo period)
+.TP
+.B plasmac.pierce-height\fR float in \fR
+pierce height (machine units)
+.TP
+.B plasmac.probe-start-height\fR float in \fR
+probe starting height
+.TP
+.B plasmac.probe-test\fR bit in \fR
+probe test only
+.TP
+.B plasmac.program-is-idle\fR bit in \fR
+program is idle, connect to halui.program.is-idle
+.TP
+.B plasmac.program-is-paused\fR bit in \fR
+program is paused, connect to halui.program.is-paused
+.TP
+.B plasmac.program-is-running\fR bit in \fR
+program is running, connect to halui.program.is-running
+.TP
+.B plasmac.puddle-jump-delay\fR float in \fR
+Delay move from pierce height to cut height (seconds), leave disconnected if not required.
+.TP
+.B plasmac.puddle-jump-height\fR float in \fR
+Puddle jump height (percentage of pierce height), leave disconnected if not required.
+.TP
+.B plasmac.requested-velocity\fR float in \fR
+deprecated
+.TP
+.B plasmac.feed-upm\fR float in \fR
+requested feed_rate, connect to motion.feed-upm to use as the default (G-code units per minute)
+.TP
+.B plasmac.resolution\fR s32 in \fR(default: \fI100\fR)
+multiplier for resolution of the offset counts
+.TP
+.B plasmac.restart-delay\fR float in \fR
+time from arc failure till next restart attempt
+.TP
+.B plasmac.safe-height\fR float in \fR
+requested safe traverse height (machine units)
+.TP
+.B plasmac.scribe-arm-delay\fR float in \fR
+delay from scribe arm to scribe on
+.TP
+.B plasmac.scribe-on-delay\fR float in \fR
+delay from scribe on to motion beginning
+.TP
+.B plasmac.scribe-start\fR bit in \fR
+start a new scribe, connect to spindle.1.on
+.TP
+.B plasmac.setup-feed-rate\fR float in \fR
+feed rate for moves to pierce and cut heights (machine units per minute)
+.TP
+.B plasmac.skip-ihs-distance\fR float in \fR
+skip IHS if less than this distance from last cut
+.TP
+.B plasmac.spotting-start\fR bit in \fR
+start a new spot, connect to spindle.2.on
+.TP
+.B plasmac.spotting-threshold\fR float in \fR
+threshold voltage to start spotting delay
+.TP
+.B plasmac.spotting-time\fR float in \fR
+torch off delay after spotting threshold reached
+.TP
+.B plasmac.thc-delay\fR float in \fR
+delay from cut feed rate reached to THC activate (seconds) [non auto THC]
+.TP
+.B plasmac.thc-disable\fR bit in \fR
+thc disable
+.TP
+.B plasmac.thc-enable\fR bit in \fR
+enable/disable thc and set the IHS skip type
+.TP
+.B plasmac.thc-feed-rate\fR float in \fR
+maximum feed rate for thc (machine units per minute)
+.TP
+.B plasmac.thc-sample-counts\fR s32 in \fR(default: \fI50\fR)
+thc number of valid samples required [auto THC]
+.TP
+.B plasmac.thc-sample-threshold\fR float in \fR(default: \fI1\fR)
+thc maximum arc voltage deviation allowed [auto THC]
+.TP
+.B plasmac.thc-threshold\fR float in \fR
+thc threshold (volts), changes below this have no effect
+.TP
+.B plasmac.torch-enable\fR bit in \fR
+enable torch
+.TP
+.B plasmac.torch-off\fR bit in \fR
+turn torch off
+.TP
+.B plasmac.torch-pulse-start\fR bit in \fR
+torch pulse start
+.TP
+.B plasmac.torch-pulse-time\fR float in \fR
+torch pulse time (seconds)
+.TP
+.B plasmac.tube-cut\fR bit in \fR
+set the current job as tube cutting
+.TP
+.B plasmac.units-per-mm\fR float in \fR
+for scale calcs, connect to halui.machine.units-per-mm
+.TP
+.B plasmac.use-auto-volts\fR bit in \fR
+use calculated voltage for thc baseline
+.TP
+.B plasmac.voidlock-enable\fR bit in \fR
+enable voidlock [mode 0 & mode 1]
+.TP
+.B plasmac.voidlock-on-cycles\fR s32 in \fR(default: \fI2\fR)
+number of sampling cycles to activate voidlock 
+.TP
+.B plasmac.voidlock-off-cycles\fR s32 in \fR(default: \fI10\fR)
+number of sampling cycles to deactivate voidlock
+.TP
+.B plasmac.voidlock-slope\fR s32 in \fR(default: \fI500\fR)
+voidlock slope in volts per second
+.TP
+.B plasmac.x-offset\fR s32 in \fR
+offset to apply to axis x for consumable change and cut recovery (scaled units)
+.TP
+.B plasmac.x-offset-current\fR float in \fR
+current x axis offset, connect to axis.x.eoffset
+.TP
+.B plasmac.xy-feed-rate\fR float in \fR
+feed-rate for consumable change
+.TP
+.B plasmac.y-offset\fR s32 in \fR
+offset to apply to axis y for consumable change and cut recovery (scaled units)
+.TP
+.B plasmac.y-offset-current\fR float in \fR
+current z axis offset, connect to axis.y.eoffset
+.TP
+.B plasmac.z-offset-current\fR float in \fR
+current z axis offset, connect to axis.z.eoffset
+.TP
+.B plasmac.zero-window\fR float in \fR(default: \fI0.1\fR)
+sets window that voltage fluctuations show as zero (-0.1 to 0.1 at default value)
+.TP
+.B plasmac.pierce-type\fR u32 in \fR(default: \fI0\fR)
+allows motion to progress during pierce. 0=No movement, 1=Wiggle, 2=Ramp
+.TP
+.B plasmac.pierce-motion-delay\fR float in \fR(default: \fI0\fR)
+delay starting motion during pierce delay period. This is a % of Pierce Delay. Only used when pierce-with-motion is True
+.TP
+.B plasmac.cut-height-delay\fR float in \fR(default: \fI0\fR)
+at the end of transition to end-pierce-height how long to pause before transition to cut height
+.TP
+.B plasmac.pierce-end-height\fR float in \fR(default: \fI0\fR)
+The height at end of piercing (in machine units). Can be different to Cut Height. Default 0 means not used. i.e. no change in height
+.TP
+.B plasmac.gouge-speed\fR float in \fR(default: \fI0\fR)
+Ramp starting speed for gouge. In machine units/min.
+.TP
+.B plasmac.gouge-speed-distance\fR float in \fR(default: \fI0\fR)
+Distance gouge will run in machine units. Gouge plus creep distance should not be longer than any lead in
+.TP
+.B plasmac.creep-speed\fR float in \fR(default: \fI0\fR)
+Ramp creep or intermediate speed. Comes after gouge and is before cut speed. In machine units/min.
+.TP
+.B plasmac.creep-speed-distance\fR float in \fR(default: \fI0\fR)
+Distance creep will run in machine units. Gouge plus creep distance should not be longer than any lead in
+.TP
+.B plasmac.adaptive-feed\fR float out \fR
+for reverse-run, connect to motion.adaptive-feed
+.TP
+.B plasmac.arc-ok-out\fR bit out \fR
+arc ok output
+.TP
+.B plasmac.arc-voltage-out\fR float out \fR
+arc voltage output [mode 0 & mode 1]
+.TP
+.B plasmac.consumable-changing\fR bit out \fR
+consumables are being changed
+.TP
+.B plasmac.cornerlock-is-locked\fR bit out \fR
+corner locked indicator
+.TP
+.B plasmac.cut-length\fR float out \fR
+length of current cut job
+.TP
+.B plasmac.cut-recovering\fR bit out \fR
+recovering from cut error
+.TP
+.B plasmac.cut-time\fR float out \fR
+cut time of current job
+.TP
+.B plasmac.cutting-stop\fR bit out \fR
+stop manual cut, connect to halui.spindle.0.stop
+.TP
+.B plasmac.feed-hold\fR bit out \fR
+feed hold, connect to motion.feed-hold
+.TP
+.B plasmac.jog-inhibit\fR bit out \fR
+jog inhibit, connect to motion.jog-inhibit
+.TP
+.B plasmac.laser-recovery-state\fR s32 out \fR
+laser recovery status
+.TP
+.B plasmac.led-down\fR bit out \fR
+thc move down indicator
+.TP
+.B plasmac.led-up\fR bit out \fR
+thc move up indicator
+.TP
+.B plasmac.offset-scale\fR float out \fR
+offset scale, connect to axis.<x y z>.eoffset-scale
+.TP
+.B plasmac.ohmic-enable\fR bit out \fR
+on only while probing
+.TP
+.B plasmac.ohmic-sense-out\fR bit out \fR
+ohmic sense output state
+.TP
+.B plasmac.paused-motion\fR bit out \fR
+paused motion flag, true when paused motion is active
+.TP
+.B plasmac.paused-time\fR float out \fR
+paused time during current job
+.TP
+.B plasmac.pierce-count\fR s32 out \fR
+number of pierce attempts (torch starts)
+.TP
+.B plasmac.probe-out\fR bit out \fR
+probe for tube cutting, connect to motion.probe-input
+.TP
+.B plasmac.probe-test-error\fR bit out \fR
+minimum limit reached while probe testing
+.TP
+.B plasmac.probe-time\fR float out \fR
+probe time of current job
+.TP
+.B plasmac.program-pause\fR bit out \fR
+pause the current program, connect to halui.program.pause
+.TP
+.B plasmac.program-resume\fR bit out \fR
+resume the currently paused program, connect to halui.program.resume
+.TP
+.B plasmac.program-run\fR bit out \fR
+run the currently loaded program, connect to halui.program.run
+.TP
+.B plasmac.program-stop\fR bit out \fR
+stop current program, connect to halui.program.stop
+.TP
+.B plasmac.rapid-time\fR float out \fR
+rapid motion time of current job
+.TP
+.B plasmac.run-time\fR float out \fR
+run time of current job
+.TP
+.B plasmac.safe-height-is-limited\fR bit out \fR
+safe height is limited indicator
+.TP
+.B plasmac.sensor-active\fR bit out \fR
+one of float, ohmic, or breakaway is detected
+.TP
+.B plasmac.scribe-arm\fR bit out \fR
+arm the scribe
+.TP
+.B plasmac.scribe-on\fR bit out \fR
+turn scribe on
+.TP
+.B plasmac.state-out\fR s32 out \fR
+current state
+.TP
+.B plasmac.stop-type-out\fR s32 out \fR
+current stop type
+.TP
+.B plasmac.thc-active\fR bit out \fR
+thc status output
+.TP
+.B plasmac.thc-enabled\fR bit out \fR
+thc is enabled
+.TP
+.B plasmac.torch-on\fR bit out \fR
+turn torch on, connect to your torch on input
+.TP
+.B plasmac.torch-time\fR float out \fR
+torch on time of current job
+.TP
+.B plasmac.voidlock-is-locked\fR bit out \fR
+voidlock is locked indicator [mode 0 & mode 1]
+.TP
+.B plasmac.x-offset-counts\fR s32 out \fR
+x offset for consumable change, connect to axis.x.eoffset-counts
+.TP
+.B plasmac.xy-offset-enable\fR bit out \fR
+enable x and y offsets, connect to axis.<x & y>.eoffset-enable
+.TP
+.B plasmac.y-offset-counts\fR s32 out \fR
+y offset for consumable change, connect to axis.y.eoffset-counts
+.TP
+.B plasmac.z-height\fR float out \fR
+current z axis height relative to the probed zero height
+.TP
+.B plasmac.z-offset-counts\fR s32 out \fR
+z offset for height control, connect to axis.z.eoffset-counts
+.TP
+.B plasmac.z-offset-enable\fR bit out \fR
+enable z offsets, connect to axis.z.eoffset-enable
+.TP
+.B plasmac.z-relative\fR float out \fR
+distance of Z from last probed height
+.TP
+.B plasmac.current-feed-rate\fR float out \fR
+current feed rate per minute
+.TP
+.B plasmac.requested-feed-rate\fR float out \fR
+requested feed rate
+.TP
+.B plasmac.low-cut-volts\fR s32 in \fR
+low cut voltage threshold while thc active
+.TP
+.B plasmac.target-samples\fR s32 in \fR(default: \fI6\fR)
+number of samples for setting target_volts
+.TP
+.B plasmac.target-volts\fR float out \fR
+target voltage for thc, set by arc voltage at cut height
+.SH AUTHOR
+
+Phillip A Carter & Gregory D Carl
+.SH LICENSE
+
+GPLv2 or greater

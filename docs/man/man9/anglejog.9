@@ -1,0 +1,119 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/anglejog.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH ANGLEJOG "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+anglejog \- Jog two axes (or joints) at an angle
+.SH SYNOPSIS
+
+This component accepts a dynamic counts-in input (typically from a
+manual pulse generator (MPG)) and static angle and scale factor
+settings.  It computes the counts and scale values required to jog two
+(M,N) axes (or joints) at an angle.  The corresponding output pins
+must be connected to the candidate axis.[MN].jog* (or joint.[MN].jog*)
+pins to create motion at the current angle.  HAL pins are provided to
+set the vector velocity and acceleration and to enable the
+computations.
+
+Notes:
+
+1. The max-vel, max-accel settings should be \fBless than or
+equal\fR to the smallest settings for both of the target axes.
+
+2. The scale-in pin is sampled only when the enable-in pin
+is false.  The value in use is output on the current-scale pin.
+
+3. The angle-degrees-in pin is sampled only when the enable-in
+pin is false.  The value in use is output on the current-angle-degrees
+pin.
+
+4. The value of the iscale-factor pin multiplies counts-in internally
+to support integer (s32) calculations for counting.  The current-scale-out
+is divided by the same amount.  The pin is sampled only when the
+enable-in pin is false.  The default value should work in most
+applications.
+
+5. For identity kins machines that support both world jogging (axis letter)
+and joint jogging (joint number), connections are needed for both the
+axis pins: axis.[MN].jog-enable,jog-scale,jog-counts and the corresponding
+joint pins: joint.[mn].jog-enable,jog-scale,jog-counts where [mn] are
+the joint numbers corresponding to the [MN] axis letters.
+6. The current-scale pin is for information, the required output scaling
+pin is current-scale-out as it depends on the iscale-factor setting.
+
+\fBSimulation Config\fR: configs/sim/axis/anglejog/anglejog.in
+
+.SH FUNCTIONS
+.TP
+\fBanglejog.\fIN\fB\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B anglejog.\fIN\fB.enable-in\fR bit in \fR
+enables motion (disables alteration of angle and scale)
+.TP
+.B anglejog.\fIN\fB.counts-in\fR s32 in \fR
+MPG (wheel) counts
+.TP
+.B anglejog.\fIN\fB.angle-degrees-in\fR float in \fR
+vector angle
+.TP
+.B anglejog.\fIN\fB.iscale-factor\fR s32 in \fR(default: \fI10000\fR)
+integer scaling factor (>1)
+.TP
+.B anglejog.\fIN\fB.scale-in\fR float in \fR
+magnitude units/count (mag = counts * scale)
+.TP
+.B anglejog.\fIN\fB.max-vel\fR float in \fR
+vector max velocity magnitude
+.TP
+.B anglejog.\fIN\fB.max-accel\fR float in \fR
+vector max acceleration magnitude
+.TP
+.B anglejog.\fIN\fB.accel-fraction-in\fR float in \fR(default: \fI1\fR)
+acceleration fraction input
+.TP
+.B anglejog.\fIN\fB.enable-out\fR bit out \fR
+to: axis.M.jog-enable AND axis.N.jog-enable
+.TP
+.B anglejog.\fIN\fB.current-scale\fR float out \fR
+effective scale (informational)
+.TP
+.B anglejog.\fIN\fB.current-scale-out\fR float out \fR
+to: axis.M.jog-scale AND axis.N.jog-scale
+.TP
+.B anglejog.\fIN\fB.coscounts\fR s32 out \fR
+to: axis.M.jog-counts (cosine counts)
+.TP
+.B anglejog.\fIN\fB.sincounts\fR s32 out \fR
+to: axis.N.jog-counts (sine   counts)
+.TP
+.B anglejog.\fIN\fB.cos-accel-fraction\fR float out \fR
+to: axis.M.jog-accel-fraction
+.TP
+.B anglejog.\fIN\fB.sin-accel-fraction\fR float out \fR
+to: axis.N.jog-accel-fraction
+.TP
+.B anglejog.\fIN\fB.active\fR bit out \fR
+angle jog move in progress
+.TP
+.B anglejog.\fIN\fB.current-angle-degrees\fR float out \fR
+current angle
+.TP
+.B anglejog.\fIN\fB.current-mag\fR float out \fR
+current vector magnitude
+.TP
+.B anglejog.\fIN\fB.current-vel\fR float out \fR
+current vector speed
+.SH AUTHOR
+
+Dewey Garrett
+.SH LICENSE
+
+GPL

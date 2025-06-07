@@ -1,0 +1,59 @@
+'\" t
+.\"     Title: hm2_bspi_write_chan
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HM2_BSPI_WRITE_CHAN" "3hm2" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hm2_bspi_write_chan \- write data to a Hostmot2 Buffered SPI channel
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <hostmot2\-serial\&.h>
+hm2_bspi_write_chan(char* name, int chan, u32 val)
+.fi
+.if n \{\
+.RE
+.\}
+.SH "DESCRIPTION"
+.sp
+\fBhm2_bspi_write_chan\fR write one\-time data to the bspi channel "chan" on the bspi instance "name"\&. "name" is a unique string given to each bspi channel during hostmot2 setup\&. The names of the available channels are printed to standard output during the driver loading process and take the form: hm2\fI_<board name>\fR\&.\fI<board index>\fR\&.bspi\&.\fI<index>\fR\&. For example: hm2_5i23\&.0\&.bspi\&.0\&.
+.sp
+This function performs a one\-time write of data to the specified channel\&. It is typically used for setup and chip enabling purposes\&. It should not be used in the main loop for regular data transfers (but is appropriate to use for on\-the\-fly setup changes)\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+May be called from init/cleanup code and from within realtime tasks\&. Not available in non\-realtime components\&.
+.SH "RETURN VALUE"
+.sp
+Returns 0 on success and \-1 on failure\&.
+.SH "SEE ALSO"
+.sp
+hm2_allocate_bspi_tram(3hm2), hm2_bspi_set_read_function(3hm2), hm2_bspi_setup_chan(3hm2), hm2_bspi_set_write_function(3hm2), hm2_tram_add_bspi_frame(3hm2)
+.sp
+See src/hal/drivers mesa_7i65\&.comp for an example usage\&.

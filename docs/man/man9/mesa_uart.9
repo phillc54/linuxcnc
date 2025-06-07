@@ -1,0 +1,75 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/drivers/mesa_uart.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH MESA_UART "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+mesa_uart \- An example component demonstrating how to access the Hostmot2 UART
+.SH SYNOPSIS
+.HP
+.B loadrt mesa_uart [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH DESCRIPTION
+
+This component creates 16 input and 16 output pins. It transmits 
+{name}.N.tx-bytes on the selected UART every thread cycle and reads up to 16
+bytes each cycle out of the receive FIFO and writes the values to the associated
+output pins. {name}.rx-bytes indicates how many pins have been written to. 
+(pins > rx-bytes simply hold their previous value)
+
+This module uses the names= mode of loadrt declaration to specify which UART 
+instances to enable. A check is included to ensure that the count= option is 
+not used instead.
+
+The component takes parameters in the form of a comma-separated
+list of UART instance names, for example:
+
+\fB loadrt mesa_uart names=hm2_5i23.0.uart.0,hm2_5i23.0.uart.7\fR
+
+Note that no spaces are allowed in the string unless it is delimited by double 
+quotes. 
+
+The UART instance names are printed to the dmesg buffer during the Hostmot2 
+setup sequence, one for each UART instance included in the bitfile loaded to 
+each installed card during the Hostmot2 setup sequence. Type "dmesg" at the 
+terminal prompt to view the output.
+
+The component exports two functions, send and receive, which need to be added
+to a realtime thread.
+
+The above example will output data on UART channels 0 and 7 and the pins will 
+have the names of the individual UARTS. (they need not be on the same card, or
+even the same bus).
+
+Read the documents on "halcompile" for help with writing realtime components:
+http://linuxcnc.org/docs/html/hal/comp.html
+.SH FUNCTIONS
+.TP
+\fBmesa-uart.\fIN\fB.send\fR (requires a floating-point thread)
+
+.TP
+\fBmesa-uart.\fIN\fB.receive\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B mesa-uart.\fIN\fB.tx-data-\fIMM\fB\fR u32 in  (MM=00..15) \fR
+Data to be transmitted
+.TP
+.B mesa-uart.\fIN\fB.rx-data-\fIMM\fB\fR u32 out  (MM=00..15) \fR
+Data received
+.TP
+.B mesa-uart.\fIN\fB.tx-bytes\fR s32 in \fR
+Number of bytes to transmit
+.TP
+.B mesa-uart.\fIN\fB.rx-bytes\fR s32 out \fR
+Number of Bytes received
+.SH AUTHOR
+
+Andy Pugh andy@bodgesoc.org
+.SH LICENSE
+
+GPL

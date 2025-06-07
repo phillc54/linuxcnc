@@ -1,0 +1,43 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/maj3.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH MAJ3 "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+maj3 \- Compute the majority of 3 inputs
+.SH SYNOPSIS
+.HP
+.B loadrt maj3 [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBmaj3.\fIN\fB\fR
+
+.SH PINS
+.TP
+.B maj3.\fIN\fB.in1\fR bit in \fR
+.br
+.ns
+.TP
+.B maj3.\fIN\fB.in2\fR bit in \fR
+.br
+.ns
+.TP
+.B maj3.\fIN\fB.in3\fR bit in \fR
+.br
+.ns
+.TP
+.B maj3.\fIN\fB.out\fR bit out \fR
+.SH PARAMETERS
+.TP
+.B maj3.\fIN\fB.invert\fR bit rw \fR
+.SH AUTHOR
+
+Jeff Epler
+.SH LICENSE
+
+GPL

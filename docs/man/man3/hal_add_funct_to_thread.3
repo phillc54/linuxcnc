@@ -1,0 +1,73 @@
+'\" t
+.\"     Title: hal_add_funct_to_thread
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HAL_ADD_FUNCT_TO_THR" "3" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hal_add_funct_to_thread, hal_del_funct_from_thread \- cause a function to be executed at regular intervals
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+int hal_add_funct_to_thread(const char* funct_name, const char* thread_name, int position)
+int hal_del_funct_from_thread(const char* funct_name, const char* thread_name)
+.fi
+.if n \{\
+.RE
+.\}
+.SH "ARGUMENTS"
+.PP
+funct_name
+.RS 4
+The name of the function\&.
+.RE
+.PP
+thread_name
+.RS 4
+The name of the thread\&.
+.RE
+.PP
+position
+.RS 4
+The desired location within the thread\&. This determines when the function will run, in relation to other functions in the thread\&. A positive number indicates the desired location as measured from the beginning of the thread, and a negative is measured from the end\&. So +1 means this function will become the first one to run, +5 means it will be the fifth one to run, \-2 means it will be next to last, and \-1 means it will be last\&. Zero is illegal\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+The function \fBhal_add_funct_to_thread\fR adds another function that is exported by a realtime HAL component to a realtime thread\&. This determines how often and in what order functions are executed\&.
+.sp
+The function \fBhal_del_funct_from_thread\fR removes a function from a thread\&.
+.SH "RETURN VALUE"
+.sp
+Returns a HAL status code\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+Call only from realtime init code, not from other realtime or non\-realtime code\&.
+.SH "SEE ALSO"
+.sp
+hal_thread_new(3hal), hal_export_funct(3hal)

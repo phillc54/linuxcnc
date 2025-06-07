@@ -1,0 +1,82 @@
+'\" t
+.\"     Title: hal_export_funct
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HAL_EXPORT_FUNCT" "3" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hal_export_funct, hal_export_functf \- create a realtime function callable from a thread
+.SH "SYNTAX"
+.sp
+typedef void(\fBhal_funct_t)(void\fR \fIarg\fR, long \fIperiod\fR)
+.sp
+int hal_export_funct(const char* \fIname\fR, hal_funct_t \fIfunct\fR, void* \fIarg\fR, int \fIuses_fp\fR, int \fIreentrant\fR, int \fIcomp_id\fR)
+.SH "ARGUMENTS"
+.PP
+name
+.RS 4
+The name of the function\&.
+.RE
+.PP
+funct
+.RS 4
+The pointer to the function\&.
+.RE
+.PP
+arg
+.RS 4
+The argument to be passed as the first parameter of
+\fIfunct\fR\&.
+.RE
+.PP
+uses_fp
+.RS 4
+Nonzero if the function uses floating\-point operations, including assignment of floating point values with "="\&.
+.RE
+.PP
+reentrant
+.RS 4
+If reentrant is non\-zero, the function may be preempted and called again before the first call completes\&. Otherwise, it may only be added to one thread\&.
+.RE
+.PP
+comp_id
+.RS 4
+A HAL component identifier returned by an earlier call to
+\fBhal_init\fR\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+\fBhal_export_funct\fR makes a realtime function provided by a component available to the system\&. A subsequent call to \fBhal_add_funct_to_thread\fR can be used to schedule the execution of the function as needed by the system\&.
+.sp
+When this function is placed on a HAL thread, and HAL threads are started, \fIfunct\fR is called repeatedly with two arguments: \fIvoid \fR\fI\fBarg\fR\fR\fI is the same value that was given to *hal_export_funct\fR, and \fIlong period\fR is the interval between calls in nanoseconds\&.
+.sp
+Each call to the function should do a small amount of work and return\&.
+.SH "RETURN VALUE"
+.sp
+Returns a HAL status code\&.
+.SH "SEE ALSO"
+.sp
+hal_create_thread(3hal), hal_add_funct_to_thread(3hal)

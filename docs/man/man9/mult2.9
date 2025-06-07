@@ -1,0 +1,40 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/mult2.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH MULT2 "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+mult2 \- Product of two inputs
+.SH SYNOPSIS
+.HP
+.B loadrt mult2 [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBmult2.\fIN\fB\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B mult2.\fIN\fB.in0\fR float in \fR
+.br
+.ns
+.TP
+.B mult2.\fIN\fB.in1\fR float in \fR
+.br
+.ns
+.TP
+.B mult2.\fIN\fB.out\fR float out \fR
+out = in0 * in1
+.SH SEE ALSO
+
+ invert(9), div2(9) 
+.SH AUTHOR
+
+John Kasunich
+.SH LICENSE
+
+GPL

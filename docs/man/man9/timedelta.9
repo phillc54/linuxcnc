@@ -1,0 +1,53 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/timedelta.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH TIMEDELTA "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+timedelta \- LinuxCNC HAL component that measures thread scheduling timing behavior
+.SH SYNOPSIS
+.HP
+.B loadrt timedelta [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBtimedelta.\fIN\fB\fR
+
+.SH PINS
+.TP
+.B timedelta.\fIN\fB.jitter\fR s32 out \fR(default: \fI0\fR)
+Worst-case scheduling error (in ns).  This is the largest discrepancy between ideal thread period, and actual time between sequential runs of this component.  This uses the absolute value of the error, so 'got run too early' and 'got run too late' both show up as positive jitter.
+.TP
+.B timedelta.\fIN\fB.current-jitter\fR s32 out \fR(default: \fI0\fR)
+Scheduling error (in ns) of the current invocation.  This is the discrepancy between ideal thread period, and actual time since the previous run of this component.  This uses the absolute value of the error, so 'got run too early' and 'got run too late' both show up as positive jitter.
+.TP
+.B timedelta.\fIN\fB.current-error\fR s32 out \fR(default: \fI0\fR)
+Scheduling error (in ns) of the current invocation.  This is the discrepancy between ideal thread period, and actual time since the previous run of this component.  This does not use the absolute value of the error, so 'got run too early' shows up as negative error and 'got run too late' shows up as positive error.
+.TP
+.B timedelta.\fIN\fB.min\fR s32 out \fR(default: \fI0\fR)
+Minimum time (in ns) between sequential runs of this component.
+.TP
+.B timedelta.\fIN\fB.max\fR s32 out \fR(default: \fI0\fR)
+Maximum time (in ns) between sequential runs of this component.
+.TP
+.B timedelta.\fIN\fB.reset\fR bit in \fR
+Set this pin to True, then back to False, to reset some of the statistics.
+.TP
+.B timedelta.\fIN\fB.out\fR s32 out \fR
+Time (in ns) since the previous run of this component.  This should ideally be equal to the thread period.
+.TP
+.B timedelta.\fIN\fB.err\fR s32 out \fR(default: \fI0\fR)
+Cumulative time error (in ns).  Probably not useful.
+.TP
+.B timedelta.\fIN\fB.avg-err\fR float out \fR(default: \fI0\fR)
+The average scheduling error (in ns).
+.SH AUTHOR
+
+Jeff Epler
+.SH LICENSE
+
+GPL

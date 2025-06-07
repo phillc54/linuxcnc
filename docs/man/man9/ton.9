@@ -1,0 +1,39 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/ton.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH TON "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+ton \- IEC TON timer - delay rising edge on a signal
+.SH SYNOPSIS
+.HP
+.B loadrt ton [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBton.\fIN\fB\fR (requires a floating-point thread)
+Update the timer
+.SH PINS
+.TP
+.B ton.\fIN\fB.in\fR bit in \fR
+Input signal
+.TP
+.B ton.\fIN\fB.q\fR bit out \fR
+Output signal
+.TP
+.B ton.\fIN\fB.et\fR float out \fR
+Elapsed time since rising edge in seconds
+.SH PARAMETERS
+.TP
+.B ton.\fIN\fB.pt\fR float rw \fR
+Delay time in seconds
+.SH AUTHOR
+
+Chad Woitas
+.SH LICENSE
+
+GPL

@@ -1,0 +1,48 @@
+'\" t
+.\"     Title: hal_malloc
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HAL_MALLOC" "3hal" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hal_malloc \- Allocate space in the HAL shared memory area
+.SH "SYNTAX"
+.sp
+void *hal_malloc(long int \fIsize\fR)
+.SH "ARGUMENTS"
+.PP
+size
+.RS 4
+Gives the size, in bytes, of the block\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+\fBhal_malloc\fR allocates a block of memory from the main HAL shared memory area\&. It should be used by all components to allocate memory for HAL pins and parameters\&. It allocates \(oqsize\(cq bytes, and returns a pointer to the allocated space, or NULL (0) on error\&. The returned pointer will be properly aligned for any type HAL supports\&. A component should allocate during initialization all the memory it needs\&.
+.sp
+The allocator is very simple, and there is no \(oqfree\(cq\&. The entire HAL shared memory area is freed when the last component calls \fBhal_exit\fR\&. This means that if you continuously install and remove one component while other components are present, you eventually will fill up the shared memory and an install will fail\&. Removing all components completely clears memory and you start fresh\&.
+.SH "RETURN VALUE"
+.sp
+A pointer to the allocated space, which is properly aligned for any variable HAL supports\&. Returns NULL on error\&.

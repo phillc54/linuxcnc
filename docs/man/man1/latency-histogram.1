@@ -1,0 +1,126 @@
+'\" t
+.\"     Title: latency-histogram
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "LATENCY\-HISTOGRAM" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+latency-histogram \- plot a histogram of machine latency
+.SH "SYNOPSIS"
+.sp
+\fBlatency\-histogram\fR [\fB\-?\fR|\fB\-\-help\fR] [\fB\-\-base\fR \fIns\fR] [\fB\-\-servo\fR \fIns\fR] [\fB\-\-bbinsize\fR \fIns\fR] [\fB\-\-sbinsize\fR \fIns\fR] [\fB\-\-bbins\fR \fIns\fR] [\fB\-\-sbins\fR \fIns\fR] [\fB\-\-logscale\fR 0|1] [\fB\-\-text\fR \fInote\fR] [\fB\-\-show\fR] [\fB\-\-nobase\fR] [\fB\-\-verbose\fR] [\fB\-\-nox\fR]
+.SH "DESCRIPTION"
+.sp
+The latency test is important when configuring a LinuxCNC system\&. An adjunct to the standard latency\-test latency\-histogram plots the distribution of latency\&. This can be useful to get a feel for how frequent the high latency excursions are\&.
+.sp
+LinuxCNC and HAL should not be running, stop with halrun \-U\&. Large number of bins and/or small binsizes will slow updates\&. For single thread, specify \fB\-\-nobase\fR (and options for servo thread)\&. Measured latencies outside of the +/\- bin range are reported with special end bars\&. Use \fB\-\-show\fR to show count for the off\-chart [pos|neg] pin\&.
+.sp
+More details: https://linuxcnc\&.org/docs/html/install/latency\-test\&.html
+.SH "OPTIONS"
+.PP
+\fB\-?\fR, \fB\-\-help\fR
+.RS 4
+Show options and exit\&.
+.RE
+.PP
+*\-\-base*_ ns_
+.RS 4
+base thread interval, default: 25000, min: 5000
+.RE
+.PP
+*\-\-servo*_ ns_
+.RS 4
+servo thread interval, default: 1000000, min: 25000
+.RE
+.PP
+*\-\-bbinsize*_ ns_
+.RS 4
+base bin size, default: 100
+.RE
+.PP
+*\-\-sbinsize*_ ns_
+.RS 4
+servo bin size, default: 100
+.RE
+.PP
+*\-\-bbins*_ ns_
+.RS 4
+base bins, default: 200
+.RE
+.PP
+*\-\-sbins*_ ns_
+.RS 4
+servo bins, default: 200
+.RE
+.PP
+*\-\-logscale*_ 0|1_
+.RS 4
+y axis log scale, default: 1
+.RE
+.PP
+*\-\-text*_ note_
+.RS 4
+additional note, default: ""
+.RE
+.PP
+\fB\-\-show\fR
+.RS 4
+show count of undisplayed bins
+.RE
+.PP
+\fB\-\-nobase\fR
+.RS 4
+servo thread only
+.RE
+.PP
+\fB\-\-verbose\fR
+.RS 4
+progress and debug
+.RE
+.PP
+\fB\-\-nox\fR
+.RS 4
+no GUI, display elapsed, min, max, sdev for each thread
+.RE
+.SH "SEE ALSO"
+.sp
+latency\-plot(1), latency\-test(1), linuxcnc(1)
+.sp
+Much more information about LinuxCNC and HAL is available in the LinuxCNC and HAL User Manuals, found at \fI/usr/share/doc/linuxcnc/\fR\&.
+.SH "BUGS"
+.sp
+None known at this time\&.
+.SH "AUTHOR"
+.sp
+This man page written by Andy Pugh, as part of the LinuxCNC project\&.
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2020 Andy Pugh\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

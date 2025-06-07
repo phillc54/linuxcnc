@@ -1,0 +1,41 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/conv_s64_u64.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH CONV_S64_U64 "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+conv_s64_u64 \- Convert a value from s64 to u64
+.SH SYNOPSIS
+.HP
+.B loadrt conv_s64_u64 [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBconv-s64-u64.\fIN\fB\fR
+Update 'out' based on 'in'
+.SH PINS
+.TP
+.B conv-s64-u64.\fIN\fB.in\fR s64 in \fR
+.br
+.ns
+.TP
+.B conv-s64-u64.\fIN\fB.out\fR u64 out \fR
+.br
+.ns
+.TP
+.B conv-s64-u64.\fIN\fB.out-of-range\fR bit out \fR
+TRUE when 'in' is not in the range of u64
+.SH PARAMETERS
+.TP
+.B conv-s64-u64.\fIN\fB.clamp\fR bit rw \fR
+If TRUE, then clamp to the range of u64.  If FALSE, then allow the value to "wrap around".
+.SH AUTHOR
+
+Jeff Epler
+.SH LICENSE
+
+GPL

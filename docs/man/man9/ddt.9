@@ -1,0 +1,49 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/ddt.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH DDT "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+ddt \- Compute the derivative of the input function
+.SH SYNOPSIS
+.HP
+.B loadrt ddt [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH DESCRIPTION
+
+
+For every function call from the real time thread, calculate the
+difference between the old and current input value divided by the
+timer elapsed since the last call.
+
+.SH FUNCTIONS
+.TP
+\fBddt.\fIN\fB\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B ddt.\fIN\fB.in\fR float in \fR
+.br
+.ns
+.TP
+.B ddt.\fIN\fB.out\fR float out \fR
+.SH NOTES
+
+
+
+As this only work on two consecutive input values, it will only work
+well if the input change every function call, and not work so well if
+the rate of change is very low and the input change do not happen
+every time the real time function is called.
+
+
+.SH AUTHOR
+
+Jeff Epler
+.SH LICENSE
+
+GPL

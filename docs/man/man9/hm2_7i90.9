@@ -1,0 +1,85 @@
+'\" t
+.\"     Title: hm2_7i90
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HM2_7I90" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hm2_7i90 \- LinuxCNC HAL driver for the Mesa Electronics 7i90 EPP Anything IO board with HostMot2 firmware\&.
+.SH "SYNOPSIS"
+.sp
+\fBloadrt hm2_7i90\fR [\fBioaddr=\fR\fIN\fR[,\fIN\fR\&...]] [\fBioaddr_hi=\fR\fIN\fR[,\fIN\fR\&...]] [\fBepp_wide=\fR\fIN\fR[,\fIN\fR\&...]] [\fBdebug_epp=\fR\fIN\fR[,\fIN\fR\&...]]
+.PP
+\fBioaddr\fR [default: 0 (parport0)]
+.RS 4
+The base address of the parallel port\&.
+.RE
+.sp
+The number of ioaddr indexes/addresses given is used by the driver to determine how many boards to search for\&. Previously the number of config strings was used, but a blank config string is perfectly acceptable for 7i90\&.
+.PP
+\fBioaddr_hi\fR [default: 0]
+.RS 4
+The secondary address of the parallel port, used to set EPP mode\&. 0 means to use ioaddr + 0x400\&.
+.RE
+.PP
+\fBepp_wide\fR [default: 1]
+.RS 4
+Set to zero to disable the "wide EPP mode"\&. "Wide" mode allows a 16\- and 32\-bit EPP transfers, which can reduce the time spent in the read and write functions\&. However, this may not work on all EPP parallel ports\&.
+.RE
+.PP
+\fBconfig\fR [default: ""]
+.RS 4
+HostMot2 config strings, described in the hostmot2(9) manpage\&.
+.RE
+.PP
+\fBdebug_epp\fR [default: 0]
+.RS 4
+Developer/debug use only! Enable debug logging of most EPP transfers\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+hm2_7i90 is a device driver that interfaces the Mesa 7i90 board with the HostMot2 firmware to the LinuxCNC HAL\&.
+.sp
+The 7i90 firmware is stored on the 7i90 itself, it is not programmed by the driver at load time\&. The 7i90 firmware can be changed using the mesaflash program\&.
+.sp
+The driver talks with the 7i90 over the parallel port, via EPP\&.
+.SH "COMMUNICATING WITH THE BOARD"
+.sp
+The 7i90 communicates with the LinuxCNC computer over EPP, the Enhanced Parallel Port\&. This provides about 1 MBps of throughput, and the communication latency is very predictable and reasonably low\&.
+.sp
+The parallel port must support EPP 1\&.7 or EPP 1\&.9\&. EPP 1\&.9 is preferred, but EPP 1\&.7 will work too\&. The EPP mode of the parallel port is sometimes a setting in the BIOS\&.
+.sp
+Note that the popular "NetMOS" aka "MosChip 9805" PCI parport cards \fBdo\fR not work\&. They do not meet the EPP spec, and cannot be reliably used with the 7i90\&. You have to find another card, sorry\&.
+.sp
+EPP is very reliable under normal circumstances, but bad cabling or excessively long cabling runs may cause communication timeouts\&. The driver exports a parameter named hm2_7i90\&.<BoardNum>\&.io_error to inform HAL of this condition\&. When the driver detects an EPP timeout, it sets io_error to True and stops communicating with the 7i90 board\&. Setting io_error back to False makes the driver start trying to communicate with the 7i90 again\&.
+.sp
+Access to the EPP bus is not threadsafe: only one realtime thread may access the EPP bus\&.
+.SH "SEE ALSO"
+.sp
+hostmot2(9)
+.SH "LICENSE"
+.sp
+GPL

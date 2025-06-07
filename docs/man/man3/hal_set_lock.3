@@ -1,0 +1,52 @@
+'\" t
+.\"     Title: hal_set_lock
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HAL_SET_LOCK" "3" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hal_set_lock, hal_get_lock \- Set or get the HAL lock level
+.SH "SYNTAX"
+.sp
+int hal_set_lock(unsigned char \fIlock_type\fR)
+.sp
+int hal_get_lock()
+.SH "ARGUMENTS"
+.PP
+lock_type
+.RS 4
+The desired lock type, which may be a bitwise combination of:
+\fBHAL_LOCK_LOAD\fR,
+\fBHAL_LOCK_CONFIG\fR,
+\fBHAL_LOCK_PARAMS\fR, or
+\fBHAL_LOCK_PARAMS\fR\&.
+\fBHAL_LOCK_NONE\fR
+or 0 locks nothing, and
+\fBHAL_LOCK_ALL locks everything\&.\fR
+.RE
+.SH "RETURN VALUE"
+.sp
+\fBhal_set_lock\fR returns a HAL status code\&. \fBhal_get_lock\fR returns the current HAL lock level or a HAL status code\&.

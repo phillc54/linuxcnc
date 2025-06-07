@@ -1,0 +1,80 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/safety_latch.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH SAFETY_LATCH "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+safety_latch \- latch for error signals
+.SH SYNOPSIS
+.HP
+.B loadrt safety_latch [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH DESCRIPTION
+
+
+HAL component that implements a safety latch for error signals
+with customizable harm, healing and latching features.
+
+When the component is not enabled the error input value is
+forwarded to output without further modififactions.
+
+If error-in is true the error count is increased by harm.
+If error-in is false the error count is decreased by heal.
+When the error count exceeds the threscold value error-out is
+set to true. If latching is false the error-out pin will only
+return to false when reset is set to true.
+
+The inputs pin min and max clamp the error count value to a
+specified range.
+
+.SH FUNCTIONS
+.TP
+\fBsafety-latch.\fIN\fB\fR
+
+.SH PINS
+.TP
+.B safety-latch.\fIN\fB.error-in\fR bit in \fR(default: \fIfalse\fR)
+Error Input
+.TP
+.B safety-latch.\fIN\fB.heal\fR s32 in \fR(default: \fI1\fR)
+Heal when ok per tick
+.TP
+.B safety-latch.\fIN\fB.harm\fR s32 in \fR(default: \fI1\fR)
+Harm when error per tick
+.TP
+.B safety-latch.\fIN\fB.latching\fR bit in \fR(default: \fItrue\fR)
+If a reset is necessary to heal an error
+.TP
+.B safety-latch.\fIN\fB.reset\fR bit in \fR(default: \fIfalse\fR)
+Reset input
+.TP
+.B safety-latch.\fIN\fB.threshold\fR s32 in \fR(default: \fI100\fR)
+Error output threshold
+.TP
+.B safety-latch.\fIN\fB.min\fR s32 in \fR(default: \fI0\fR)
+Minimum count
+.TP
+.B safety-latch.\fIN\fB.max\fR s32 in \fR(default: \fI1000\fR)
+Maximum count
+.TP
+.B safety-latch.\fIN\fB.enable\fR bit in \fR(default: \fItrue\fR)
+If not enabled the error count is passed to the output
+.TP
+.B safety-latch.\fIN\fB.count\fR s32 out \fR(default: \fI0\fR)
+Current count
+.TP
+.B safety-latch.\fIN\fB.error-out\fR bit out \fR(default: \fIfalse\fR)
+Error output
+.TP
+.B safety-latch.\fIN\fB.ok-out\fR bit out \fR(default: \fItrue\fR)
+Ok output
+.SH AUTHOR
+
+Alexander R\[u00F6]ssler
+.SH LICENSE
+
+GPL

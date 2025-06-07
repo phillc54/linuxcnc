@@ -1,0 +1,322 @@
+'\" t
+.\"     Title: halrmt
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HALRMT" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+halrmt \- remote\-control interface for LinuxCNC
+.SH "SYNOPSIS"
+.sp
+\fBhalrmt\fR [\fB\-\-port\fR \fI<port number>\fR] [\fB\-\-name\fR \fI<server name>\fR] [\fB\-\-connectpw\fR \fI<password>\fR] [\fB\-\-enablepw\fR \fI<password>\fR] [\fB\-\-sessions\fR \fI<max sessions>\fR] [\fB\-ini\fR \fI<INI file>\fR]
+.SH "OPTIONS"
+.PP
+\-\-port \fIport\fR
+.RS 4
+Waits for socket connections (telnet) on specified socket, without port specification it uses default port 5006\&. (note: linuxcncrsh uses 5007 as default)
+.RE
+.PP
+\-\-name \fIserver_name\fR
+.RS 4
+Sets the server name to specified name for Hello\&.
+.RE
+.PP
+\-\-connectpw \fIpassword\fR
+.RS 4
+Sets the connection password to
+\fIpassword\fR\&. Default: EMC\&.
+.RE
+.PP
+\-\-enablepw \fIpassword\fR
+.RS 4
+Sets the enable password to
+\fIpassword\fR\&. Default EMCTOO\&.
+.RE
+.PP
+\-\-sessions <max sessions>
+.RS 4
+Sets the maximum number of simultaneous connextions to max sessions\&. Default is no limit (\-1)\&.
+.RE
+.PP
+\-ini \fI<INI file>\fR
+.RS 4
+Uses the specified
+\fIINI file\fR
+instead of the default emc\&.ini\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+The application \fBhalrmt\fR supports six commands that are meant to be sent to an instance of HAL that is running on another machine\&. Of these, the commands \fIset\fR and \fIget\fR contain HAL specific sub\-commands that are based on the commands supported by \fIhalcmd\fR\&.
+.sp
+Commands and most parameters are not case sensitive\&. The exceptions are passwords, file paths and text strings\&. The supported commands are as follows:
+.PP
+Hello <password> <client> <version>
+.RS 4
+If a valid password was entered the server will respond with "HELLO ACK
+\fI<Server Name>\fR
+\fI<Server Version>\fR" where server name and server version are looked up from the implementation\&. If an invalid password or any other syntax error occurs then the server responds with "HELLO NAK"\&.
+.RE
+.PP
+Get
+.RS 4
+The get command includes one of the HAL sub\-commands, described below and zero or more additional parameters\&.
+.RE
+.PP
+Set
+.RS 4
+The set command inclides one of the HAL sub\-commands, described below and one or more additional parameters\&.
+.RE
+.PP
+Quit
+.RS 4
+The quit command disconnects the associated socket connection\&.
+.RE
+.PP
+Shutdown
+.RS 4
+The shutdown command tells LinuxCNC to shut down before quitting the connection\&. This command may only be issued if the Hello has been successfully negotiated and the connection has control of the CNC (see enable sub\-command below)\&. This command has no parameters\&.
+.RE
+.PP
+Help
+.RS 4
+The help command will return help information in text format over the telnet connection\&. If no parameters are specified, it will itemize the available commands\&. If a command is specified, it will provide usage information for the specified command\&. Help will respond regardless of whether a "Hello" has been successfully negotiated\&.
+.RE
+.sp
+\fBHAL sub\-commands:\fR
+.PP
+echo on | off
+.RS 4
+With get will return the current echo state, with set, sets the echo state\&. When echo is on, all commands will be echoed upon receipt\&. This state is local to each connection\&.
+.RE
+.PP
+verbose on | off
+.RS 4
+With get will return the current verbose state, with set, sets the verbose state\&. When in verbose mode is on, all set commands return positive acknowledgement in the form SET <COMMAND> ACK\&. In addition, text error messages will be issued when in verbose mode\&. This state is local to each connection\&.
+.RE
+.PP
+enable <pwd> | off
+.RS 4
+With get will return On or Off to indicate whether the current connection is enabled to perform control functions\&. With set and a valid password, the current connection is enabled for control functions\&. "OFF" may not be used as a password and disables control functions for this connection\&.
+.RE
+.PP
+config [TBD] comm_mode ascii | binary
+.RS 4
+With get, will return the current communications mode\&. With set, will set the communications mode to the specified mode\&. The binary protocol is TBD\&.
+.RE
+.PP
+comm_prot <version no>
+.RS 4
+With get, returns the current protocol version used by the server, with set, sets the server to use the specified protocol version, provided it is lower than or equal to the highest version number supported by the server implementation\&.
+.RE
+.PP
+Comps [<substring>]
+.RS 4
+Get only, returns all components beginning with the specified substring\&. If no substring is specified then it returns all components\&.
+.RE
+.PP
+Pins [<substring>]
+.RS 4
+Get only, returns all information about all pins beginning with the specified substring\&. If no substring is specified then it returns all pins\&.
+.RE
+.PP
+PinVals [<substring>]
+.RS 4
+Get only, returns only value information about all pins beginning with the specified substring\&. If no substring is specified then it returns all pins\&.
+.RE
+.PP
+Signals [<substring>]
+.RS 4
+Get only, returns all information about all signals beginning with the specified substring\&. If no substring is specified then it returns all signals\&.
+.RE
+.PP
+SigVals [<substring>]
+.RS 4
+Get only, returns only value information about all signals beginning with the specified substring\&. If no substring is specified then it returns all pins\&.
+.RE
+.PP
+Params [<substring>]
+.RS 4
+Get only, returns all information about all parameters beginning with the specified substring\&. If no substring is specified then it returns all parameters\&.
+.RE
+.PP
+ParamVals [<substring>]
+.RS 4
+Get only, returns only value information about all parameters beginning with the specified substring\&. If no substring is specified then it returns all pins parameters\&.
+.RE
+.PP
+Functs [<substring>]
+.RS 4
+Get only, returns all information about all functions beginning with the specified substring\&. If no substring is specified then it returns all functions\&.
+.RE
+.PP
+Threads
+.RS 4
+Get only, returns all information about all functions\&.
+.RE
+.PP
+Comp <name>
+.RS 4
+Get only, returns the component matching the specified name\&.
+.RE
+.PP
+Pin <name>
+.RS 4
+Get only, returns all information about the pin matching the specified name\&.
+.RE
+.PP
+PinVal <name>
+.RS 4
+Get only, returns the value of the pin matching the specified name\&.
+.RE
+.PP
+Sig <name>
+.RS 4
+Get only, returns all information about the pin matching the specified name\&.
+.RE
+.PP
+SigVal <name>
+.RS 4
+Get only, returns just the value of the signal matching the specified name\&.
+.RE
+.PP
+Param <name>
+.RS 4
+Get only, returns all information about the parameter matching the specified name\&.
+.RE
+.PP
+ParamVal <name>
+.RS 4
+Get only, returns just the value of the parameter matching the specified name\&.
+.RE
+.PP
+Funct <name>
+.RS 4
+Get only, returns all information about the parameter matching the specified name\&.
+.RE
+.PP
+Thread <name>
+.RS 4
+Get only, returns all information about the thread matching the specified name\&.
+.RE
+.PP
+LoadRt <name>
+.RS 4
+Set only, loads the real time executable specified by name\&.
+.RE
+.PP
+Unload <name>
+.RS 4
+Set only, unloads the executable specified by name\&.
+.RE
+.PP
+LoadUsr <name>
+.RS 4
+Set only, loads the user executable specified by name\&.
+.RE
+.PP
+Linkps <pin name> <signal name>
+.RS 4
+Set only, links the specified pin to the specified signal\&.
+.RE
+.PP
+Linksp <signal name> <pin name>
+.RS 4
+Set only, links the specified signal to the specified pin\&.
+.RE
+.PP
+Linkpp <pin name 1> <pin name 2>
+.RS 4
+Set only, links the pin specified by pin 1 with the pin specified by pin 2\&.
+.RE
+.PP
+Net <net list>
+.RS 4
+Set only, nets the specified net list\&.
+.RE
+.PP
+Unlinkp <pin name 1> <pin name 2>
+.RS 4
+Set only, unlinks the specified pins\&.
+.RE
+.sp
+Lock
+.sp
+Unlock
+.PP
+NewSig <name> <type>
+.RS 4
+Set only, creates the signal specified by name and of type specified by type\&.
+.RE
+.PP
+DelSig <name>
+.RS 4
+Set only, deletes the signal specified by name\&.
+.RE
+.PP
+SetP <name> <value>
+.RS 4
+Set only, sets the parameter specified by name to the value specified by value\&.
+.RE
+.PP
+SetS <name> <value>
+.RS 4
+Set only, sets the signal specified by name to the value specified by value\&.
+.RE
+.PP
+AddF <name> <thread> [<parameters>]
+.RS 4
+Set only, adds the function specified by name, to the thread specified by thread, with the optional parameters specified by parameters\&.
+.RE
+.PP
+DelF <name>
+.RS 4
+Set only, deletes the function specified by name\&.
+.RE
+.sp
+Save
+.sp
+Start
+.sp
+Stop
+.SH "SEE ALSO"
+.sp
+linuxcnc(1)
+.sp
+Much more information about LinuxCNC and HAL is available in the LinuxCNC and HAL User Manuals, found at /usr/share/doc/LinuxCNC/\&.
+.SH "BUGS"
+.sp
+It is not known if this interface currently works\&.
+.SH "AUTHOR"
+.sp
+This man page written by Andy Pugh, as part of the LinuxCNC project\&.
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2020 Andy Pugh\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

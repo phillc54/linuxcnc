@@ -1,0 +1,129 @@
+'\" t
+.\"     Title: pm_rotation_vector
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "PM_ROTATION_VECTOR" "3" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+PM_ROTATION_VECTOR \- Three\-axis cartesian position
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <posemath\&.h>
+struct PM_CARTESIAN;
+.fi
+.if n \{\
+.RE
+.\}
+.SH "CONSTRUCTORS"
+.PP
+PM_CARTESIAN()
+.RS 4
+Construct the point <0,0,0>\&.
+.RE
+.PP
+PMCARTESIAN(double \fIx\fR, double \fIy\fR, double \fIz\fR)
+.RS 4
+Construct the point (\fIx\fR,
+\fIy\fR,
+\fIz\fR)\&.
+.RE
+.PP
+PMCARTESIAN(const PM_CARTESIAN &v)
+.RS 4
+Construct a copy of point
+\fIv\fR\&.
+.RE
+.SH "DATA"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+double x, y, z ;
+.fi
+.if n \{\
+.RE
+.\}
+.SH "OPERATORS"
+.PP
+operator[](int \fIn\fR);
+.RS 4
+Return the
+\fIn\fRth
+component of the vector (x=0, y=1, z=2)
+
+FIXME: Unclear\&.
+.RE
+.PP
+int operator==(PM_CARTESIAN \fIv\fR\fI1\fR\fI\fI, PM_CARTESIAN \fR\fR\fIv\fR\fI2\fR\fI_\fR), int operator!=(PM_CARTESIAN \fIv\fR\fI1\fR\fI\fI, PM_CARTESIAN \fR\fR\fIv\fR\fI2\fR\fI_\fR)
+.RS 4
+Elementwise equality and inequality operator
+.RE
+.PP
+PM_CARTESIAN operator+(PM_CARTESIAN \fIv\fR\fI1\fR, PM_CARTESIAN \fIv\fR\fI2\fR), PM_CARTESIAN operator\-(PM_CARTESIAN \fIv\fR\fI1\fR, PM_CARTESIAN \fIv\fR\fI2\fR)
+.RS 4
+Addition and subtraction of vectors
+.RE
+.PP
+PM_CARTESIAN operator*(double \fIs\fR, PM_CARTESIAN \fIv\fR), PM_CARTESIAN operator*(PM_CARTESIAN \fIv\fR, double \fIs\fR)
+.RS 4
+Scalar multiplication of
+\fIv\fR
+by
+\fIs\fR\&.
+.RE
+.PP
+PM_CARTESIAN operator/(PM_CARTESIAN \fIv\fR, double \fIs\fR)
+.RS 4
+Scalar multiplication of
+\fIv\fR
+by
+\fI1/s\fR
+.RE
+.SH "OTHER FUNCTIONS ON PM_CARTESIAN OBJECTS"
+.PP
+double dot(PM_CARTESIAN \fIv\fR\fIl\fR, PM_CARTESIAN \fIv\fR\fI2\fR)
+.RS 4
+Returns the dot product of the two vectors\&. Both vectors are required to have the same length, the return value is the sum of the pairwise products of the vectors\*(Aq components\&.
+.RE
+.PP
+PM_CARTESIAN cross(PM_CARTESIAN \fIv\fR\fI1\fR, PM_CARTESIAN \fIv\fR\fI2\fR)
+.RS 4
+Returns the cross\-product of two vectors, which in 3D yields a vector that is orthogonal to both v1
+and v2\&. See
+https://en\&.wikipedia\&.org/wiki/Cross_product
+\&.
+.RE
+.PP
+PM_CARTESIAN norm(PM_CARTESIAN \fIv\fR)
+.RS 4
+FIXME: It just normalizes
+\fIv\fR, right?
+.RE

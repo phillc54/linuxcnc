@@ -1,0 +1,141 @@
+'\" t
+.\"     Title: halshow
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HALSHOW" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+halshow \- Show HAL parameters, pins and signals
+.SH "SYNOPSIS"
+.sp
+\fBhalshow\fR [\fIoptions\fR] [\fIwatchfile\fR]
+.SH "OPTIONS"
+.PP
+\-\-help
+.RS 4
+Displays the help
+.RE
+.PP
+\-\-fformat \fIformat_string_for_float\fR
+.RS 4
+Float format string
+.RE
+.PP
+\-\-iformat \fIformat_string_for_int\fR
+.RS 4
+Integer format string
+.RE
+.sp
+For format see https://www\&.tcl\&.tk/man/tcl8\&.6\&.11/TclCmd/format\&.html
+.sp
+Example: "%\&.5f" displays a float with 5 digits right of the decimal point\&.
+.PP
+\-\-noprefs
+.RS 4
+Don\(cqt use preference file to save settings
+.RE
+.SH "DESCRIPTION"
+.sp
+The program \fBhalshow\fR creates a GUI interface to view and interact with a running HAL session\&.
+.SH "SEE ALSO"
+.sp
+linuxcnc(1)
+.sp
+Halshow is documented in the PDF and HTML documentation much more completely than is possible in a manpage: https://linuxcnc\&.org/docs/html/hal/halshow\&.html
+.SH "HISTORY"
+.PP
+LinuxCNC 2\&.9
+.RS 4
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Added buttons for pin/parameter/signal manipulation\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Added menu entries for setting update interval, adding manually\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Added right\-click menu for copy, set, unlink pin and remove from view\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Added button to expand/collapse the tree view
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Added search entry
+.RE
+.RE
+.SH "BUGS"
+.sp
+None known at this time\&.
+.SH "AUTHOR"
+.sp
+Raymond E\&. Henry
+.SH "REPORTING BUGS"
+.sp
+Report bugs at https://github\&.com/LinuxCNC/linuxcnc/issues\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2020 Andy Pugh\&.
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

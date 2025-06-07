@@ -1,0 +1,62 @@
+'\" t
+.\"     Title: rtapi_strlcpy
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_STRLCPY" "3rtapi" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_strlcpy \- RTAPI string manipulation functions
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <rtapi_string\&.h>
+
+size_t rtapi_strlcpy(char *dst, const char *src, size_t sz);
+#define rtapi_strxcpy(dst, src) \&.\&.\&.
+size_t rtapi_strlcat(char *dst, const char *src, size_t sz);
+#define rtapi_strxcat(dst, src) \&.\&.\&.
+.fi
+.if n \{\
+.RE
+.\}
+.SH "DESCRIPTION"
+.sp
+rtapi_strlcpy will copy at most \fIsz\fR chars from \fIsrc\fR to \fIdst\fR\&. Always leaves \fIdst\fR NUL\-terminated except if \fIsz\fR is 0\&.
+.sp
+rtapi_strxcpy(dst, src) checks that \fIdst\fR is an array with known size, and calls rtapi_strlcpy(dst, src, sizeof(dst))\&. If it is not an array with a known size, it is a (possibly cryptic!) syntax error\&.
+.sp
+rtapi_strlcat will append characters from \fIsrc\fR to \fIdst\fR, stopping when the end of \fIsrc\fR is reached, or \fIdst\fR uses \fIsz\fR\-many bytes of storage including the tailing null\&.
+.sp
+rtapi_strxcat(dst, src) checks that \fIdst\fR is an array with known size, and calls rtapi_strlcat(dst, src, sizeof(dst))\&. If it is not an array with a known size, it is a (possibly cryptic!) syntax error\&.
+.SH "RETURN VALUE"
+.sp
+The total length of the string strlcpy or strlcat tried to create\&. For strlcpy() that means the length of \fIsrc\fR\&. If the return value is greater than or equal to \fIsz\fR, the result was truncated\&.
+.SH "SEE ALSO"
+.sp
+strlcpy(3bsd), strlcat(3bsd)

@@ -1,0 +1,96 @@
+'\" t
+.\"     Title: emccalib
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "EMCCALIB" "1" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+emccalib \- Adjust ini tuning variables on the fly with save option
+.SH "SYNOPSIS"
+.sp
+\fBemccalib\&.tcl\fR [\fIoptions\fR]
+.SH "DESCRIPTION"
+.sp
+The Calibration assistant\&. This tool Reads the HAL file and for every \fIsetp\fR that uses a variable from the INI file that is in an [AXIS_L], [JOINT_N], [SPINDLE_S], or [TUNE] section it creates an entry that can be edited and tested\&.
+.SH "USAGE"
+.sp
+The calibration/tuning tool supports the following stanzas:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[JOINT_N], [AXIS_L], [SPINDLE_S], [TUNE]
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+where \fIN\fR is a joint number (0 \&.\&. ([KINS]JOINTS\-1) ), \fIL\fR is an axis coordinate letter (X,Y,Z,A,B,C,U,V,W), and \fIS\fR is a spindle number (0 \&.\&. 9)\&.
+.if n \{\
+.sp
+.\}
+.RS 4
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBNote\fR
+.ps -1
+.br
+.sp
+The number of allowed spindles is 8 but legacy configurations may include a stanza [SPINDLE_9] unrelated to an actual spindle number\&.
+.sp .5v
+.RE
+.if n \{\
+.sp
+.\}
+.RS 4
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBNote\fR
+.ps -1
+.br
+.sp
+The [TUNE] stanza may be used for specifying tunable items not relevant to the other supported stanzas\&.
+.sp .5v
+.RE
+.SH "EXIT STATUS"
+.sp
+Return exit code 1 if the ini file is incompatible with the current version of emccalib\&.
+.SH "SEE ALSO"
+.sp
+linuxcnc(1)
+.SH "AUTHOR"
+.sp
+Original version by Petter Reinholdtsen as part of the LinuxCNC project\&. Improvements by several other members of the LinuxCNC development team\&.
+.SH "COPYRIGHT"
+.sp
+This is free software; see the source for copying conditions\&. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&.

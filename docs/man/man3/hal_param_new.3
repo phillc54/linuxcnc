@@ -1,0 +1,98 @@
+'\" t
+.\"     Title: hal_param_new
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HAL_PARAM_NEW" "3" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hal_param_new, hal_param_bit_new, hal_param_float_new, hal_param_u32_new, hal_param_s32_new, hal_param_bit_newf, hal_param_float_newf, hal_param_u32_newf, hal_param_s32_newf \- creates a HAL parameter
+.SH "SYNTAX"
+.sp
+int hal_param_bit_new(const char* \fIname\fR, hal_param_dir_t \fIdir\fR, hal_bit_t* \fIdata_addr\fR, int \fIcomp_id\fR)
+.sp
+int hal_param_float_new(const char* \fIname\fR, hal_param_dir_t \fIdir\fR, hal_float_t* \fIdata_addr\fR, int \fIcomp_id\fR)
+.sp
+int hal_param_u32_new(const char* \fIname\fR, hal_param_dir_t \fIdir\fR, hal_u32_t* \fIdata_addr\fR, int \fIcomp_id\fR)
+.sp
+int hal_param_s32_new(const char* \fIname\fR, hal_param_dir_t \fIdir\fR, hal_s32_t* \fIdata_addr\fR, int \fIcomp_id\fR)
+.sp
+int hal_param_bit_newf(hal_param_dir_t \fIdir\fR, hal_bit_t* \fIdata_addr\fR, int \fIcomp_id\fR, const char* \fIfmt\fR, \fI\&...\fR)
+.sp
+int hal_param_float_newf(hal_param_dir_t \fIdir\fR, hal_float_t* \fIdata_addr\fR, int \fIcomp_id\fR, const char* \fIfmt\fR, \fI\&...\fR)
+.sp
+int hal_param_u32_newf(hal_param_dir_t \fIdir\fR, hal_u32_t * \fIdata_addr\fR, int \fIcomp_id\fR, const char* \fIfmt\fR, \fI\&...\fR)
+.sp
+int hal_param_s32_newf(hal_param_dir_t \fIdir\fR, hal_s32_t * \fIdata_addr\fR, int \fIcomp_id\fR, const char* \fIfmt\fR, \fI\&...\fR)
+.sp
+int hal_param_new(const char* \fIname\fR, hal_type_t \fItype\fR, hal_param_dir_t \fIdir\fR, void* \fIdata_addr\fR, int \fIcomp_id\fR)
+.SH "ARGUMENTS"
+.PP
+\fIname\fR
+.RS 4
+The name to give to the created parameter\&.
+.RE
+.PP
+\fIdir\fR
+.RS 4
+The direction of the parameter, from the viewpoint of the component\&. It may be one of
+\fBHAL_RO\fR, or
+\fBHAL_RW\fR\&. A component may assign a value to any parameter, but other programs (such as halcmd) may only assign a value to a parameter that is
+\fBHAL_RW\fR\&.
+.RE
+.PP
+\fIdata_addr\fR
+.RS 4
+The address of the data, which must lie within memory allocated by
+\fBhal_malloc\fR\&.
+.RE
+.PP
+\fIcomp_id\fR
+.RS 4
+A HAL component identifier returned by an earlier call to
+\fBhal_init\fR\&.
+.RE
+.PP
+\fIfmt, \&...\fR
+.RS 4
+A printf\-style format string and arguments\&.
+.RE
+.PP
+\fItype\fR
+.RS 4
+The type of the parameter, as specified in
+\fBhal_type_t(3hal)\fR\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+The \fBhal_param_new\fR family of functions create a new \fIparam\fR object\&.
+.sp
+There are functions for each of the data types that the HAL supports\&. Pins may only be linked to signals of the same type\&.
+.SH "RETURN VALUE"
+.sp
+Returns a HAL status code\&.
+.SH "SEE ALSO"
+.sp
+hal_type_t(3hal)

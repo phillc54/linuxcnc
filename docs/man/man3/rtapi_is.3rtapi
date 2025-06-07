@@ -1,0 +1,54 @@
+'\" t
+.\"     Title: rtapi_is
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_IS" "3rtapi" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_is \- details of rtapi configuration
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+int rtapi_is_kernelspace();
+int rtapi_is_realtime();
+.fi
+.if n \{\
+.RE
+.\}
+.SH "DESCRIPTION"
+.sp
+\fBrtapi_is_kernelspace()\fR returns nonzero when rtapi modules run in kernel space (e\&.g\&., under RTAI) and zero when they run in userspace (e\&.g\&., under uspace)\&.
+.sp
+\fBrtapi_is_realtime()\fR returns nonzero when capable of running with realtime guarantees\&. For rtai, this always returns nonzero (but actually loading realtime modules will fail if not running under the appropriate kernel)\&. For uspace, this returns nonzero when the running kernel indicates it is capable of realtime performance\&. If \fBrtapi_app\fR is not setuid root, this returns nonzero even though \fBrtapi_app\fR will not be able to obtain realtime scheduling or hardware access, so e\&.g\&., attempting to \fBloadrt\fR a hardware driver will fail\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+May be called from non\-realtime or from realtime setup code\&. \fBrtapi_is_realtime()\fR may perform filesystem I/O\&.
+.SH "RETURN VALUE"
+.sp
+Zero for false, nonzero for true\&.

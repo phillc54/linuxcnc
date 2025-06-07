@@ -1,0 +1,87 @@
+'\" t
+.\"     Title: rtapi_print
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "RTAPI_PRINT" "3" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rtapi_print, rtapi_print_msg \- print diagnostic messages
+.SH "SYNTAX"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+void rtapi_print(const char* _fmt_, _\&.\&.\&._)
+void rtapi_print_msg(int level, const char* _fmt_, _\&.\&.\&._)
+typedef void(**rtapi_msg_handler_t*)(msg_level_t _level_, const char* _msg_);
+void rtapi_set_msg_handler(rtapi_msg_handler_t _handler_);
+rtapi_msg_handler_t rtapi_get_msg_handler(void);
+.fi
+.if n \{\
+.RE
+.\}
+.SH "ARGUMENTS"
+.PP
+level
+.RS 4
+A message level: One of
+\fBRTAPI_MSG_ERR\fR,
+\fBRTAPI_MSG_WARN\fR,
+\fBRTAPI_MSG_INFO\fR, or
+\fBRTAPI_MSG_DBG\fR\&.
+.RE
+.PP
+handler
+.RS 4
+A function to call from
+\fBrtapi_print\fR
+or
+\fBrtapi_print_msg\fR
+to actually output the message\&.
+.RE
+.PP
+fmt, \&...
+.RS 4
+Other arguments are as for
+\fIrtapi_vsnprintf(3rtapi)\fR\&.
+.RE
+.SH "DESCRIPTION"
+.sp
+\fBrtapi_print\fR and \fBrtapi_print_msg\fR work like the standard C printf functions, except that a reduced set of formatting operations are supported\&. Notably, formatting long\-long values is not supported, and formatting floating\-point values has different behavior than standard printf\&.
+.sp
+Depending on the RTOS, the default may be to print the message to stdout, stderr, a kernel log, etc\&. In RTAPI code, the action may be changed by a call to \fBrtapi_set_msg_handler\fR\&. A \fBNULL\fR argument to \fBrtapi_set_msg_handler\fR restores the default handler\&. \fBrtapi_msg_get_handler\fR returns the current handler\&. When the message came from \fBrtapi_print\fR, \fIlevel\fR is RTAPI_MSG_ALL\&.
+.sp
+\fBrtapi_print_msg\fR works like rtapi_print but only prints if \fIlevel\fR is less than or equal to the current message level\&.
+.SH "REALTIME CONSIDERATIONS"
+.sp
+\fBrtapi_print\fR and \fBrtapi_print_msg\fR May be called from non\-realtime, init/cleanup, and realtime code\&. \fBrtapi_get_msg_handler\fR and \fBrtapi_set_msg_handler\fR may be called from realtime init/cleanup code\&. A message handler passed to \fBrtapi_set_msg_handler\fR may only call functions that can be called from realtime code\&.
+.SH "RETURN VALUE"
+.sp
+None\&.
+.SH "SEE ALSO"
+.sp
+rtapi_set_msg_level(3rtapi), rtapi_get_msg_level(3rtapi), rtapi_vsnprintf(3rtapi)

@@ -1,0 +1,319 @@
+'\" t
+.\"     Title: stepgen
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "STEPGEN" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+stepgen \- software step pulse generation
+.SH "SYNOPSIS"
+.sp
+\fBloadrt stepgen step_type=\fR\fItype0\fR[,\fItype1\fR\&...] [\fBctrl_type=\fR\fItype0\fR[,\fItype1\fR\&...]] [\fBuser_step_type=,\fR\&...]
+.SH "DESCRIPTION"
+.sp
+\fBstepgen\fR is used to control stepper motors\&. The maximum step rate depends on the CPU and other factors, and is usually in the range of 5 kHz to 25 kHz\&. If higher rates are needed, a hardware step generator is a better choice\&.
+.sp
+\fBstepgen\fR has two control modes, which can be selected on a channel by channel basis using \fBctrl_type\fR\&. Possible values are "\fBp\fR" for position control, and "\fBv\fR" for velocity control\&. The default is position control, which drives the motor to a commanded position, subject to acceleration and velocity limits\&. Velocity control drives the motor at a commanded speed, again subject to accel and velocity limits\&. Usually, position mode is used for machine axes\&. Velocity mode is reserved for unusual applications where continuous movement at some speed is desired, instead of movement to a specific position\&. (Note that velocity mode replaces the former component \fBfreqgen\fR\&.)
+.sp
+\fBstepgen\fR can control a maximum of 16 motors\&. The number of motors/channels actually loaded depends on the number of \fItype\fR values given\&. The value of each \fItype\fR determines the outputs for that channel\&. Position or velocity mode can be individually selected for each channel\&. Both control modes support the same 16 possible step types\&.
+.sp
+By far the most common step type is \fI0\fR, standard step and direction\&. Others include up/down, quadrature, and a wide variety of three, four, and five phase patterns that can be used to directly control some types of motor windings\&. (When used with appropriate buffers of course\&.)
+.sp
+Some of the stepping types are described below, but for more details (including timing diagrams) see the \fBstepgen\fR section of the HAL reference manual\&.
+.PP
+type 0: step/dir
+.RS 4
+Two pins, one for step and one for direction\&.
+\fBmake\-pulses\fR
+must run at least twice for each step (once to set the step pin true, once to clear it)\&. This limits the maximum step rate to half (or less) of the rate that can be reached by types 2\-14\&. The parameters
+\fBsteplen\fR
+and
+\fBstepspace\fR
+can further lower the maximum step rate\&. Parameters
+\fBdirsetup\fR
+and
+\fBdirhold\fR
+also apply to this step type\&.
+.RE
+.PP
+type 1: up/down
+.RS 4
+Two pins, one for
+\fIstep up\fR
+and one for
+\fIstep down\fR\&. Like type 0,
+\fBmake\-pulses\fR
+must run twice per step, which limits the maximum speed\&.
+.RE
+.PP
+type 2: quadrature
+.RS 4
+Two pins, phase\-A and phase\-B\&. For forward motion, A leads B\&. Can advance by one step every time
+\fBmake\-pulses\fR
+runs\&.
+.RE
+.PP
+type 3: three phase, full step
+.RS 4
+Three pins, phase\-A, phase\-B, and phase\-C\&. Three steps per full cycle, then repeats\&. Only one phase is high at a time \- for forward motion the pattern is A, then B, then C, then A again\&.
+.RE
+.PP
+type 4: three phase, half step
+.RS 4
+Three pins, phases A through C\&. Six steps per full cycle\&. First A is high alone, then A and B together, then B alone, then B and C together, etc\&.
+.RE
+.PP
+types 5 through 8: four phase, full step
+.RS 4
+Four pins, phases A through D\&. Four steps per full cycle\&. Types 5 and 6 are suitable for use with unipolar steppers, where power is applied to the center tap of each winding, and four open\-collector transistors drive the ends\&. Types 7 and 8 are suitable for bipolar steppers, driven by two H\-bridges\&.
+.RE
+.PP
+types 9 and 10: four phase, half step
+.RS 4
+Four pins, phases A through D\&. Eight steps per full cycle\&. Type 9 is suitable for unipolar drive, and type 10 for bipolar drive\&.
+.RE
+.PP
+types 11 and 12: five phase, full step
+.RS 4
+Five pins, phases A through E\&. Five steps per full cycle\&. See HAL reference manual for the patterns\&.
+.RE
+.PP
+types 13 and 14: five phase, half step
+.RS 4
+Five pins, phases A through E\&. Ten steps per full cycle\&. See HAL reference manual for the patterns\&.
+.RE
+.PP
+type 15: user\-specified
+.RS 4
+This uses the waveform specified by the
+\fBuser_step_type\fR
+module parameter, which may have up to 10 steps and 5 phases\&.
+.RE
+.SH "FUNCTIONS"
+.PP
+\fBstepgen\&.make\-pulses\fR (no floating\-point)
+.RS 4
+Generates the step pulses, using information computed by
+\fBupdate\-freq\fR\&. Must be called as frequently as possible, to maximize the attainable step rate and minimize jitter\&. Operates on all channels at once\&.
+.RE
+.PP
+\fBstepgen\&.capture\-position\fR (uses floating point)
+.RS 4
+Captures position feedback value from the high speed code and makes it available on a pin for use elsewhere in the system\&. Operates on all channels at once\&.
+.RE
+.PP
+\fBstepgen\&.update\-freq\fR (uses floating point)
+.RS 4
+Accepts a velocity or position command and converts it into a form usable by
+\fBmake\-pulses\fR
+for step generation\&. Operates on all channels at once\&.
+.RE
+.SH "PINS"
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.counts\fR s32 out
+.RS 4
+The current position, in counts, for channel
+\fIN\fR\&. Updated by
+\fBcapture\-position\fR\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.position\-fb\fR float out
+.RS 4
+The current position, in length units (see parameter
+\fBposition\-scale\fR)\&. Updated by
+\fBcapture\-position\fR\&. The resolution of
+\fBposition\-fb\fR
+is much finer than a single step\&. If you need to see individual steps, use
+\fBcounts\fR\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.enable\fR bit in
+.RS 4
+Enables output steps \- when false, no steps are generated\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.velocity\-cmd\fR float in (velocity mode only)
+.RS 4
+Commanded velocity, in length units per second (see parameter
+\fBposition\-scale\fR)\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.position\-cmd\fR float in (position mode only)
+.RS 4
+Commanded position, in length units (see parameter
+\fBposition\-scale)\fR\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.step\fR bit out (step type 0 only)
+.RS 4
+Step pulse output\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.dir\fR bit out (step type 0 only)
+.RS 4
+Direction output: low for forward, high for reverse\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.up\fR bit out (step type 1 only)
+.RS 4
+Count up output, pulses for forward steps\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.down\fR bit out (step type 1 only)
+.RS 4
+Count down output, pulses for reverse steps\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.phase\-A\fR thru \fBphase\-E\fR bit out (step types 2\-14 only)
+.RS 4
+Output bits\&.
+phase\-A
+and
+phase\-B
+are present for step types 2\-14,
+phase\-C
+for types 3\-14,
+phase\-D
+for types 5\-14, and
+phase\-E
+for types 11\-14\&. Behavior depends on selected stepping type\&.
+.RE
+.SH "PARAMETERS"
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.frequency\fR float ro
+.RS 4
+The current step rate, in steps per second, for channel
+\fIN\fR\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.maxaccel\fR float rw
+.RS 4
+The acceleration/deceleration limit, in length units per second squared\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.maxvel\fR float rw
+.RS 4
+The maximum allowable velocity, in length units per second\&. If the requested maximum velocity cannot be reached with the current combination of scaling and
+\fBmake\-pulses\fR
+thread period, it will be reset to the highest attainable value\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.position\-scale\fR float rw
+.RS 4
+The scaling for position feedback, position command, and velocity command, in steps per length unit\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.rawcounts\fR s32 ro
+.RS 4
+The position in counts, as updated by
+\fBmake\-pulses\fR\&. (Note: this is updated more frequently than the
+\fBcounts\fR
+pin\&.)
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.steplen\fR u32 rw
+.RS 4
+The length of the step pulses, in nanoseconds\&. Measured from rising edge to falling edge\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.stepspace\fR u32 rw (step types 0 and 1 only)
+.RS 4
+The minimum space between step pulses, in nanoseconds\&. Measured from falling edge to rising edge\&. The actual time depends on the step rate and can be much longer\&. If
+\fBstepspace\fR
+is 0, then
+\fBstep\fR
+can be asserted every period\&. This can be used in conjunction with
+\fBhal_parport\fR\*(Aqs auto\-resetting pins to output one step pulse per period\&. In this mode,
+\fBsteplen\fR
+must be set for one period or less\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.dirsetup\fR u32 rw (step type 0 only)
+.RS 4
+The minimum setup time from direction to step, in nanoseconds periods\&. Measured from change of direction to rising edge of step\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.dirhold\fR u32 rw (step type 0 only)
+.RS 4
+The minimum hold time of direction after step, in nanoseconds\&. Measured from falling edge of step to change of direction\&.
+.RE
+.PP
+\fBstepgen\&.\fR\fIN\fR\fB\&.dirdelay\fR u32 rw (step types 1 and higher only)
+.RS 4
+The minimum time between a forward step and a reverse step, in nanoseconds\&.
+.RE
+.SH "TIMING"
+.sp
+There are five timing parameters which control the output waveform\&. No step type uses all five, and only those which will be used are exported to HAL\&. The values of these parameters are in nano\-seconds, so no recalculation is needed when changing thread periods\&. In the timing diagrams that follow, they are identified by the following numbers:
+.sp
+(1) \fBstepgen\&.n\&.steplen\fR
+.sp
+(2) \fBstepgen\&.n\&.stepspace\fR
+.sp
+(3) \fBstepgen\&.n\&.dirhold\fR
+.sp
+(4) \fBstepgen\&.n\&.dirsetup\fR
+.sp
+(5) \fBstepgen\&.n\&.dirdelay\fR
+.sp
+For step type 0, timing parameters 1 thru 4 are used\&. The following timing diagram shows the output waveforms, and what each parameter adjusts\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+               _____         _____               _____
+    STEP  ____/     \e_______/     \e_____________/     \e______
+              |     |       |     |             |     |
+    Time      |\-(1)\-|\-\-(2)\-\-|\-(1)\-|\-\-(3)\-\-|\-(4)\-|\-(1)\-|
+                                          |__________________
+    DIR   ________________________________/
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+For step type 1, timing parameters 1, 2, and 5 are used\&. The following timing diagram shows the output waveforms, and what each parameter adjusts\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+             _____       _____
+    UP    __/     \e_____/     \e________________________________
+            |     |     |     |         |
+    Time    |\-(1)\-|\-(2)\-|\-(1)\-|\-\-\-(5)\-\-\-|\-(1)\-|\-(2)\-|\-(1)\-|
+                                        |_____|     |_____|
+    DOWN  ______________________________/     \e_____/     \e____
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+For step types 2 and higher, the exact pattern of the outputs depends on the step type (see the HAL manual for a full listing)\&. The outputs change from one state to another at a minimum interval of \fBsteplen\fR\&. When a direction change occurs, the minimum time between the last step in one direction and the first in the other direction is the sum of \fBsteplen\fR and \fBdirdelay\fR\&.
+.SH "SEE ALSO"
+.sp
+The HAL User Manual\&.

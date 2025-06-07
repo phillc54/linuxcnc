@@ -1,0 +1,103 @@
+'\" t
+.\"     Title: hal_bb_gpio
+.\"    Author: [FIXME: author] [see http://www.docbook.org/tdg5/en/html/author]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 05/27/2025
+.\"    Manual: LinuxCNC Documentation
+.\"    Source: LinuxCNC
+.\"  Language: English
+.\"
+.TH "HAL_BB_GPIO" "9" "05/27/2025" "LinuxCNC" "LinuxCNC Documentation"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hal_bb_gpio \- Driver for beaglebone GPIO pins
+.SH "SYNOPSIS"
+.sp
+\fBloadrt hal_bb_gpio \fR\fB\fIuser_leds=,\&...\fR\fR\fB \fR\fB\fIinput_pins=,\&...__output_pins=#,\&...\fR\fR
+.SH "USER LEDS"
+.sp
+The \fIuser_leds\fR loadrt parameter controls which LEDs are available to HAL\&. Valid range: 0\&.\&.3\&. These LEDs are next to the ethernet jack and the LinuxCNC numbers match the silkscreen on beaglbone black\&. Empirically, these seem to be OR\(cqd with whatever function is assigned to the LED in Linux\&.
+.SS "PINS"
+.PP
+\fBbb_gpio\&.userled\fR\fIN\fR bit in
+.RS 4
+.RE
+.PP
+\fBbb_gpio\&.userled\fR\fIN\fR\fB\-invert\fR bit in
+.RS 4
+The associated LED is lit if
+\fBuserled\fR\fIN\fR
+xor
+\fBuserled\fR\fIN\fR\-invert is TRUE\&.
+.RE
+.SH "INPUT PINS"
+.sp
+The \fIinput_pins\fR loadrt parameter controls which physical I/O pins are available to HAL as input pins\&. The numbering is "800+N" for pin N on connector P8, and "900+N" for pin N on connector P9\&. For example, "803" means connector P8 pin 3, which is also described in BeagleBone documentation as "gpmc_ad6"\&.
+.sp
+Specifying pins that are otherwise in use by the system may have undesirable side effects, such as crashing rtapi_app or the whole system\&.
+.SS "PINS"
+.PP
+\fBbb_gpio\&.p\fR\fIN\fR\fB\&.in\-\fR\fINN\fR bit out
+.RS 4
+.RE
+.PP
+\fBbb_gpio\&.p\fR\fIN\fR\fB\&.in\-\fR\fINN\fR\fB\-invert\fR bit in
+.RS 4
+\fBin\-\fR\fINN\fR
+is a snapshot of the value of the corresponding physical pin XOR the value of the corresponding
+\fBin\-\fR\fINN\fR\fB\-invert\fR
+pin\&.
+.RE
+.SH "OUTPUT PINS"
+.sp
+The \fIinput_pins\fR loadrt parameter controls which physical I/O pins are available to HAL as input pins\&. The numbering is "800+N" for pin N on connector P8, and "900+N" for pin N on connector P9\&.
+.sp
+Specifying pins that are otherwise in use by the system may have undesirable side effects, such as crashing rtapi_app or the whole system\&.
+.SS "PINS"
+.PP
+\fBbb_gpio\&.p\fR\fIN\fR\fB\&.out\-\fR\fINN\fR bit out
+.RS 4
+.RE
+.PP
+\fBbb_gpio\&.p\fR\fIN\fR\fB\&.out\-\fR\fINN\fR\fB\-invert\fR bit in
+.RS 4
+The corresponding physical pin is driven with the result of
+\fBin\-\fR\fINN\fR
+xor
+\fBin\-\fR\fINN\fR\fB\-invert\fR\&.
+.RE
+.SH "PARAMETERS"
+.sp
+None
+.SH "FUNCTIONS"
+.PP
+\fBbb_gpio\&.read\fR
+.RS 4
+Update HAL pins from physical pins\&.
+.RE
+.PP
+\fBbb_gpio\&.write\fR
+.RS 4
+Update physical pins from HAL pins\&.
+.RE
+.SH "LICENSE"
+.sp
+GPL

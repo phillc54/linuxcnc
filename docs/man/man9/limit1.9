@@ -1,0 +1,40 @@
+.\" -*- mode: troff; coding: utf-8 -*-
+.\"*******************************************************************
+.\"
+.\" This file was extracted from hal/components/limit1.comp using halcompile.g.
+.\" Modify the source file.
+.\"
+.\"*******************************************************************
+
+.TH LIMIT1 "9" "2025-05-27" "LinuxCNC Documentation" "HAL Component"
+.SH NAME
+
+limit1 \- Limit the output signal to fall between min and max
+.SH SYNOPSIS
+.HP
+.B loadrt limit1 [count=\fIN\fB|names=\fIname1\fB[,\fIname2...\fB]]
+.SH FUNCTIONS
+.TP
+\fBlimit1.\fIN\fB\fR (requires a floating-point thread)
+
+.SH PINS
+.TP
+.B limit1.\fIN\fB.in\fR float in \fR
+.br
+.ns
+.TP
+.B limit1.\fIN\fB.out\fR float out \fR
+.br
+.ns
+.TP
+.B limit1.\fIN\fB.min\fR float in \fR(default: \fI-1e20\fR)
+.br
+.ns
+.TP
+.B limit1.\fIN\fB.max\fR float in \fR(default: \fI1e20\fR)
+.SH AUTHOR
+
+Jeff Epler
+.SH LICENSE
+
+GPL
