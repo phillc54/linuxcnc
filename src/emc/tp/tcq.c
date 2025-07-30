@@ -19,11 +19,12 @@
 
 #include "tcq.h"
 #include <stddef.h>
+#include "assert.h"
 
 /** Return 0 if queue is valid, -1 if not */
 static inline int tcqCheck(TC_QUEUE_STRUCT const * const tcq)
 {
-    if ((0 == tcq) || (0 == tcq->queue))
+    if ((0 == tcq))
     {
         return -1;
     }
@@ -43,16 +44,26 @@ static inline int tcqCheck(TC_QUEUE_STRUCT const * const tcq)
  *
  * @return	 int	   returns success or failure
  */
-int tcqCreate(TC_QUEUE_STRUCT * const tcq, int _size, TC_STRUCT * const tcSpace)
+int tcqCreate(TC_QUEUE_STRUCT * const tcq, int _size)
 {
-    if (!tcq || !tcSpace || _size < 1) {
+    if (0 == tcq ) {
         return -1;
     }
-	tcq->queue = tcSpace;
-	tcq->size = _size;
-    tcqInit(tcq);
+    if (_size <= 0 || _size > DEFAULT_TC_QUEUE_SIZE) {
+        return -2;
+    }
 
-	return 0;
+    tcq->size = _size;
+
+    // Initialize all indices to zero
+    // This is the one time that RT is allowed to write to end since it's at
+    // init time when userspace is not doing anything
+    __atomic_store_n(&tcq->end, 0, __ATOMIC_RELEASE);
+    __atomic_store_n(&tcq->start, 0, __ATOMIC_RELEASE);
+    __atomic_store_n(&tcq->rend, 0, __ATOMIC_RELEASE);
+    tcqReset(tcq);
+
+    return 0;
 }
 
 /*! tcqDelete() function
@@ -70,11 +81,7 @@ int tcqCreate(TC_QUEUE_STRUCT * const tcq, int _size, TC_STRUCT * const tcSpace)
  */
 int tcqDelete(TC_QUEUE_STRUCT * const tcq)
 {
-    if (!tcqCheck(tcq)) {
-        /* free(tcq->queue); */
-        tcq->queue = 0;
-    }
-
+    // No-op since the struct is part of the tcq struct
     return 0;
 }
 
@@ -90,18 +97,29 @@ int tcqDelete(TC_QUEUE_STRUCT * const tcq)
  *
  * @return	 int	   returns success or failure (if no tcq found)
  */
-int tcqInit(TC_QUEUE_STRUCT * const tcq)
+int tcqReset(TC_QUEUE_STRUCT * const tcq)
 {
     if (tcqCheck(tcq)) return -1;
 
-    tcq->_len = 0;
-    tcq->start = tcq->end = 0;
-    tcq->rend = 0;
-    tcq->_rlen = 0;
-    tcq->allFull = 0;
+    // Force the queue to be empty by advancing the start / rend to match end
+    // This method ensures that RT doesn't alter end, which would violate
+    // assumptions in userspace NOTE: this ensures correct ordering but is NOT
+    // synchronizing by itself.  To end up with a truely empty queue, userspace
+    // must not write anything while this is being executed.
+    int end = __atomic_load_n(&tcq->end, __ATOMIC_ACQUIRE);
+    __atomic_store_n(&tcq->start, end, __ATOMIC_RELEASE);
+    __atomic_store_n(&tcq->rend, end, __ATOMIC_RELEASE);
 
     return 0;
 }
+
+void tcqDiscardReverseQueue(TC_QUEUE_STRUCT * const tcq)
+{
+    if (0 == tcqCheck(tcq)) {
+        tcq->rend = 0;
+    }
+}
+
 
 /*! tcqPut() function
  *
@@ -114,30 +132,12 @@ int tcqInit(TC_QUEUE_STRUCT * const tcq)
  * @param	 tc        the new TC element to be added
  *
  * @return	 int	   returns success or failure
+ * @deprecated
  */
 int tcqPut(TC_QUEUE_STRUCT * const tcq, TC_STRUCT const * const tc)
 {
-    /* check for initialized */
-    if (tcqCheck(tcq)) return -1;
-
-    /* check for allFull, so we don't overflow the queue */
-    if (tcq->allFull) {
-	    return -1;
-    }
-
-    /* add it */
-    tcq->queue[tcq->end] = *tc;
-    tcq->_len++;
-
-    /* update end ptr, modulo size of queue */
-    tcq->end = (tcq->end + 1) % tcq->size;
-
-    /* set allFull flag if we're really full */
-    if (tcq->end == tcq->start) {
-	tcq->allFull = 1;
-    }
-
-    return 0;
+    // Deprecated
+    assert(false);
 }
 
 
@@ -148,6 +148,7 @@ int tcqPut(TC_QUEUE_STRUCT * const tcq, TC_STRUCT const * const tc)
  * @param    tcq       pointer to the TC_QUEUE_STRUCT
  *
  * @return	 int	   returns success or failure
+ * @deprecated in realtime
  */
 int tcqPopBack(TC_QUEUE_STRUCT * const tcq)
 {
@@ -155,18 +156,15 @@ int tcqPopBack(TC_QUEUE_STRUCT * const tcq)
     if (tcqCheck(tcq)) return -1;
 
     /* Too short to pop! */
-    if (tcq->_len < 1) {
+    if (tcqLen(tcq) < 1) {
         return -1;
     }
 
     int n = tcq->end - 1 + tcq->size;
     tcq->end = n % tcq->size;
-    tcq->_len--;
 
     return 0;
 }
-
-#define TCQ_REVERSE_MARGIN 200
 
 int tcqPop(TC_QUEUE_STRUCT * const tcq)
 {
@@ -175,21 +173,18 @@ int tcqPop(TC_QUEUE_STRUCT * const tcq)
         return -1;
     }
 
-    if (tcq->_len < 1 && !tcq->allFull) {	
+    // Don't care if new segments are added after we start, because we can't safely pop them
+    int len = tcqLen(tcq);
+    if (len < 1) {
         return -1;
     }
 
     /* update start ptr and reset allFull flag and len */
-    tcq->start = (tcq->start + 1) % tcq->size;
-    tcq->allFull = 0;
-    tcq->_len--;
+    atomicIncrementIndex(&tcq->start, tcq->size);
 
-    if (tcq->_rlen < TCQ_REVERSE_MARGIN) {
-        //If we're not overwriting the history yet, then we have another segment added to the reverse history
-        tcq->_rlen++;
-    } else {
+    if (tcqReverseLen(tcq) >= TCQ_REVERSE_MARGIN) {
         //If we're run out of spare reverse history, then advance rend
-        tcq->rend = (tcq->rend + 1) % tcq->size;
+        atomicIncrementIndex(&tcq->rend, tcq->size);
     }
 
     return 0;
@@ -217,39 +212,34 @@ int tcqRemove(TC_QUEUE_STRUCT * const tcq, int n)
 	    return 0;		/* okay to remove 0 or fewer */
     }
 
-    if (tcqCheck(tcq) || ((tcq->start == tcq->end) && !tcq->allFull) ||
-            (n > tcq->_len)) {	/* too many requested */
+    if (tcqCheck(tcq) || ((tcq->start == tcq->end)) ||
+            (n > tcqLen(tcq))) {	/* too many requested */
 	    return -1;
     }
 
     /* update start ptr and reset allFull flag and len */
     tcq->start = (tcq->start + n) % tcq->size;
-    tcq->allFull = 0;
-    tcq->_len -= n;
 
     return 0;
 }
-
 
 /**
  * Step backward into the reverse history.
  */
 int tcqBackStep(TC_QUEUE_STRUCT * const tcq)
 {
-
     if (tcqCheck(tcq)) {
         return -1;
     }
 
     // start == end means that queue is empty
-
-    if ( tcq->start == tcq->rend) {	
+    
+    int rempty = (tcq->start == tcq->rend);
+    if ( rempty ) {
         return -1;
     }
     /* update start ptr and reset allFull flag and len */
-    tcq->start = (tcq->start - 1 + tcq->size) % tcq->size;
-    tcq->_len++;
-    tcq->_rlen--;
+    atomicDecrementIndex(&tcq->start, tcq->size);
 
     return 0;
 }
@@ -268,7 +258,24 @@ int tcqLen(TC_QUEUE_STRUCT const * const tcq)
 {
     if (tcqCheck(tcq)) return -1;
 
-    return tcq->_len;
+    // Called from userspace size, we control end
+    int end = __atomic_load_n(&tcq->end, __ATOMIC_ACQUIRE);
+    // Read from RT at last possible time
+    int start = __atomic_load_n(&tcq->start, __ATOMIC_ACQUIRE);
+
+    // Return the positive length
+    return (end - start + tcq->size) % tcq->size;
+}
+
+int tcqReverseLen(TC_QUEUE_STRUCT const * const tcq)
+{
+    if (tcqCheck(tcq)) return -1;
+
+    int rend = __atomic_load_n(&tcq->rend, __ATOMIC_ACQUIRE);
+    int start = __atomic_load_n(&tcq->start, __ATOMIC_ACQUIRE);
+
+    // Return the positive length of the reverse portion of the queue
+    return (start - rend + tcq->size) % tcq->size;
 }
 
 /*! tcqItem() function
@@ -281,52 +288,35 @@ int tcqLen(TC_QUEUE_STRUCT const * const tcq)
  *
  * @return	 TC_STRUCT returns the TC elements
  */
-TC_STRUCT * tcqItem(TC_QUEUE_STRUCT const * const tcq, int n)
+TC_STRUCT * tcqItem(TC_QUEUE_STRUCT * tcq, int n)
 {
-    if (tcqCheck(tcq) || (n < 0) || (n >= tcq->_len)) return NULL;
 
-    return &(tcq->queue[(tcq->start + n) % tcq->size]);
-}
-
-/*!
- * \def TC_QUEUE_MARGIN
- * sets up a margin at the end of the queue, to reduce effects of race conditions
- */
-#define TC_QUEUE_MARGIN (TCQ_REVERSE_MARGIN+20)
-
-/*! tcqFull() function
- *
- * \brief get the full status of the queue
- * Function returns full if the count is closer to the end of the queue than TC_QUEUE_MARGIN
- *
- * Function called by update_status() in control.c
- *
- * @param    tcq       pointer to the TC_QUEUE_STRUCT
- *
- * @return	 int       returns status (0==not full, 1==full)
- */
-int tcqFull(TC_QUEUE_STRUCT const * const tcq)
-{
     if (tcqCheck(tcq)) {
-	   return 1;		/* null queue is full, for safety */
+        // Allow retrieval of items from the beginning (0+) or from the end (-1 and lower), but don't allow more than 1 pass)
+        return NULL;
     }
+    // Called from userspace size, we control end
+    const int end = __atomic_load_n(&tcq->end, __ATOMIC_ACQUIRE);
+    // Read from RT at last possible time
+    const int start = __atomic_load_n(&tcq->start, __ATOMIC_ACQUIRE);
+    const int len = (end - start + tcq->size) % tcq->size;
 
-    /* call the queue full if the length is into the margin, so reduce the
-       effect of a race condition where the appending process may not see the
-       full status immediately and send another motion */
-
-    if (tcq->size <= TC_QUEUE_MARGIN) {
-	/* no margin available, so full means really all full */
-	    return tcq->allFull;
+    if (0 == len) {
+        return NULL;
     }
-
-    if (tcq->_len >= tcq->size - TC_QUEUE_MARGIN) {
-	/* we're into the margin, so call it full */
-	    return 1;
+    if (n >= len) {
+        return NULL;
+    } else if (n >= 0) {
+        int idx =  (start + n) % tcq->size;
+        return &(tcq->queue[idx]);
+    } else if (n >= -len) {
+        //Fix for negative modulus error
+        int k = end + n + tcq->size;
+        int idx = k % tcq->size;
+        return &(tcq->queue[idx]);
+    } else {
+        return NULL;
     }
-
-    /* we're not into the margin */
-    return 0;
 }
 
 /*! tcqLast() function
@@ -338,17 +328,8 @@ int tcqFull(TC_QUEUE_STRUCT const * const tcq)
  *
  * @return	 TC_STRUCT returns the TC element
  */
-TC_STRUCT *tcqLast(TC_QUEUE_STRUCT const * const tcq)
+TC_STRUCT *tcqLast(TC_QUEUE_STRUCT * tcq)
 {
-    if (tcqCheck(tcq)) {
-        return NULL;
-    }
-    if (tcq->_len == 0) {
-        return NULL;
-    }
-    //Fix for negative modulus error
-    int n = tcq->end-1 + tcq->size;
-    return &(tcq->queue[n % tcq->size]);
-
+    return tcqItem(tcq, -1);
 }
 

@@ -293,7 +293,7 @@ extern go_flag go_plane_plane_compare(const go_plane * plane1, const go_plane * 
 extern int go_point_plane_distance(const go_cart * point, const go_plane * plane, go_real * distance);
 
 /*! Fills in \a point with the point located distances \a u and \a v along
-  some orthogonal planar coordinate system in \a plane */
+  some othogonal planar coordinate system in \a plane */
 extern int go_plane_evaluate(const go_plane * plane, go_real u, go_real v, go_cart * point);
 
 /*! Fills in \a point with the intersection point of
@@ -639,6 +639,12 @@ go_matrix_inv(const go_matrix * a,
    is an Nx1 vector */
 
 /* Optimized 3x3 functions */
+
+#define MAT3_IDENT_DECL {{1,0,0},{0,1,0},{0,0,1}}
+static const go_real eye3 [3][3] = MAT3_IDENT_DECL;
+
+extern void go_mat3_copy(const go_real asrc[3][3],
+                 go_real adest[3][3]);
 extern int go_mat3_inv(const go_real a[3][3],
 			     go_real ainv[3][3]);
 extern int go_mat3_mat3_mult(const go_real a[3][3],
@@ -687,7 +693,7 @@ extern int go_mat6_vec6_mult(const go_real a[6][6],
 /* Denavit-Hartenberg to pose conversions */
 
 /*
-  The link frame is assumed to be
+  The link frams is assumed to be
 
   | i-1
   |    T

@@ -1,0 +1,41 @@
+#BOOST_DEBUG_FLAGS= -DBOOST_DEBUG_PYTHON -g -O0
+BOOST_DEBUG_FLAGS=
+LIB_DIR:=../lib
+
+INCLUDES += emc/motion_planning
+
+LIBMOTION_PLANNING_SRCS := $(addprefix emc/motion_planning/, \
+	blendmath.cc \
+	joint_util.cc \
+	math_util.cc \
+	rtapi_json5.cc \
+	spherical_arc9.cc \
+	tc.cc \
+	tcq.cc \
+	motion_planning.cc \
+	motion_planning_config.cc \
+	)
+
+USERSRCS += $(LIBMOTION_PLANNING_SRCS)
+
+$(call TOOBJSDEPS, $(LIBMOTION_PLANNING_SRCS)) : EXTRAFLAGS=-fPIC  $(BOOST_DEBUG_FLAGS) 
+
+TARGETS += $(LIB_DIR)/libmotion_planning.so
+
+REQUIRED_LIBS = $(addprefix $(LIB_DIR)/, \
+				libposemath.so.0 \
+				liblinuxcnc.a \
+				)
+
+$(LIB_DIR)/libmotion_planning.so.0: $(patsubst %.cc,objects/%.o,$(LIBMOTION_PLANNING_SRCS)) $(REQUIRED_LIBS)
+	$(ECHO) Linking $(notdir $@)
+	@mkdir -p $(LIB_DIR)
+	@rm -f $@
+	$(Q)$(CXX) -g $(LDFLAGS) -Wl,-soname,$(notdir $@) -shared -o $@ $^ \
+	    -lstdc++ $(BOOST_PYTHON_LIBS) -l$(LIBPYTHON) -ldl
+
+$(patsubst ./emc/motion_planning/%,../include/%,$(wildcard ./emc/motion_planning/*.h)): ../include/%.h: ./emc/motion_planning/%.h
+	cp $^ $@
+$(patsubst ./emc/motion_planning/%,../include/%,$(wildcard ./emc/motion_planning/*.hh)): ../include/%.hh: ./emc/motion_planning/%.hh
+	cp $^ $@
+

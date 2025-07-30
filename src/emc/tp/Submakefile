@@ -1,6 +1,8 @@
-INCLUDES += emc/tp
+SRC_DIR := emc/tp
 
-$(patsubst ./emc/tp/%,../include/%,$(wildcard ./emc/tp/*.h)): ../include/%.h: ./emc/tp/%.h
+INCLUDES += $(SRC_DIR)
+
+$(patsubst ./$(SRC_DIR)/%,../include/%,$(wildcard ./$(SRC_DIR)/*.h)): ../include/%.h: ./$(SRC_DIR)/%.h
 	cp $^ $@
-$(patsubst ./emc/tp/%,../include/%,$(wildcard ./emc/tp/*.hh)): ../include/%.hh: ./emc/tp/%.hh
+$(patsubst ./$(SRC_DIR)/%,../include/%,$(wildcard ./$(SRC_DIR)/*.hh)): ../include/%.hh: ./$(SRC_DIR)/%.hh
 	cp $^ $@

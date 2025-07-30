@@ -19,7 +19,6 @@
 /* for debugging */
 extern int printf(const char * fmt, ...);
 #include <stddef.h>		/* NULL */
-#include <rtapi_string.h>	/* memset */
 
 #include "rtapi_math.h"
 #include <float.h>
@@ -31,6 +30,7 @@ extern int printf(const char * fmt, ...);
 #endif
 #include "gotypes.h"		/* GoResult ,Real, etc */
 #include "gomath.h"		/* these decls, GoCartesian, etc. */
+#include "rtapi_string.h"
 
 go_real go_cbrt(go_real x)
 {
@@ -72,8 +72,8 @@ int go_sph_cart_convert(const go_sph * s, go_cart * v)
 {
   go_real sth, cth, sph, cph;
 
-  pm_sincos(s->theta, &sth, &cth);
-  pm_sincos(s->phi, &sph, &cph);
+  sincos(s->theta, &sth, &cth);
+  sincos(s->phi, &sph, &cph);
 
   v->x = s->r * cth * sph;
   v->y = s->r * sth * sph;
@@ -86,7 +86,7 @@ int go_sph_cyl_convert(const go_sph * s, go_cyl * c)
 {
   go_real sph, cph;
 
-  pm_sincos(s->phi, &sph, &cph);
+  sincos(s->phi, &sph, &cph);
 
   c->theta = s->theta;
   c->r = s->r * sph;
@@ -139,7 +139,7 @@ int go_rvec_quat_convert(const go_rvec * r, go_quat * q)
 
   (void) go_cart_mag(&vec, &mag);
 
-  pm_sincos(0.5 * mag, &sh, &(q->s));
+  sincos(0.5 * mag, &sh, &(q->s));
 
   if (q->s >= 0) {
     q->x = uvec.x * sh;
@@ -168,15 +168,15 @@ int go_rvec_mat_convert(const go_rvec * r, go_mat * m)
 
   if (GO_RESULT_OK != go_cart_unit(&vec, &uvec)) {
     /* a zero vector */
-    m->x.x = 1, m->y.x = 0, m->z.x = 0;
-    m->x.y = 0, m->y.y = 1, m->z.y = 0;
-    m->x.z = 0, m->y.z = 0, m->z.z = 1;
+    m->x.x = 1; m->y.x = 0; m->z.x = 0;
+    m->x.y = 0; m->y.y = 1; m->z.y = 0;
+    m->x.z = 0; m->y.z = 0; m->z.z = 1;
     return GO_RESULT_OK;
   }
 
   (void) go_cart_mag(&vec, &mag);
 
-  pm_sincos(mag, &s, &c);
+  sincos(mag, &s, &c);
   omc = 1 - c;
 
   m->x.x = c + go_sq(uvec.x) * omc;
@@ -330,7 +330,7 @@ int go_mat_rvec_convert(const go_mat * m, go_rvec * r)
   3) else if e2 is largest then
   if c21 < 0 then take the negative for e1
   if c32 < 0 then take the negative for e3
-  4) else if e3 is larger then
+  4) else if e3 is larget then
   if c31 < 0 then take the negative for e1
   if c32 < 0 then take the negative for e2
 
@@ -666,8 +666,8 @@ go_pose go_pose_this(go_real x, go_real y, go_real z,
 {
   go_pose pose;
 
-  pose.tran.x = x, pose.tran.y = y, pose.tran.z = z;
-  pose.rot.s = rs, pose.rot.x = rx, pose.rot.y = ry, pose.rot.z = rz;
+  pose.tran.x = x; pose.tran.y = y; pose.tran.z = z;
+  pose.rot.s = rs; pose.rot.x = rx; pose.rot.y = ry; pose.rot.z = rz;
 
   return pose;
 }
@@ -676,7 +676,7 @@ go_cart go_cart_zero(void)
 {
   go_cart cart;
 
-  cart.x = 0, cart.y = 0, cart.z = 0;
+  cart.x = 0; cart.y = 0; cart.z = 0;
 
   return cart;
 }
@@ -685,7 +685,7 @@ go_quat go_quat_identity(void)
 {
   go_quat quat;
 
-  quat.s = 1, quat.x = 0, quat.y = 0, quat.z = 0;
+  quat.s = 1; quat.x = 0; quat.y = 0; quat.z = 0;
 
   return quat;
 }
@@ -694,8 +694,8 @@ go_pose go_pose_identity(void)
 {
   go_pose pose;
 
-  pose.tran.x = 0, pose.tran.y = 0, pose.tran.z = 0;
-  pose.rot.s = 1, pose.rot.x = 0, pose.rot.y = 0, pose.rot.z = 0;
+  pose.tran.x = 0; pose.tran.y = 0; pose.tran.z = 0;
+  pose.rot.s = 1; pose.rot.x = 0; pose.rot.y = 0; pose.rot.z = 0;
 
   return pose;
 }
@@ -999,15 +999,15 @@ int go_cart_normal(const go_cart * v, go_cart * vout)
   go_real min, ymin;
 
   /* pick the X, Y or Z vector that is most perpendicular to 'v' */
-  cart.x = 1, cart.y = 0, cart.z = 0; /* start with X */
+  cart.x = 1; cart.y = 0; cart.z = 0; /* start with X */
   min = fabs(v->x);
   ymin = fabs(v->y);
   if (ymin < min) {
     min = ymin;			/* Y is more perp */
-    cart.x = 0, cart.y = 1, cart.z = 0;
+    cart.x = 0; cart.y = 1; cart.z = 0;
   }
   if (fabs(v->z) < min) {
-    cart.x = 0, cart.y = 0, cart.z = 1;
+    cart.x = 0; cart.y = 0; cart.z = 1;
   }
 
   /* cross the most perp axis vector with 'v' to get a real perp */
@@ -1243,7 +1243,7 @@ go_complex go_complex_div(go_complex z1, go_complex z2, int * result)
     return z2c;
   }
 
-  z2c.re = z2.re, z2c.im = -z2.im; /* complex conjugate */
+  z2c.re = z2.re; z2c.im = -z2.im; /* complex conjugate */
   *result = GO_RESULT_OK;
   return go_complex_scale(go_complex_mult(z1, z2c), 1.0 / denom);
 }
@@ -1373,7 +1373,7 @@ int go_cubic_solve(const go_cubic * cub,
 
   a = cub->b - 1.0/3.0 * go_sq(cub->a);
   b = cub->c - 1.0/3.0 * cub->a * cub->b + 2.0/27.0 * go_cub(cub->a);
-  z.re = 0.25 * go_sq(b) + 1.0/27.0 * go_cub(a), z.im = 0.0;
+  z.re = 0.25 * go_sq(b) + 1.0/27.0 * go_cub(a); z.im = 0.0;
   go_complex_sqrt(z, &A, &B);
 
   /* since z is real, the pair of sqrt(z) is either pure real or 
@@ -1386,11 +1386,11 @@ int go_cubic_solve(const go_cubic * cub,
   /* Now we need to take the cube root of each. If they're pure real,
      we can take the scalar cube root. */
   if (GO_SMALL(A.im)) {
-    A.re = go_cbrt(A.re), A.im = 0.0;
-    B.re = go_cbrt(B.re), B.im = 0.0;
+    A.re = go_cbrt(A.re); A.im = 0.0;
+    B.re = go_cbrt(B.re); B.im = 0.0;
   } else {
     go_complex_cbrt(A, &A, NULL, NULL);
-    B.re = A.re, B.im = -A.im;	/* B and A must be complex conjugates */
+    B.re = A.re; B.im = -A.im;	/* B and A must be complex conjugates */
   }
   u1 = go_complex_add(A, B);
   u2 = u3 = go_complex_scale(u1, -0.5);
@@ -1399,9 +1399,9 @@ int go_cubic_solve(const go_cubic * cub,
   u2 = go_complex_add(u2, z);
   u3 = go_complex_sub(u3, z);
 
-  z1->re = u1.re - 1.0/3.0 * cub->a, z1->im = u1.im;
-  z2->re = u2.re - 1.0/3.0 * cub->a, z2->im = u2.im;
-  z3->re = u3.re - 1.0/3.0 * cub->a, z3->im = u3.im;
+  z1->re = u1.re - 1.0/3.0 * cub->a; z1->im = u1.im;
+  z2->re = u2.re - 1.0/3.0 * cub->a; z2->im = u2.im;
+  z3->re = u3.re - 1.0/3.0 * cub->a; z3->im = u3.im;
 
   return GO_RESULT_OK;
 }
@@ -1582,11 +1582,11 @@ int go_quartic_solve(const go_quartic * quart,
   if (GO_RESULT_OK != retval) return retval;
   go_complex_sqrt(*z1, &p, NULL);
   go_complex_sqrt(*z2, &q, NULL);
-  fc.re = f, fc.im = 0.0;	/* fc is complex of scalar f */
+  fc.re = f; fc.im = 0.0;	/* fc is complex of scalar f */
   r = go_complex_div(fc, go_complex_scale(go_complex_mult(p, q), -8.0), &retval);
   if (GO_RESULT_OK != retval) return retval;
 
-  a4c.re = 0.25 * quart->a, a4c.im = 0.0; /* a/4 as a complex */
+  a4c.re = 0.25 * quart->a; a4c.im = 0.0; /* a/4 as a complex */
   *z1 = go_complex_sub(go_complex_add(go_complex_add(p, q), r), a4c);
   *z2 = go_complex_sub(go_complex_sub(go_complex_sub(p, q), r), a4c);
   *z3 = go_complex_sub(go_complex_sub(go_complex_sub(q, p), r), a4c);
@@ -1766,8 +1766,6 @@ int go_cart_cart_pose(const go_cart * v1, const go_cart * v2,
   go_real eigenval;
   int retval;
 
-  memset(&Nspace,0,sizeof(Nspace));
-
   Sxx = Sxy = Sxz = 0.0;
   Syx = Syy = Syz = 0.0;
   Szx = Szy = Szz = 0.0;
@@ -1814,10 +1812,16 @@ int go_cart_cart_pose(const go_cart * v1, const go_cart * v2,
   if (GO_RESULT_OK != retval) return retval;
 
   /* pick eigenvector associated with most positive eigenvalue */
-  eigenval = d[0], t = 0;
-  if (d[1] > eigenval) eigenval = d[1], t = 1;
-  if (d[2] > eigenval) eigenval = d[2], t = 2;
-  if (d[3] > eigenval) eigenval = d[3], t = 3;
+  eigenval = d[0]; t = 0;
+  if (d[1] > eigenval) {
+      eigenval = d[1]; t = 1;
+  }
+  if (d[2] > eigenval) {
+      eigenval = d[2]; t = 2;
+  }
+  if (d[3] > eigenval) {
+      eigenval = d[3]; t = 3;
+  }
   /* now t is the column with the eigenvector we want as our quaternion */
   p->rot.s = N.el[0][t];
   p->rot.x = N.el[1][t];
@@ -2025,7 +2029,6 @@ int go_mat_mat_mult(const go_mat * m1, const go_mat * m2, go_mat * mout)
   mout->z.x = cp1.x.x * cp2.z.x + cp1.y.x * cp2.z.y + cp1.z.x * cp2.z.z;
   mout->z.y = cp1.x.y * cp2.z.x + cp1.y.y * cp2.z.y + cp1.z.y * cp2.z.z;
   mout->z.z = cp1.x.z * cp2.z.x + cp1.y.z * cp2.z.y + cp1.z.z * cp2.z.z;
-
   return GO_RESULT_OK;
 }
 
@@ -2577,7 +2580,7 @@ int go_poGO_RESULT_plane_distance(const go_cart * point, const go_plane * plane,
 
 int go_plane_evaluate(const go_plane * plane, go_real u, go_real v, go_cart * point)
 {
-  go_cart v1, v2;		/* orthogonal vectors in plane */
+  go_cart v1, v2;		/* othogonal vectors in plane */
   go_cart p;			/* point in plane closest to origin */
 
   if (GO_RESULT_OK != go_cart_normal(&plane->normal, &v1)) return GO_RESULT_ERROR;
@@ -2782,7 +2785,7 @@ int lubksb(go_real ** a,
 int go_cart_vector_convert(const go_cart * c,
 				 go_real * v)
 {
-  v[0] = c->x, v[1] = c->y, v[2] = c->z;
+  v[0] = c->x; v[1] = c->y; v[2] = c->z;
 
   return GO_RESULT_OK;
 }
@@ -2790,7 +2793,7 @@ int go_cart_vector_convert(const go_cart * c,
 int go_vector_cart_convert(const go_real * v,
 				 go_cart * c)
 {
-  c->x = v[0], c->y = v[1], c->z = v[2];
+  c->x = v[0]; c->y = v[1]; c->z = v[2];
 
   return GO_RESULT_OK;
 }
@@ -2825,9 +2828,9 @@ int go_mat_matrix_convert(const go_mat * mat,
   /* check for a 3x3 matrix */
   if (matrix->rows != 3 || matrix->cols != 3) return GO_RESULT_ERROR;
 
-  matrix->el[0][0] = mat->x.x, matrix->el[0][1] = mat->y.x, matrix->el[0][2] = mat->z.x;
-  matrix->el[1][0] = mat->x.y, matrix->el[1][1] = mat->y.y, matrix->el[1][2] = mat->z.y;
-  matrix->el[2][0] = mat->x.z, matrix->el[2][1] = mat->y.z, matrix->el[2][2] = mat->z.z;
+  matrix->el[0][0] = mat->x.x; matrix->el[0][1] = mat->y.x; matrix->el[0][2] = mat->z.x;
+  matrix->el[1][0] = mat->x.y; matrix->el[1][1] = mat->y.y; matrix->el[1][2] = mat->z.y;
+  matrix->el[2][0] = mat->x.z; matrix->el[2][1] = mat->y.z; matrix->el[2][2] = mat->z.z;
 
   return GO_RESULT_OK;
 }
@@ -2988,15 +2991,15 @@ int go_matrix_vector_cross(const go_matrix * a,
   }
 
   /* get 'v' as a cartesian type */
-  vc.x = v[0], vc.y = v[1], vc.z = v[2];
+  vc.x = v[0]; vc.y = v[1]; vc.z = v[2];
 
   for (col = 0; col < a->cols; col++) {
     /* pick off the col'th column as a cartesian type */
-    ac.x = a->el[0][col], ac.y = a->el[1][col], ac.z = a->el[2][col];
+    ac.x = a->el[0][col]; ac.y = a->el[1][col]; ac.z = a->el[2][col];
     /* cross it with v */
     go_cart_cart_cross(&ac, &vc, &cross);
     /* make it the col'th column of axv[] */
-    ptrin[0][col] = cross.x, ptrin[1][col] = cross.y, ptrin[2][col] = cross.z;
+    ptrin[0][col] = cross.x; ptrin[1][col] = cross.y; ptrin[2][col] = cross.z;
   }
 
   if (ptrout != NULL) {
@@ -3082,6 +3085,13 @@ int go_matrix_inv(const go_matrix * m, /* M x N */
   }
 
   return GO_RESULT_OK;
+}
+
+
+extern void go_mat3_copy(const go_real asrc[3][3],
+                 go_real adest[3][3])
+{
+    memcpy(adest, asrc, sizeof(go_real) * 9);
 }
 
 extern int go_mat3_inv(const go_real a[3][3],
@@ -3632,12 +3642,12 @@ int go_dh_pose_convert(const go_dh * dh, go_pose * p)
   go_real sth, cth;		/* sin, cos theta[i] */
   go_real sal, cal;		/* sin, cos alpha[i-1] */
 
-  pm_sincos(dh->theta, &sth, &cth);
-  pm_sincos(dh->alpha, &sal, &cal);
+  sincos(dh->theta, &sth, &cth);
+  sincos(dh->alpha, &sal, &cal);
 
-  h.rot.x.x = cth, h.rot.y.x = -sth, h.rot.z.x = 0.0;
-  h.rot.x.y = sth*cal, h.rot.y.y = cth*cal, h.rot.z.y = -sal;
-  h.rot.x.z = sth*sal, h.rot.y.z = cth*sal, h.rot.z.z = cal;
+  h.rot.x.x = cth; h.rot.y.x = -sth; h.rot.z.x = 0.0;
+  h.rot.x.y = sth*cal; h.rot.y.y = cth*cal; h.rot.z.y = -sal;
+  h.rot.x.z = sth*sal; h.rot.y.z = cth*sal; h.rot.z.z = cal;
 
   h.tran.x = dh->a;
   h.tran.y = -sal*dh->d;
@@ -3693,7 +3703,7 @@ int go_link_joint_set(const go_link * link, go_real joint, go_link * linkout)
       return go_pose_pose_mult(&link->u.pp.pose, &pose, &linkout->u.pp.pose);
     }
     /* else revolute */
-    rvec.x = 0, rvec.y = 0, rvec.z = joint; /* rot(Z,joint) */
+    rvec.x = 0; rvec.y = 0; rvec.z = joint; /* rot(Z;joint) */
     retval = go_rvec_quat_convert(&rvec, &pose.rot);
     if (GO_RESULT_OK != retval) return retval;
     return go_pose_pose_mult(&link->u.pp.pose, &pose, &linkout->u.pp.pose);

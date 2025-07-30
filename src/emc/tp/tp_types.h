@@ -14,11 +14,16 @@
 #ifndef TP_TYPES_H
 #define TP_TYPES_H
 
-#include "posemath.h"
 #include "tc_types.h"
-#include "tcq.h"
+#include "tcq_types.h"
 
+#ifndef __cplusplus
 #include <rtapi_bool.h>
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define TP_DEFAULT_QUEUE_SIZE 32
 /* Minimum length of a segment in cycles (must be greater than 1 to ensure each
@@ -37,7 +42,7 @@
 /* "neighborhood" size (if two values differ by less than the epsilon,
  * then they are effectively equal.)*/
 #define TP_ACCEL_EPSILON 1e-4
-#define TP_VEL_EPSILON   1e-8
+#define TP_VEL_EPSILON   DOUBLE_FUZZ
 #define TP_POS_EPSILON   1e-12
 #define TP_TIME_EPSILON  1e-12
 #define TP_ANGLE_EPSILON 1e-6
@@ -47,107 +52,111 @@
 #define TP_BIG_NUM 1e10
 
 /**
- * TP return codes.
- * This enum is a catch-all for useful return statuses from TP
- * internal functions. This may be replaced with a better system in
- * the future.
- */
-typedef enum {
-    TP_ERR_INVALID = -9,
-    TP_ERR_INPUT_TYPE = -8,
-    TP_ERR_TOLERANCE = -7,
-    TP_ERR_RADIUS_TOO_SMALL = -6,
-    TP_ERR_GEOM = -5,
-    TP_ERR_RANGE = -4,
-    TP_ERR_MISSING_OUTPUT = -3,
-    TP_ERR_MISSING_INPUT = -2,
-    TP_ERR_FAIL = -1,
-    TP_ERR_OK = 0,
-    TP_ERR_NO_ACTION,
-    TP_ERR_SLOWING,
-    TP_ERR_STOPPED,
-    TP_ERR_WAITING,
-    TP_ERR_ZERO_LENGTH,
-    TP_ERR_REVERSE_EMPTY,
-    TP_ERR_LAST
-} tp_err_t;
-
-/**
- * Persistent data for spindle status within tpRunCycle.
+ * Persistant data for spindle status within tpRunCycle.
  * This structure encapsulates some static variables to simplify refactoring of
  * synchronized motion code.
  */
 typedef struct {
-	 int spindle_num;
-     double offset;
-     double revs;
-     int waiting_for_index;
-     int waiting_for_atspeed;
+    spindle_origin_t origin; //!< initial position of spindle during synchronization (direction-aware)
+
+    double trigger_revs;
 } tp_spindle_t;
 
-/**
- * Trajectory planner state structure.
- * Stores persistent data for the trajectory planner that should be accessible
- * by outside functions.
- */
+// Bitmask for wait conditions (for query functions)
+typedef unsigned WaitFlagMask;
+
+typedef enum {
+    WAIT_FOR_SPINDLE_ATSPEED,
+    WAIT_FOR_SPINDLE_INDEX,
+    WAIT_FOR_PROBE_READY,
+    WAIT_FOR_PROBING,
+    WAIT_FOR_OPTIMIZATION,
+    WAIT_FOR_INDEXER_UNLOCK,
+    WAIT_FOR_FILTER_DISABLE,
+    WAIT_FOR_FILTER_ENABLE,
+    MAX_WAIT_INDICES
+} WaitFlagIndex;
+
 typedef struct {
-    TC_QUEUE_STRUCT queue;
-    tp_spindle_t spindle; //Spindle data
+    tp_spindle_t spindle_cmd; //Spindle data
+    int tc_completed_id; /* ID of most recent completed segment, i.e. "-1" in the queue"*/
 
-    EmcPose currentPos;
-    EmcPose goalPos;
+    PmVector currentPos;
+    PmVector currentVel;
 
-    int queueSize;
-    double cycleTime;
+    double vLimit;		/* absolute upper limit on all linear vels */
+    double vLimitAng;		/* absolute upper limit on all angular vels */
 
-    double vMax;		/* vel for subsequent moves */
-    double ini_maxvel;          /* max velocity allowed by machine
-                                   constraints (INI file) for
-                                   subsequent moves */
-    double vLimit;		/* absolute upper limit on all vels */
-
-    double aMax;        /* max accel (unused) */
-    //FIXME this shouldn't be a separate limit,
-    double aMaxCartesian; /* max cartesian acceleration by machine bounds */
-    double aLimit;        /* max accel (unused) */
-
-    double wMax;		/* rotational velocity max */
-    double wDotMax;		/* rotational acceleration max */
-    int nextId;
     int execId;
     struct state_tag_t execTag; /* state tag corresponding to running motion */
-    int termCond;
-    int done;
-    int depth;			/* number of total queued motions */
+    int nextexecId;
+    int joint_filter_drain_counter;
+    bool filters_at_rest;
     int activeDepth;		/* number of motions blending */
-    int aborting;
-    int pausing;
+    int aborting; // Abort is in progress (TP resets this flag to zero after stopping)
+    int pausing; // Pause is requested, indicates TP should slow down and stop until flag is cleared.
     int reverse_run;      /* Indicates that TP is running in reverse */
     int motionType;
-    double tolerance;           /* for subsequent motions, stay within this
-                                   distance of the programmed path during
-                                   blends */
-    int synchronized;       // spindle sync required for this move
-    int velocity_mode; 	        /* TRUE if spindle sync is in velocity mode,
-				   FALSE if in position mode */
-    double uu_per_rev;          /* user units per spindle revolution */
 
+    double time_elapsed_sec; // Total elapsed TP run time in seconds
+    long long time_elapsed_ticks; // Total elapsed TP run time in cycles (ticks)
+    long long time_at_wait; // Time when TP started to wait for spindle
+
+    int waiting[MAX_WAIT_INDICES];
+} tp_execution_t;
+
+
+typedef struct {
+    int queue_size_config;
+    double cycleTime;
+    int superSampleRate;
+
+    int nextId;
+    tc_unique_id_t nextUniqueId;
+
+    blend_mode_t blend_mode;
+    tc_spindle_sync_t synchronized;       // spindle sync required for this move
+    double uu_per_rev;          /* user units per spindle revolution */
 
     syncdio_t syncdio; //record tpSetDout's here
 
-} TP_STRUCT;
+    // Fields moved from emcmotStatus since this needs to be managed synchronously in task
+    spindle_cmd_t spindle_cmd;
+    unsigned char enables_new;
+
+    bool atspeed_next_feed; // Indicates next feed move must wait for spindle at-speed
+    bool wait_for_speed_change; // If true, trigger a new at-speed wait any time the spindle speed changes
+
+    unsigned char wait_for[MAX_WAIT_INDICES];
+
+} tp_planning_t;
 
 
 /**
- * Describes blend modes used in the trajectory planner.
- * @note these values are used as array indices, so make sure valid options
- * start at 0 and increase by one.
+ * Trajectory planner state structure.
+ * Stores persistant data for the trajectory planner that should be accessible
+ * by outside functions.
  */
-typedef enum {
-    NO_BLEND = -1,
-    PARABOLIC_BLEND,
-    TANGENT_SEGMENTS_BLEND,
-    ARC_BLEND
-} tc_blend_type_t;
+typedef struct tp_data_t {
+    TC_QUEUE_STRUCT queue; // Shared queue structure used by both the planner and execution parts
 
+    tp_execution_t exec; // trajectory flags and fields used during execution of trajectories
+
+    tp_planning_t planner; // flags and states used for planning / lookahead
+
+    // These are likely planner state but we need to figure out how this would
+    // work safely with init / clears initiated from the RT side.
+    PmVector goalPos;
+    double cycleTime;
+    int superSampleRate;
+
+} TP_STRUCT;
+
+typedef struct {
+    char buf[100];
+} LineDescriptor;
+
+#ifdef __cplusplus
+}
+#endif
 #endif				/* TP_TYPES_H */
